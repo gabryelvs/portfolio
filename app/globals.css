@@ -1,15 +1,17 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --bg: #09090b;
-  --fg: #fafafa;
-}
-:root.light {
   --bg: #ffffff;
   --fg: #18181b;
 }
-html { scroll-behavior: smooth; background: var(--bg); color: var(--fg); }
-body { background: var(--bg); color: var(--fg); }
+.dark {
+  --bg: #09090b;
+  --fg: #fafafa;
+}
+html, body { background: var(--bg); color: var(--fg); }
+html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }

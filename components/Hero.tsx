@@ -8,7 +8,7 @@ export function Hero() {
       <motion.p
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-4 text-violet-300"
+        className="mb-4 text-violet-700 dark:text-violet-300"
       >
         Hi, I&apos;m Gabryel —
       </motion.p>
@@ -28,7 +28,7 @@ export function Hero() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="mt-6 max-w-2xl text-lg text-zinc-300"
+        className="mt-6 max-w-2xl text-lg text-zinc-600 dark:text-zinc-300"
       >
         Computer Science student building production-grade APIs in Python &amp; FastAPI —
         payments, async services, and reliable delivery.
@@ -37,7 +37,7 @@ export function Hero() {
         <a href="#projects" className="rounded-lg bg-violet-500 px-6 py-3 font-semibold text-white hover:bg-violet-400">
           View projects
         </a>
-        <a href="/cv.pdf" className="rounded-lg border border-white/15 px-6 py-3 font-semibold hover:bg-white/10">
+        <a href="/cv.pdf" className="rounded-lg border border-black/15 px-6 py-3 font-semibold hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10">
           Download CV
         </a>
       </div>

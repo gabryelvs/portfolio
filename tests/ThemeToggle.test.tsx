@@ -5,18 +5,22 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 
 beforeEach(() => {
   localStorage.clear();
-  document.documentElement.classList.remove("light");
+  document.documentElement.classList.remove("dark");
 });
 
 describe("ThemeToggle", () => {
-  it("toggles light class and persists choice", async () => {
+  it("defaults to dark, toggles on click, and persists choice", async () => {
     render(<ThemeToggle />);
-    const btn = screen.getByRole("button", { name: /theme/i });
+    const btn = await screen.findByRole("button", { name: /theme/i });
+    // After mount, dark is the default
+    expect(document.documentElement.classList.contains("dark")).toBe(true);
+    // First click → light mode
     await userEvent.click(btn);
-    expect(document.documentElement.classList.contains("light")).toBe(true);
+    expect(document.documentElement.classList.contains("dark")).toBe(false);
     expect(localStorage.getItem("theme")).toBe("light");
+    // Second click → dark mode
     await userEvent.click(btn);
-    expect(document.documentElement.classList.contains("light")).toBe(false);
+    expect(document.documentElement.classList.contains("dark")).toBe(true);
     expect(localStorage.getItem("theme")).toBe("dark");
   });
 });

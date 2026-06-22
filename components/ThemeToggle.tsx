@@ -1,45 +1,23 @@
 "use client";
-
 import { useEffect, useState } from "react";
-
 export function ThemeToggle() {
-  const [mounted, setMounted] = useState(false);
-
+  const [dark, setDark] = useState(true);
   useEffect(() => {
+    const isDark = localStorage.getItem("theme") !== "light"; // default dark
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
+    setDark(isDark);
+    document.documentElement.classList.toggle("dark", isDark);
   }, []);
-
   function toggle() {
-    const current = document.documentElement.classList.contains("light");
-    const next = !current;
-    document.documentElement.classList.toggle("light", next);
-    localStorage.setItem("theme", next ? "light" : "dark");
+    const next = !dark;
+    setDark(next);
+    document.documentElement.classList.toggle("dark", next);
+    localStorage.setItem("theme", next ? "dark" : "light");
   }
-
-  if (!mounted) {
-    return (
-      <button
-        type="button"
-        disabled
-        aria-label="Toggle theme"
-        className="rounded-lg border border-white/15 px-3 py-1.5 text-sm hover:bg-white/10"
-      >
-        ☀ Light
-      </button>
-    );
-  }
-
-  const light = document.documentElement.classList.contains("light");
-
   return (
-    <button
-      type="button"
-      onClick={toggle}
-      aria-label="Toggle theme"
-      className="rounded-lg border border-white/15 px-3 py-1.5 text-sm hover:bg-white/10"
-    >
-      {light ? "🌙 Dark" : "☀ Light"}
+    <button type="button" onClick={toggle} aria-label="Toggle theme"
+      className="rounded-lg border border-black/15 px-3 py-1.5 text-sm hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10">
+      {dark ? "☀ Light" : "🌙 Dark"}
     </button>
   );
 }
