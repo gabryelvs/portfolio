@@ -1,0 +1,32 @@
+[
+  {
+    "name": "payledger",
+    "description": "Double-entry payments & ledger API (FastAPI, PostgreSQL).",
+    "url": "https://github.com/gabryelvs/payledger",
+    "homepage": "https://payledger-gv.fly.dev/docs",
+    "language": "Python",
+    "topics": ["fastapi", "fintech", "ledger", "postgresql"],
+    "stars": 0,
+    "updatedAt": "2026-06-18T00:00:00Z"
+  },
+  {
+    "name": "fx-service",
+    "description": "Async currency-exchange API with stale-fallback (FastAPI, Redis).",
+    "url": "https://github.com/gabryelvs/fx-service",
+    "homepage": "https://fx-service-gv.fly.dev/docs",
+    "language": "Python",
+    "topics": ["fastapi", "async", "redis", "microservice"],
+    "stars": 0,
+    "updatedAt": "2026-06-18T00:00:00Z"
+  },
+  {
+    "name": "webhook-dispatcher",
+    "description": "Reliable webhook delivery: queue + worker, retries, dead-letter (FastAPI, Redis).",
+    "url": "https://github.com/gabryelvs/webhook-dispatcher",
+    "homepage": null,
+    "language": "Python",
+    "topics": ["fastapi", "redis", "webhooks", "distributed-systems"],
+    "stars": 0,
+    "updatedAt": "2026-06-19T00:00:00Z"
+  }
+]
