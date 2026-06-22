@@ -8,8 +8,13 @@ const links = [
 export function Contact() {
   return (
     <section id="contact" className="mx-auto max-w-3xl px-6 py-24 text-center">
-      <h2 className="mb-6 text-3xl font-black tracking-tight sm:text-4xl">Get in touch</h2>
-      <p className="mb-8 text-zinc-500">
+      <span className="font-[family-name:var(--font-mono)] text-sm text-[var(--accent-text)]">
+        03 /
+      </span>
+      <h2 className="mb-6 mt-2 font-[family-name:var(--font-display)] text-3xl font-bold tracking-tight sm:text-4xl">
+        Get in touch
+      </h2>
+      <p className="mb-8 text-[var(--fg-muted)]">
         Open to junior / placement backend roles in London. Let&apos;s talk.
       </p>
       <div className="flex flex-wrap justify-center gap-4">
@@ -19,7 +24,7 @@ export function Contact() {
             href={l.href}
             target={l.href.startsWith("http") ? "_blank" : undefined}
             rel="noopener noreferrer"
-            className="rounded-lg border border-black/15 px-5 py-2.5 font-medium hover:border-violet-400/60 hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"
+            className="rounded-lg border border-[var(--border-strong)] px-5 py-2.5 font-medium transition-colors hover:border-[var(--accent)] hover:bg-[var(--surface)]"
           >
             {l.label}
           </a>

@@ -14,12 +14,12 @@ export default async function Home() {
       <Nav />
       <main>
         <Hero />
-        <About />
         <Projects projects={projects} />
+        <About />
         <Contact />
       </main>
-      <footer className="border-t border-black/10 py-8 text-center text-sm text-zinc-500 dark:border-white/10">
-        © {new Date().getFullYear()} Gabryel Veríssimo
+      <footer className="border-t border-[var(--border)] py-8 text-center font-[family-name:var(--font-mono)] text-sm text-[var(--fg-muted)]">
+        © {new Date().getFullYear()} Gabryel Veríssimo · built with Next.js
       </footer>
     </>
   );

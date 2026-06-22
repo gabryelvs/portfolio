@@ -1,20 +1,29 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const display = Space_Grotesk({
+  variable: "--font-display",
   subsets: ["latin"],
+  display: "swap",
+  weight: ["500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const sans = Inter({
+  variable: "--font-sans",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const mono = JetBrains_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
   title: "Gabryel Veríssimo — Backend Engineer",
-  description: "Backend engineer focused on fintech and scalable systems. Building with Python, FastAPI, and modern cloud technologies.",
+  description: "Backend engineer focused on fintech and reliable systems. Building with Python, FastAPI, PostgreSQL, and modern cloud infrastructure.",
 };
 
 export default function RootLayout({
@@ -25,7 +34,8 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+      className={`${display.variable} ${sans.variable} ${mono.variable} h-full antialiased`}
     >
       <head>
         <script
@@ -35,7 +45,9 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="flex min-h-full flex-col font-[family-name:var(--font-sans)]">
+        {children}
+      </body>
     </html>
   );
 }
