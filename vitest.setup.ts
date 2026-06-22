@@ -1,5 +1,27 @@
 import "@testing-library/jest-dom/vitest";
 
+// jsdom provides localStorage - use it if available, otherwise use a simple polyfill
+if (!global.localStorage) {
+  const store: Record<string, string> = {};
+  global.localStorage = {
+    getItem: (key: string) => store[key] ?? null,
+    setItem: (key: string, value: string) => {
+      store[key] = value;
+    },
+    removeItem: (key: string) => {
+      delete store[key];
+    },
+    clear: () => {
+      Object.keys(store).forEach((key) => delete store[key]);
+    },
+    key: (index: number) => {
+      const keys = Object.keys(store);
+      return keys[index] ?? null;
+    },
+    length: 0,
+  } as Storage;
+}
+
 global.IntersectionObserver = class IntersectionObserver {
   constructor() {}
   disconnect() {}
@@ -9,30 +31,3 @@ global.IntersectionObserver = class IntersectionObserver {
   }
   unobserve() {}
 } as unknown as typeof IntersectionObserver;
-
-interface LocalStorageData {
-  [key: string]: string;
-}
-
-const localStorageData: LocalStorageData = {};
-
-const localStorageMock: Storage = {
-  getItem: (key: string) => {
-    return localStorageData[key] ?? null;
-  },
-  setItem: (key: string, value: string) => {
-    localStorageData[key] = value;
-  },
-  removeItem: (key: string) => {
-    delete localStorageData[key];
-  },
-  clear: () => {
-    for (const key in localStorageData) {
-      delete localStorageData[key];
-    }
-  },
-  length: 0,
-  key: () => null,
-};
-
-global.localStorage = localStorageMock;
