@@ -75,6 +75,37 @@ This portfolio currently showcases:
 - **[fx-service](https://github.com/gabryelvs/fx-service)** — Async currency-exchange API with stale-fallback (FastAPI, Redis)
 - **[webhook-dispatcher](https://github.com/gabryelvs/webhook-dispatcher)** — Reliable webhook delivery with queue, retries, and dead-letter handling (FastAPI, Redis)
 
+## Security
+
+This site is treated as a small production deployment and hardened accordingly:
+
+- **HTTP security headers** on every response (`next.config.ts`): a locked-down
+  **Content-Security-Policy** (`default-src 'self'`, `object-src 'none'`,
+  `frame-ancestors 'none'`, `base-uri 'self'`), **HSTS** (2-year, preload),
+  `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`,
+  `Referrer-Policy: strict-origin-when-cross-origin`, and a restrictive
+  `Permissions-Policy`.
+  - *Trade-off:* `script-src`/`style-src` allow `'unsafe-inline'`. The Next.js
+    App Router emits inline bootstrap/streaming scripts (and Framer Motion sets
+    inline style attributes) with no stable hash across ISR revalidations, and a
+    nonce-based CSP would force dynamic rendering, defeating the static/ISR
+    caching this site relies on. Everything else is constrained to `'self'`.
+- **CodeQL** static analysis (`security-and-quality` suite) on every push and on
+  a weekly schedule — see `.github/workflows/codeql.yml`.
+- **Dependabot** for npm and GitHub Actions updates — see `.github/dependabot.yml`.
+- **Vulnerability disclosure**: [`SECURITY.md`](SECURITY.md) +
+  [`/.well-known/security.txt`](public/.well-known/security.txt) (RFC 9116).
+
+Verify the headers live:
+
+```bash
+curl -sI https://portfolio-gabryelverissimo.vercel.app/ | grep -i \
+  -e content-security-policy -e strict-transport -e x-frame -e x-content-type \
+  -e referrer-policy -e permissions-policy
+```
+
+Or scan at [securityheaders.com](https://securityheaders.com/?q=https://portfolio-gabryelverissimo.vercel.app/).
+
 ## License
 
 MIT

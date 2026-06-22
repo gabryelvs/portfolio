@@ -1,0 +1,8 @@
+# Security contact for portfolio-gabryelverissimo.vercel.app
+# Format: RFC 9116 (https://www.rfc-editor.org/rfc/rfc9116)
+
+Contact: mailto:gabryelverissimo12@gmail.com
+Expires: 2027-06-22T00:00:00.000Z
+Preferred-Languages: en, pt
+Canonical: https://portfolio-gabryelverissimo.vercel.app/.well-known/security.txt
+Policy: https://github.com/gabryelvs/portfolio/blob/main/SECURITY.md
