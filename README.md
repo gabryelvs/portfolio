@@ -57,10 +57,7 @@ npm start
    - Add it to your Vercel project's **Environment Variables** as `GITHUB_TOKEN`.
 4. **Deploy**: Your site is live. Vercel automatically redeploys on every push to the main branch.
 
-**Live URL**: Once deployed, replace the placeholder below with your actual Vercel domain:
-```
-https://your-portfolio.vercel.app
-```
+**Live URL**: https://portfolio-liard-six-82.vercel.app/
 
 ## Curating Your Showcase
 
