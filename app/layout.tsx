@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import { BackgroundFX } from "@/components/BackgroundFX";
 import "./globals.css";
 
 const display = Space_Grotesk({
@@ -46,6 +47,7 @@ export default function RootLayout({
         />
       </head>
       <body className="flex min-h-full flex-col font-[family-name:var(--font-sans)]">
+        <BackgroundFX />
         {children}
       </body>
     </html>

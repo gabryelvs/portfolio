@@ -37,17 +37,19 @@
   --grid: rgba(255, 255, 255, 0.035);
 }
 
-html, body { background: var(--bg); color: var(--fg); }
-html { scroll-behavior: smooth; }
-
-/* faint ledger grid behind everything (static — reduced-motion safe) */
-body {
+/* bg colour + ledger grid live on <html> so the <body>'s -z-10 canvas
+   (BackgroundFX network mesh) paints above them and shows through. */
+html {
+  color: var(--fg);
+  scroll-behavior: smooth;
+  background-color: var(--bg);
   background-image:
     linear-gradient(var(--grid) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid) 1px, transparent 1px);
   background-size: 56px 56px;
   background-position: -1px -1px;
 }
+body { color: var(--fg); background: transparent; }
 
 /* tabular figures for stats / counts so they never shift width */
 .tnum { font-variant-numeric: tabular-nums; }
