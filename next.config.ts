@@ -32,6 +32,10 @@ const securityHeaders = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), browsing-topics=()" },
   { key: "X-DNS-Prefetch-Control", value: "off" },
+  // Cross-origin isolation: prevent other origins from sharing this site's
+  // browsing context or embedding its resources (mitigates XS-Leaks / hotlinking).
+  { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+  { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
 ];
 
 const nextConfig: NextConfig = {
