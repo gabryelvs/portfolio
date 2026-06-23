@@ -26,12 +26,25 @@ type GitHubRepo = {
   archived: boolean;
 };
 
+/** Only treat http(s) URLs as a usable homepage. The GitHub `homepage` field is
+ *  free-form text; this prevents a `javascript:`/`data:` value from ever being
+ *  rendered into an anchor `href` (defence-in-depth against link-based XSS). */
+function safeHomepage(url: string | null): string | null {
+  if (!url) return null;
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "http:" || parsed.protocol === "https:" ? url : null;
+  } catch {
+    return null;
+  }
+}
+
 export function mapRepo(raw: GitHubRepo): Project {
   return {
     name: raw.name,
     description: raw.description ?? "",
     url: raw.html_url,
-    homepage: raw.homepage ? raw.homepage : null,
+    homepage: safeHomepage(raw.homepage),
     language: raw.language,
     topics: (raw.topics ?? []).filter((t) => t !== "showcase"),
     stars: raw.stargazers_count,
