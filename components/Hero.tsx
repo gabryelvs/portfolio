@@ -3,9 +3,9 @@
 import { motion } from "framer-motion";
 
 const metrics = [
-  { value: "3", label: "production APIs" },
-  { value: "90+", label: "automated tests" },
-  { value: "2", label: "live deployments" },
+  { value: "4", label: "production APIs" },
+  { value: "150+", label: "automated tests" },
+  { value: "3", label: "live deployments" },
 ];
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -45,8 +45,8 @@ export function Hero() {
         transition={{ delay: 0.16, duration: 0.5, ease }}
         className="mt-6 max-w-2xl text-lg leading-relaxed text-[var(--fg-muted)]"
       >
-        Computer Science student building production-grade APIs in Python &amp; FastAPI —
-        payments, ledgers, async services, and reliable delivery.
+        Computer Science student building production-grade APIs in Python (FastAPI) and
+        Java (Spring Boot) — payments, ledgers, async services, and reliable delivery.
       </motion.p>
 
       <motion.div

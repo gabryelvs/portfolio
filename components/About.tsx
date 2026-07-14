@@ -1,10 +1,10 @@
 import { SectionHeading } from "@/components/SectionHeading";
 
 const skills = {
-  Languages: ["Python", "TypeScript", "C#", "SQL", "JavaScript"],
-  Backend: ["FastAPI", "PostgreSQL", "Redis", "REST APIs"],
+  Languages: ["Python", "Java", "TypeScript", "C#", "SQL", "JavaScript"],
+  Backend: ["FastAPI", "Spring Boot", "PostgreSQL", "Redis", "REST APIs"],
   "Front-end": ["React", "Next.js", "Tailwind CSS"],
-  Tools: ["Docker", "Git", "GitHub Actions", "pytest"],
+  Tools: ["Docker", "Git", "GitHub Actions", "pytest", "Testcontainers"],
 };
 
 export function About() {
