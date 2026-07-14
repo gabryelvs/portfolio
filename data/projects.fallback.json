@@ -28,5 +28,15 @@
     "topics": ["fastapi", "redis", "webhooks", "distributed-systems"],
     "stars": 0,
     "updatedAt": "2026-06-19T00:00:00Z"
+  },
+  {
+    "name": "taskboard-api",
+    "description": "Trello-like task manager API - Java 21, Spring Boot, JWT auth, PostgreSQL, Testcontainers.",
+    "url": "https://github.com/gabryelvs/taskboard-api",
+    "homepage": "https://taskboard-gv.fly.dev/swagger-ui.html",
+    "language": "Java",
+    "topics": ["java", "spring-boot", "postgresql", "jwt"],
+    "stars": 0,
+    "updatedAt": "2026-07-14T00:00:00Z"
   }
 ]

@@ -74,6 +74,7 @@ This portfolio currently showcases:
 - **[payledger](https://github.com/gabryelvs/payledger)** — Double-entry payments & ledger API (FastAPI, PostgreSQL)
 - **[fx-service](https://github.com/gabryelvs/fx-service)** — Async currency-exchange API with stale-fallback (FastAPI, Redis)
 - **[webhook-dispatcher](https://github.com/gabryelvs/webhook-dispatcher)** — Reliable webhook delivery with queue, retries, and dead-letter handling (FastAPI, Redis)
+- **[taskboard-api](https://github.com/gabryelvs/taskboard-api)** — Trello-like task manager API with JWT auth and role-based membership (Java, Spring Boot, PostgreSQL)
 
 ## Security
 
