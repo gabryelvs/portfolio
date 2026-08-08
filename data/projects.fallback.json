@@ -30,6 +30,16 @@
     "updatedAt": "2026-06-19T00:00:00Z"
   },
   {
+    "name": "webhook-inspector",
+    "description": "Fullstack webhook debugging tool: disposable URLs, live request viewer (FastAPI, React, TypeScript).",
+    "url": "https://github.com/gabryelvs/webhook-inspector",
+    "homepage": "https://webhook-inspector-gv.fly.dev",
+    "language": "Python",
+    "topics": ["fastapi", "react", "typescript", "fullstack", "postgresql"],
+    "stars": 0,
+    "updatedAt": "2026-08-08T00:00:00Z"
+  },
+  {
     "name": "taskboard-api",
     "description": "Trello-like task manager API - Java 21, Spring Boot, JWT auth, PostgreSQL, Testcontainers.",
     "url": "https://github.com/gabryelvs/taskboard-api",

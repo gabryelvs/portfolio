@@ -3,9 +3,9 @@
 import { motion } from "framer-motion";
 
 const metrics = [
-  { value: "4", label: "production APIs" },
-  { value: "150+", label: "automated tests" },
-  { value: "3", label: "live deployments" },
+  { value: "5", label: "production services" },
+  { value: "190+", label: "automated tests" },
+  { value: "4", label: "live deployments" },
 ];
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -46,7 +46,8 @@ export function Hero() {
         className="mt-6 max-w-2xl text-lg leading-relaxed text-[var(--fg-muted)]"
       >
         Computer Science student building production-grade APIs in Python (FastAPI) and
-        Java (Spring Boot) — payments, ledgers, async services, and reliable delivery.
+        Java (Spring Boot) — payments, ledgers, async services, and reliable delivery —
+        plus fullstack tools with React and TypeScript.
       </motion.p>
 
       <motion.div

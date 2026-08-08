@@ -3,8 +3,8 @@ import { SectionHeading } from "@/components/SectionHeading";
 const skills = {
   Languages: ["Python", "Java", "TypeScript", "C#", "SQL", "JavaScript"],
   Backend: ["FastAPI", "Spring Boot", "PostgreSQL", "Redis", "REST APIs"],
-  "Front-end": ["React", "Next.js", "Tailwind CSS"],
-  Tools: ["Docker", "Git", "GitHub Actions", "pytest", "Testcontainers"],
+  "Front-end": ["React", "Next.js", "Vite", "Tailwind CSS"],
+  Tools: ["Docker", "Git", "GitHub Actions", "pytest", "Vitest", "Testcontainers"],
 };
 
 export function About() {
