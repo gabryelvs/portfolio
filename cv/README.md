@@ -8,6 +8,7 @@ number changes, everything here needs the same edit.
 | --- | --- |
 | `cv-data.json` | the CV, via the two builders below |
 | `LINKEDIN-content.md` | ready-to-paste LinkedIn headline, About, Featured links, Projects, Skills |
+| `Cover-Letter-General-Template.md` | a per-application letter, with swap-in project bullets per role type |
 
 `LINKEDIN-content.md` is written by hand rather than generated: LinkedIn's
 sections have hard character limits (About 2,600; headline 220) and the copy is
@@ -34,6 +35,10 @@ drifted: the published PDF sat three projects behind the .docx for two months.
 Address and phone number live in `cv-contact.json`, which is gitignored — this
 repo is public, and a JSON file is far easier to scrape than the rendered PDF.
 Both builders fail with a clear message if it is missing.
+
+The cover-letter template carries a `[CONTACT LINE — …]` placeholder for the same
+reason: paste the `contact` value in when writing an application, and never commit
+a filled-in letter back here.
 
 ```bash
 cp cv-contact.example.json cv-contact.json   # then fill in the real values
