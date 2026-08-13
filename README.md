@@ -1,6 +1,6 @@
 # Gabryel Veríssimo — Portfolio
 
-A bold, dark-mode personal portfolio showcasing fintech backend projects, built with **Next.js**, **React**, **TypeScript**, **Tailwind CSS**, and **Framer Motion** for smooth animations and modern design.
+A bold, dark-mode personal portfolio showcasing fintech backend services and fullstack work, built with **Next.js**, **React**, **TypeScript**, **Tailwind CSS**, and **Framer Motion** for smooth animations and modern design.
 
 ## Tech Stack
 
@@ -74,7 +74,19 @@ This portfolio currently showcases:
 - **[payledger](https://github.com/gabryelvs/payledger)** — Double-entry payments & ledger API (FastAPI, PostgreSQL)
 - **[fx-service](https://github.com/gabryelvs/fx-service)** — Async currency-exchange API with stale-fallback (FastAPI, Redis)
 - **[webhook-dispatcher](https://github.com/gabryelvs/webhook-dispatcher)** — Reliable webhook delivery with queue, retries, and dead-letter handling (FastAPI, Redis)
+- **[webhook-inspector](https://github.com/gabryelvs/webhook-inspector)** — Fullstack webhook debugging tool: disposable URLs, live request viewer (FastAPI, React, TypeScript)
 - **[taskboard-api](https://github.com/gabryelvs/taskboard-api)** — Trello-like task manager API with JWT auth and role-based membership (Java, Spring Boot, PostgreSQL)
+- **[store-demo](https://github.com/gabryelvs/store-demo)** — SECTOR—9, an animated demo storefront with an accessible, tested cart (Next.js, TypeScript, GSAP)
+- **[owasp-security-lab](https://github.com/gabryelvs/owasp-security-lab)** — Six OWASP Top 10 issues, each with a working exploit, a fix, and tests proving both (FastAPI)
+
+The site orders these itself — by stars, then by most recently updated — so the
+running order on the page will not always match this list. This list is only
+accurate as long as it matches the repos actually tagged `showcase`:
+
+```bash
+gh api "users/gabryelvs/repos?per_page=100" \
+  --jq '.[] | select(.topics | index("showcase")) | .name'
+```
 
 ## Security
 
