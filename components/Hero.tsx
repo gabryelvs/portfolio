@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 
 const metrics = [
-  { value: "5", label: "production services" },
+  { value: "6", label: "shipped projects" },
   { value: "220+", label: "automated tests" },
   { value: "5", label: "live deployments" },
 ];
