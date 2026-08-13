@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# CV contact details (address, phone) — public repo, keep them out of git
+cv/cv-contact.json
