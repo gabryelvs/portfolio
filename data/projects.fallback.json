@@ -1,5 +1,15 @@
 [
   {
+    "name": "store-demo",
+    "description": "Animated demo storefront: product grid, quick-view, cart drawer (Next.js 16, TypeScript, Tailwind 4, GSAP).",
+    "url": "https://github.com/gabryelvs/store-demo",
+    "homepage": "https://store-demo-gv.fly.dev",
+    "language": "TypeScript",
+    "topics": ["nextjs", "react", "typescript", "tailwindcss", "gsap"],
+    "stars": 0,
+    "updatedAt": "2026-08-13T00:00:00Z"
+  },
+  {
     "name": "payledger",
     "description": "Double-entry payments & ledger API (FastAPI, PostgreSQL).",
     "url": "https://github.com/gabryelvs/payledger",

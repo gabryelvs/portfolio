@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 
 const metrics = [
   { value: "5", label: "production services" },
-  { value: "190+", label: "automated tests" },
-  { value: "4", label: "live deployments" },
+  { value: "220+", label: "automated tests" },
+  { value: "5", label: "live deployments" },
 ];
 
 const ease = [0.16, 1, 0.3, 1] as const;
