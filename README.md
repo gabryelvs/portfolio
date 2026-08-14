@@ -1,6 +1,6 @@
 # Gabryel Veríssimo — Portfolio
 
-A bold, dark-mode personal portfolio showcasing fintech backend services and fullstack work, built with **Next.js**, **React**, **TypeScript**, **Tailwind CSS**, and **Framer Motion** for smooth animations and modern design.
+A bold, dark-mode personal portfolio showcasing fintech services and fullstack software engineering work, built with **Next.js**, **React**, **TypeScript**, **Tailwind CSS**, and **Framer Motion** for smooth animations and modern design.
 
 ## Tech Stack
 

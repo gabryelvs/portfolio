@@ -32,7 +32,7 @@ export function Hero() {
         transition={{ delay: 0.08, duration: 0.5, ease }}
         className="font-[family-name:var(--font-display)] text-5xl font-bold leading-[1.05] tracking-tight sm:text-7xl"
       >
-        Backend engineer who ships{" "}
+        Software engineer who ships{" "}
         <span className="bg-gradient-to-r from-[var(--accent)] to-[var(--highlight)] bg-clip-text text-transparent">
           reliable systems
         </span>

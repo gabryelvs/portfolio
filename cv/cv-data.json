@@ -1,7 +1,7 @@
 {
   "_comment": "Single source of truth for the CV. build_cv.js renders it to Gabryel_Verissimo_CV.docx; build_cv_pdf.py renders it to portfolio/public/cv.pdf. Edit here only — the two builders exist because docx and PDF need different libraries, not because the content differs. They drifted for two months before this file existed and the published PDF sat three projects behind.",
   "name": "GABRYEL VERÍSSIMO",
-  "headline": "Aspiring Backend Software Engineer  ·  Computer Science Student",
+  "headline": "Software Engineer  ·  Computer Science Student",
   "links": [
     {
       "label": "github.com/gabryelvs",
@@ -16,7 +16,7 @@
       "url": "https://portfolio-gabryelverissimo.vercel.app/"
     }
   ],
-  "profile": "Computer Science student (Year 3, University of Greenwich) building production-grade backend systems in Python and FastAPI, with a focus on fintech APIs — payments, ledgers, idempotent transfers, and secure authentication — and shipping fullstack tools with React and TypeScript. Comfortable with PostgreSQL, REST design, Docker, and test-driven development. Seeking a junior or placement backend or fullstack developer role in London.",
+  "profile": "Computer Science student (Year 3, University of Greenwich) building production-grade services in Python and FastAPI, with a focus on fintech APIs — payments, ledgers, idempotent transfers, and secure authentication — and shipping fullstack tools with React and TypeScript. Comfortable with PostgreSQL, REST design, Docker, and test-driven development. Seeking a junior or placement software engineering role in London.",
   "skills": [
     {
       "label": "Languages",
