@@ -232,18 +232,33 @@ describe("HeroMesh scroll rig seeding", () => {
   });
 });
 
-describe("HeroMesh onToggle endpoint", () => {
-  // Review finding 6b: `onToggle`'s force-snap (see the component: on
-  // `self.progress === 1` it sets `renderedProgress = 1` and calls
-  // `applyProgress(1)` directly, before `stop()`) is the *only* mechanism
-  // that guarantees `--bg-fx-opacity` reaches exactly `"1"` once the hero
-  // has fully scrolled past on the ordinary scroll path — the eased
-  // `renderedProgress` driven by `onUpdate` only ever approaches 1
-  // asymptotically. That force-snap had zero test coverage before this.
-  it("snaps --bg-fx-opacity to exactly 1 when onToggle reports the hero fully scrolled past", () => {
+describe("HeroMesh scroll endpoint", () => {
+  // `onToggle` used to force-snap the endpoint: on `self.progress === 1` it
+  // set `renderedProgress = 1`, called `applyProgress(1)` and stopped. That
+  // guaranteed `--bg-fx-opacity` reached exactly `"1"`, but it reached it in
+  // a single frame — at ordinary flick speeds the eased progress was still
+  // far short of the 0.7 point where the background phase even begins, so
+  // the crossfade became a full-viewport cut rather than a fade (a ~0.77
+  // one-frame step on a 0.6s traversal).
+  //
+  // The endpoint now belongs to `tick`: the ease converges (guaranteed by
+  // PROGRESS_SNAP_EPSILON), and only once it has actually landed does the
+  // loop park. This test pins both halves of that — the exact endpoint value
+  // AND the parking — by driving the rAF loop by hand. The parking assertion
+  // is the regression guard for the change: with the stop still living in
+  // `onToggle`, nothing on this path ever stops the loop and it keeps
+  // requesting frames forever.
+  it("eases --bg-fx-opacity to exactly 1, then parks the loop, once the hero is scrolled past", () => {
+    const frames: FrameRequestCallback[] = [];
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation((cb) => {
+      frames.push(cb);
+      return frames.length;
+    });
+    vi.spyOn(window, "cancelAnimationFrame").mockImplementation(() => {});
+
     // Mount mid-scroll, so the mesh genuinely owns the screen at creation
-    // (well before the 0.7 handoff phase even begins) rather than starting
-    // from an edge case this test isn't about.
+    // (well before the 0.7 handoff phase begins) rather than starting from
+    // an edge case this test isn't about.
     gsapMock.state.progress = 0.5;
     render(
       <div data-hero>
@@ -251,18 +266,34 @@ describe("HeroMesh onToggle endpoint", () => {
       </div>,
     );
     expect(document.documentElement.style.getPropertyValue("--bg-fx-opacity")).not.toBe("1");
-    // Dirty the property to a value `onToggle` could not produce by
-    // coincidence (matching the dirty-before-assert pattern used elsewhere
-    // in this codebase for the same reason — see tests/Hero.test.tsx), so
-    // the final assertion is only true because `onToggle`'s handler
-    // actually ran, not because the property already happened to read "1".
+
+    // Dirty the property to a value the component could not produce by
+    // coincidence (the dirty-before-assert pattern used elsewhere in this
+    // codebase — see tests/Hero.test.tsx), so the final assertion is only
+    // true because the rig actually drove it there.
     document.documentElement.style.setProperty("--bg-fx-opacity", "0.4");
 
-    // Real GSAP invokes `onToggle` off its own scroll ticker whenever the
-    // trigger's active/progress state changes — simulate the hero having
-    // just fully scrolled past.
-    gsapMock.lastConfig?.onToggle?.({ progress: 1 });
+    // The hero has fully scrolled past. Real GSAP reports this through
+    // `onUpdate` off its own scroll ticker; `onToggle` is deliberately NOT
+    // fired here, because a single update crossing the whole trigger range
+    // toggles nothing (`isActive` is false at both progress 0 and 1) — the
+    // endpoint must be reached without it.
+    gsapMock.lastConfig?.onUpdate?.({ progress: 1 });
+
+    // Drive the loop at ~60fps until it stops asking for frames. The ease
+    // has a 0.15s time constant, so convergence takes well under 100 frames;
+    // the cap only stops a regression from spinning this test forever.
+    let now = 0;
+    let framesRun = 0;
+    while (frames.length > 0 && framesRun < 300) {
+      const cb = frames.shift()!;
+      now += 16;
+      framesRun += 1;
+      cb(now);
+    }
 
     expect(document.documentElement.style.getPropertyValue("--bg-fx-opacity")).toBe("1");
+    expect(frames).toHaveLength(0);
+    expect(framesRun).toBeLessThan(300);
   });
 });

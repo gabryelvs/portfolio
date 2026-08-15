@@ -194,15 +194,15 @@ export function HeroMesh({ className }: { className?: string }) {
     // forever behind an invisible canvas.
     let contextLost = false;
 
-    // GSAP's own scrub tweening only exists when a ScrollTrigger has an
-    // `animation` attached — this one has none, so this option does not
-    // smooth anything by itself. What it actually does here, and why it
-    // must stay: GSAP only fires `onUpdate` on *every* scroll tick when
-    // `scrub` is truthy or exactly `0`; remove it (leave it `undefined`) and
-    // this trigger is instead treated as a plain enter/leave toggle, so
-    // `onUpdate` only fires on those state changes and `targetProgress`
-    // freezes mid-scroll between them. The specific number below has no
-    // effect of its own for a triggerless-animation scrub like this one —
+    // GSAP builds a scrub tween only when a ScrollTrigger has an `animation`
+    // attached (ScrollTrigger.js, `scrubTween` creation). This trigger has
+    // none, so the number below buys no smoothing — `tick` does all of it,
+    // using PROGRESS_EASE_SECONDS. What `scrub`'s *presence* changes is
+    // `isToggle` (`isToggle = !scrub && scrub !== 0`), which selects which
+    // branch calls `onUpdate`; either way `onUpdate` still fires as scroll
+    // progress changes, so dropping `scrub` would not freeze
+    // `targetProgress`. It is kept because a scrubbed trigger is what this
+    // rig actually is. The specific value has no effect of its own —
     // any truthy value (or `0`) behaves identically — so it must NOT be read
     // as, or reused as, the actual smoothing time constant: that is a
     // different quantity with different units of meaning to GSAP than to
@@ -266,7 +266,13 @@ export function HeroMesh({ className }: { className?: string }) {
       // the target with time constant PROGRESS_EASE_SECONDS).
       const remaining = targetProgress - renderedProgress;
       if (remaining !== 0) {
-        const ease = dt > 0 ? 1 - Math.exp(-dt / (PROGRESS_EASE_SECONDS * 1000)) : 1;
+        // dt === 0 is the first frame after every start()/restart, which sets
+        // lastTickTime = null. No time has passed, so nothing should move:
+        // the factor is 0, not 1. With 1, that frame teleported
+        // renderedProgress straight onto targetProgress with no smoothing —
+        // on scroll-up re-entry after the loop parked at progress 1, a fast
+        // upward flick popped the background 1 -> 0 in a single frame.
+        const ease = dt > 0 ? 1 - Math.exp(-dt / (PROGRESS_EASE_SECONDS * 1000)) : 0;
         renderedProgress += remaining * ease;
         if (Math.abs(targetProgress - renderedProgress) < PROGRESS_SNAP_EPSILON) {
           renderedProgress = targetProgress;
@@ -320,6 +326,20 @@ export function HeroMesh({ className }: { className?: string }) {
       linkMaterial.opacity = state.linkOpacity;
       writePositions();
       renderer.render(scene, camera);
+
+      // The hero is fully scrolled away and the easing has converged, so the
+      // frame just rendered is the true endpoint: park the loop rather than
+      // burn frames on an off-screen canvas. Stopping here rather than in
+      // onToggle is what lets the crossfade actually play — onToggle used to
+      // force-snap to the endpoint the moment the hero cleared the viewport,
+      // which stepped --bg-fx-opacity in one frame (a full 0 -> 1 jump on a
+      // ~0.4s flick) instead of fading. PROGRESS_SNAP_EPSILON guarantees the
+      // ease converges here within ~5 * PROGRESS_EASE_SECONDS.
+      if (targetProgress === 1 && renderedProgress === 1) {
+        stop();
+        return;
+      }
+
       raf = requestAnimationFrame(tick);
     }
 
@@ -393,6 +413,14 @@ export function HeroMesh({ className }: { className?: string }) {
       scrub: GSAP_SCRUB_OPTION,
       onUpdate: (self) => {
         targetProgress = self.progress;
+        // A single update can cross the entire hero — a scrollbar drag or a
+        // fast flick — and GSAP fires onToggle only when `isActive` flips.
+        // `isActive` is false at BOTH progress 0 and progress 1, so a
+        // 1 -> 0 or 0 -> 1 traversal in one update toggles nothing. Without
+        // restarting here, dragging the scrollbar back to the top left the
+        // loop parked with renderedProgress still at 1 and no mesh on screen
+        // until some later scroll happened to heal it.
+        if (self.progress < 1) start();
       },
       onToggle: (self) => {
         // ScrollTrigger's `isActive` is `!!clipped && clipped < 1`, which
@@ -401,20 +429,10 @@ export function HeroMesh({ className }: { className?: string }) {
         // back to the very top of the page, freezing the mesh mid-screen,
         // centre-stage. Gate on progress instead: only stop once the hero is
         // genuinely scrolled past.
-        if (self.progress < 1) {
-          start();
-          return;
-        }
-        // About to stop the loop that does the scrub easing above — force
-        // this last frame to land exactly on the endpoint first, or the
-        // derived state (in particular --bg-fx-opacity) would freeze
-        // wherever the easing happened to be on the frame before the loop
-        // stopped, short of the real endpoint.
-        targetProgress = 1;
-        renderedProgress = 1;
-        if (!entranceFinished) finishEntrance();
-        applyProgress(1);
-        stop();
+        // Stopping is `tick`'s job, once the easing has actually converged on
+        // the endpoint — see the parking block there. Forcing the endpoint
+        // here would cut the crossfade short.
+        if (self.progress < 1) start();
       },
     });
 
