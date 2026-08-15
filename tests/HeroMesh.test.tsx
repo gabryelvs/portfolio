@@ -254,7 +254,9 @@ describe("HeroMesh scroll endpoint", () => {
       frames.push(cb);
       return frames.length;
     });
-    vi.spyOn(window, "cancelAnimationFrame").mockImplementation(() => {});
+    const cancelSpy = vi
+      .spyOn(window, "cancelAnimationFrame")
+      .mockImplementation(() => {});
 
     // Mount mid-scroll, so the mesh genuinely owns the screen at creation
     // (well before the 0.7 handoff phase begins) rather than starting from
@@ -285,15 +287,34 @@ describe("HeroMesh scroll endpoint", () => {
     // the cap only stops a regression from spinning this test forever.
     let now = 0;
     let framesRun = 0;
+    const samples: string[] = [];
     while (frames.length > 0 && framesRun < 300) {
       const cb = frames.shift()!;
       now += 16;
       framesRun += 1;
       cb(now);
+      samples.push(document.documentElement.style.getPropertyValue("--bg-fx-opacity"));
     }
 
     expect(document.documentElement.style.getPropertyValue("--bg-fx-opacity")).toBe("1");
     expect(frames).toHaveLength(0);
     expect(framesRun).toBeLessThan(300);
+
+    // The loop genuinely stopped, rather than merely declining to request one
+    // more frame: `stop()` cancels the pending handle too.
+    expect(cancelSpy).toHaveBeenCalled();
+
+    // The endpoint must be *eased* to, not jumped to. Without these two, the
+    // test passes against a one-frame teleport — which is exactly the bug
+    // this whole change exists to remove. At tau = 0.15s and 16ms frames,
+    // covering the 0.5 -> 1 distance takes ~66 frames, and the background
+    // phase (progress 0.7 -> 1.0) must be observed part-way rather than only
+    // at its endpoints.
+    expect(framesRun).toBeGreaterThan(10);
+    const midFade = samples.filter((v) => {
+      const n = Number(v);
+      return n > 0 && n < 1;
+    });
+    expect(midFade.length).toBeGreaterThan(0);
   });
 });

@@ -279,6 +279,17 @@ export function HeroMesh({ className }: { className?: string }) {
         }
       }
 
+      // A scroll that comes to rest a hair short of the end — progress
+      // 0.9997, one pixel of the hero still in range — would otherwise
+      // converge there and leave the loop running forever, rendering nodes
+      // at an opacity of about 0.001. `tick` is now the only thing that
+      // stops the loop, so treat "converged within the snap epsilon of the
+      // end" as the end.
+      if (renderedProgress === targetProgress && targetProgress >= 1 - PROGRESS_SNAP_EPSILON) {
+        targetProgress = 1;
+        renderedProgress = 1;
+      }
+
       // Entrance-to-rig handoff: one-way. The instant the eased progress
       // reaches the threshold, the entrance is retired for good (see
       // `entranceFinished`'s own comment) rather than merely skipped for
@@ -333,8 +344,10 @@ export function HeroMesh({ className }: { className?: string }) {
       // onToggle is what lets the crossfade actually play — onToggle used to
       // force-snap to the endpoint the moment the hero cleared the viewport,
       // which stepped --bg-fx-opacity in one frame (a full 0 -> 1 jump on a
-      // ~0.4s flick) instead of fading. PROGRESS_SNAP_EPSILON guarantees the
-      // ease converges here within ~5 * PROGRESS_EASE_SECONDS.
+      // ~0.4s flick) instead of fading. Convergence to within
+      // PROGRESS_SNAP_EPSILON takes tau * ln(distance / epsilon) — about
+      // seven time constants, so roughly a second, not the five tau a
+      // decay's usual rule of thumb would suggest.
       if (targetProgress === 1 && renderedProgress === 1) {
         stop();
         return;
@@ -422,18 +435,11 @@ export function HeroMesh({ className }: { className?: string }) {
         // until some later scroll happened to heal it.
         if (self.progress < 1) start();
       },
-      onToggle: (self) => {
-        // ScrollTrigger's `isActive` is `!!clipped && clipped < 1`, which
-        // reads false at progress 0 as well as progress 1 — gating on
-        // `isActive` alone would stop the loop the instant the user scrolls
-        // back to the very top of the page, freezing the mesh mid-screen,
-        // centre-stage. Gate on progress instead: only stop once the hero is
-        // genuinely scrolled past.
-        // Stopping is `tick`'s job, once the easing has actually converged on
-        // the endpoint — see the parking block there. Forcing the endpoint
-        // here would cut the crossfade short.
-        if (self.progress < 1) start();
-      },
+      // No `onToggle`. It would be dead code: stopping is now `tick`'s job
+      // (see the parking block there), and restarting is already handled
+      // above — GSAP fires `onToggle` only from inside the same `update()`
+      // call that has already fired `onUpdate` with the same `self`, so it
+      // could never observe anything `onUpdate` had not seen first.
     });
 
     // ScrollTrigger.create() refreshes synchronously, and if the page is
