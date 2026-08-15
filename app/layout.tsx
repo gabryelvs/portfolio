@@ -23,8 +23,8 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Gabryel Veríssimo — Backend Engineer",
-  description: "Backend engineer focused on fintech and reliable systems. Building with Python, FastAPI, PostgreSQL, and modern cloud infrastructure.",
+  title: "Gabryel Veríssimo — Software Engineer",
+  description: "Software engineer focused on fintech and reliable systems. Building with Python, FastAPI, PostgreSQL, TypeScript, React, and modern cloud infrastructure.",
 };
 
 export default function RootLayout({

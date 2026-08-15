@@ -12,7 +12,7 @@ export function About() {
     <section id="about" className="mx-auto max-w-4xl px-6 py-24">
       <SectionHeading index="02" title="About" />
       <p className="mb-12 max-w-3xl text-lg leading-relaxed text-[var(--fg-muted)]">
-        I&apos;m a final-year Computer Science student in London focused on backend engineering.
+        I&apos;m a final-year Computer Science student in London focused on software engineering.
         I build small, production-shaped services — tested, containerised, and deployed — and I
         care about correctness, resilience, and clean design.
       </p>

@@ -1,13 +1,13 @@
 # Gabryel Veríssimo — Portfolio
 
-A bold, dark-mode personal portfolio showcasing fintech backend services and fullstack work, built with **Next.js**, **React**, **TypeScript**, **Tailwind CSS**, and **Framer Motion** for smooth animations and modern design.
+A bold, dark-mode personal portfolio showcasing fintech services and fullstack software engineering work, built with **Next.js**, **React**, **TypeScript**, **Tailwind CSS**, and **GSAP** for scroll-driven animation and a WebGL hero.
 
 ## Tech Stack
 
 - **Framework**: Next.js 16 (App Router)
 - **UI**: React 19 + TypeScript
 - **Styling**: Tailwind CSS 4
-- **Animations**: Framer Motion
+- **Animations**: GSAP (ScrollTrigger) + three.js (WebGL hero)
 - **Testing**: Vitest + React Testing Library
 - **Deployment**: Vercel (zero-config)
 

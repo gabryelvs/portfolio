@@ -1,7 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { ProjectCard } from "@/components/ProjectCard";
+import { Reveal } from "@/components/Reveal";
 import { SectionHeading } from "@/components/SectionHeading";
 import type { Project } from "@/lib/github";
 
@@ -12,25 +12,14 @@ export function Projects({ projects }: { projects: Project[] }) {
       {projects.length === 0 ? (
         <p className="text-[var(--fg-muted)]">No projects to show yet — check back soon.</p>
       ) : (
-        <motion.div
-          className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-80px" }}
-          variants={{ show: { transition: { staggerChildren: 0.06 } } }}
-        >
-          {projects.map((project) => (
-            <motion.div
-              key={project.name}
-              variants={{
-                hidden: { opacity: 0, y: 18 },
-                show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } },
-              }}
-            >
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {projects.map((project, i) => (
+            // stagger capped at 6 cards so a long list never delays the last card
+            <Reveal key={project.name} delay={Math.min(i, 5) * 0.06}>
               <ProjectCard project={project} />
-            </motion.div>
+            </Reveal>
           ))}
-        </motion.div>
+        </div>
       )}
     </section>
   );
