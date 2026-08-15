@@ -2,41 +2,29 @@
 
 import { useEffect, useState } from "react";
 import * as THREE from "three";
-import { prefersReducedMotion } from "@/lib/gsap";
 import {
   clampDpr,
   HERO_LINK_DISTANCE,
   HERO_NODE_COUNT,
   linkPairs,
   parseAccent,
-  shouldRenderMesh,
   type Point,
 } from "@/lib/mesh";
 
 /** A 3D evolution of the site's service-mesh motif: nodes on a rough spherical
  *  shell, linked where they are close. Desktop-only, motion-allowed-only; the 2D
- *  BackgroundFX canvas is the fallback everywhere else. */
+ *  BackgroundFX canvas is the fallback everywhere else.
+ *
+ *  The mount gate (viewport width + reduced motion) lives in the caller
+ *  (`Hero`), not here — see `shouldRenderMesh` in `@/lib/mesh`. This component
+ *  assumes it is only ever rendered once that gate has already passed, so it
+ *  never has to duplicate the decision and never downloads/parses three.js
+ *  before the gate says yes. */
 export function HeroMesh({ className }: { className?: string }) {
-  const [enabled, setEnabled] = useState(false);
   const [host, setHost] = useState<HTMLDivElement | null>(null);
 
-  // Gate is evaluated on the client and re-evaluated on resize, so rotating a
-  // tablet across the breakpoint mounts or unmounts the scene.
   useEffect(() => {
-    const evaluate = () =>
-      setEnabled(
-        shouldRenderMesh({
-          width: window.innerWidth,
-          reducedMotion: prefersReducedMotion(),
-        }),
-      );
-    evaluate();
-    window.addEventListener("resize", evaluate);
-    return () => window.removeEventListener("resize", evaluate);
-  }, []);
-
-  useEffect(() => {
-    if (!enabled || !host) return;
+    if (!host) return;
 
     let renderer: THREE.WebGLRenderer;
     try {
@@ -51,7 +39,13 @@ export function HeroMesh({ className }: { className?: string }) {
     }
 
     renderer.setPixelRatio(clampDpr(window.devicePixelRatio || 1));
-    renderer.setSize(host.clientWidth, host.clientHeight, false);
+    // Let three set canvas.style.width/height (updateStyle defaults to true) so
+    // the CSS box stays at the host's size even when the drawing buffer is
+    // scaled up by devicePixelRatio. Passing `false` here (as this used to)
+    // leaves the canvas laid out at its drawing-buffer size instead of its CSS
+    // size, so on any 2x display the canvas renders twice as big as the hero,
+    // anchored top-left, and spills out of the section.
+    renderer.setSize(host.clientWidth, host.clientHeight);
     host.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
@@ -122,8 +116,15 @@ export function HeroMesh({ className }: { className?: string }) {
     // Single source of animated truth. Task 6's scroll rig writes to `spread`,
     // `linkOpacity` and `cameraZ`; the entrance tween writes `spread` too.
     const state = { spread: 3, linkOpacity: 0.28, cameraZ: 14 };
-    const entranceStart = performance.now();
     const ENTRANCE_MS = 1200;
+    // Entrance progress is tracked as accumulated animated (rAF delta) time,
+    // not wall-clock time. Browsers do not deliver rAF to hidden tabs, so a
+    // wall-clock start timestamp captured at setup would already be "expired"
+    // by the time a background tab is foregrounded, skipping the fly-in
+    // entirely. Accumulating deltas between actual tick() calls means the
+    // entrance only progresses while frames are actually being drawn.
+    let entranceElapsedMs = 0;
+    let lastTickTime: number | null = null;
 
     function writePositions() {
       for (let i = 0; i < HERO_NODE_COUNT * 3; i++) {
@@ -145,12 +146,22 @@ export function HeroMesh({ className }: { className?: string }) {
 
     let raf = 0;
     let running = false;
+    // Set once a WebGL context loss fires. A later visibilitychange must not
+    // restart the rAF loop onto a dead context — that would spin a no-op loop
+    // forever behind an invisible canvas.
+    let contextLost = false;
 
     function tick(now: number) {
-      // Entrance: nodes fly in from 3x their home radius over 1.2s, ease-out cubic.
-      const t = Math.min((now - entranceStart) / ENTRANCE_MS, 1);
-      const eased = 1 - Math.pow(1 - t, 3);
-      if (t < 1) state.spread = 3 - 2 * eased;
+      // Entrance: nodes fly in from 3x their home radius over 1.2s of actually
+      // animated time, ease-out cubic.
+      const dt = lastTickTime === null ? 0 : now - lastTickTime;
+      lastTickTime = now;
+      if (entranceElapsedMs < ENTRANCE_MS) {
+        entranceElapsedMs = Math.min(entranceElapsedMs + dt, ENTRANCE_MS);
+        const t = entranceElapsedMs / ENTRANCE_MS;
+        const eased = 1 - Math.pow(1 - t, 3);
+        state.spread = 3 - 2 * eased;
+      }
 
       group.rotation.y += 0.0008;
       camera.position.z = state.cameraZ;
@@ -161,8 +172,12 @@ export function HeroMesh({ className }: { className?: string }) {
     }
 
     function start() {
-      if (running) return;
+      if (running || contextLost) return;
       running = true;
+      // Discard any elapsed wall-clock time since the last tick (e.g. a
+      // visibility pause) so the next dt is measured from here, not from
+      // whenever tick() last ran.
+      lastTickTime = null;
       raf = requestAnimationFrame(tick);
     }
 
@@ -177,13 +192,14 @@ export function HeroMesh({ className }: { className?: string }) {
     }
 
     function onResize() {
-      renderer.setSize(host!.clientWidth, host!.clientHeight, false);
+      renderer.setSize(host!.clientWidth, host!.clientHeight);
       camera.aspect = host!.clientWidth / Math.max(host!.clientHeight, 1);
       camera.updateProjectionMatrix();
     }
 
     function onContextLost(event: Event) {
       event.preventDefault();
+      contextLost = true;
       stop();
       renderer.domElement.style.opacity = "0";
     }
@@ -216,11 +232,16 @@ export function HeroMesh({ className }: { className?: string }) {
       linkGeometry.dispose();
       nodeMaterial.dispose();
       linkMaterial.dispose();
+      // forceContextLoss immediately frees the GL context itself; dispose()
+      // alone only frees three's programs/render lists and leaves the context
+      // to be reclaimed by (non-deterministic) GC. Every gate flip, Strict
+      // Mode double-effect, and Fast Refresh would otherwise allocate another
+      // live context, and browsers cap how many a page can hold.
+      renderer.forceContextLoss();
       renderer.dispose();
       renderer.domElement.remove();
     };
-  }, [enabled, host]);
+  }, [host]);
 
-  if (!enabled) return null;
   return <div ref={setHost} aria-hidden="true" className={className} />;
 }

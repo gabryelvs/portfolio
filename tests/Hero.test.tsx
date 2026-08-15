@@ -1,8 +1,23 @@
-import { render } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Hero } from "@/components/Hero";
 import { gsap } from "@/lib/gsap";
 import { stubReducedMotion } from "./helpers";
+
+// The real HeroMesh is swapped for a trivial, synchronous stand-in for every
+// test in this file. Two reasons:
+//
+// 1. HeroMesh assumes it is only ever mounted once Hero's gate has already
+//    passed, and unconditionally attempts `new THREE.WebGLRenderer(...)` in
+//    its setup effect. jsdom has no real WebGL context, so the only way to
+//    guarantee no test here reaches that construction — including the "hero
+//    mesh gate" tests below, which deliberately probe both the open and
+//    closed side of the gate — is to never load the real module.
+// 2. It gives the gate tests a `data-testid` to assert on directly, instead
+//    of reaching into HeroMesh's internal markup.
+vi.mock("@/components/HeroMesh", () => ({
+  HeroMesh: () => <div data-testid="hero-mesh-mount" aria-hidden="true" />,
+}));
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -56,6 +71,55 @@ describe("Hero", () => {
       stubReducedMotion(true);
       const { container } = render(<Hero />);
       expect(container.querySelectorAll("[data-hero-item]")).toHaveLength(5);
+    });
+  });
+
+  // The WebGL hero mesh's mount gate. This used to live inside HeroMesh itself
+  // (tests/HeroMesh.test.tsx); it now lives in Hero (see components/Hero.tsx),
+  // so Hero only ever renders <HeroMesh /> once `shouldRenderMesh` has already
+  // passed — the lazily-imported three.js module is never requested otherwise.
+  //
+  // next/dynamic's ssr:false wrapping uses React.lazy + Suspense internally
+  // (node_modules/next/dist/shared/lib/lazy-dynamic/loadable.js), with a null
+  // fallback. That means a correctly-mounted mesh is *also* absent from the
+  // DOM in the render() call's initial, synchronous commit — it only appears
+  // after the dynamic import's promise resolves, at least one microtask tick
+  // later. A bare synchronous assertion right after render() would therefore
+  // report "absent" whether the gate is correctly closed or has regressed
+  // wide open, making it useless for catching a regression. `await
+  // act(async () => {})` flushes that tick deterministically before each
+  // assertion below, so "does not mount" and "does mount" actually diverge.
+  describe("hero mesh gate", () => {
+    it("does not mount the hero mesh below the breakpoint", async () => {
+      stubReducedMotion(false, 500);
+      render(<Hero />);
+      await act(async () => {});
+      expect(screen.queryByTestId("hero-mesh-mount")).toBeNull();
+    });
+
+    it("does not mount the hero mesh under reduced motion on a wide viewport", async () => {
+      stubReducedMotion(true, 1440);
+      render(<Hero />);
+      await act(async () => {});
+      expect(screen.queryByTestId("hero-mesh-mount")).toBeNull();
+    });
+
+    // Positive counterpart to the two cases above: proves the flush pattern
+    // itself is meaningful (i.e. that it isn't just always-null regardless of
+    // the gate) and that the gate isn't accidentally inverted.
+    it("mounts the hero mesh at the breakpoint with motion allowed", async () => {
+      stubReducedMotion(false, 1024);
+      render(<Hero />);
+      await act(async () => {});
+      expect(screen.queryByTestId("hero-mesh-mount")).not.toBeNull();
+    });
+
+    it("leaves the background canvas at full opacity when the mesh is gated off", () => {
+      stubReducedMotion(false, 500);
+      render(<Hero />);
+      expect(
+        document.documentElement.style.getPropertyValue("--bg-fx-opacity"),
+      ).not.toBe("0");
     });
   });
 });

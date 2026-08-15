@@ -1,11 +1,15 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { gsap, prefersReducedMotion, useIsomorphicLayoutEffect } from "@/lib/gsap";
+import { shouldRenderMesh } from "@/lib/mesh";
 
 // ssr: false keeps three.js out of the server-rendered HTML and out of the
-// initial chunk, so the hero text stays the LCP element.
+// initial chunk, so the hero text stays the LCP element. The mount gate below
+// means this module is only ever requested once the gate has already passed —
+// the `{condition && <Component />}` idiom this Next version's own lazy-loading
+// guide shows, rather than gating inside the lazily-imported component itself.
 const HeroMesh = dynamic(() => import("@/components/HeroMesh").then((m) => m.HeroMesh), {
   ssr: false,
 });
@@ -18,6 +22,28 @@ const metrics = [
 
 export function Hero() {
   const root = useRef<HTMLElement>(null);
+  const [meshEnabled, setMeshEnabled] = useState(false);
+
+  // The 3D hero mesh mounts only on wide viewports with motion allowed.
+  // `shouldRenderMesh` is the single source of that decision (shared with the
+  // 2D BackgroundFX fallback's own sizing maths). Evaluated on the client
+  // after mount, then re-evaluated on resize and on a live change to the
+  // reduced-motion OS setting, so crossing the breakpoint or toggling the
+  // setting mounts/unmounts the scene without a reload.
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const evaluate = () =>
+      setMeshEnabled(
+        shouldRenderMesh({ width: window.innerWidth, reducedMotion: media.matches }),
+      );
+    evaluate();
+    window.addEventListener("resize", evaluate);
+    media.addEventListener("change", evaluate);
+    return () => {
+      window.removeEventListener("resize", evaluate);
+      media.removeEventListener("change", evaluate);
+    };
+  }, []);
 
   useIsomorphicLayoutEffect(() => {
     const el = root.current;
@@ -41,7 +67,7 @@ export function Hero() {
       data-hero
       className="relative mx-auto flex min-h-[88svh] max-w-5xl flex-col justify-center px-6 py-20"
     >
-      <HeroMesh className="pointer-events-none absolute inset-0 -z-10" />
+      {meshEnabled && <HeroMesh className="pointer-events-none absolute inset-0 -z-10" />}
 
       <p
         data-hero-item

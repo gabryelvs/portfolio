@@ -1,11 +1,23 @@
 import { readFileSync } from "node:fs";
 import { URL as NodeURL } from "node:url";
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { About } from "@/components/About";
 import { Contact } from "@/components/Contact";
 import { Hero } from "@/components/Hero";
 import cv from "../cv/cv-data.json";
+
+// This file only asserts on text content, at whatever viewport/motion
+// settings jsdom happens to default to (no stub here sets either). Those
+// defaults put the WebGL hero mesh's gate in the *open* position (jsdom's
+// default innerWidth is 1024, and the default matchMedia stub reports
+// `matches: false`), so without this mock, Hero would mount the real
+// HeroMesh and reach `THREE.WebGLRenderer` construction under jsdom as an
+// incidental side effect of a test that has nothing to do with the mesh.
+// Stubbing the module keeps this file honest about what it actually checks.
+vi.mock("@/components/HeroMesh", () => ({
+  HeroMesh: () => null,
+}));
 
 // Use Node's URL explicitly: under the jsdom test environment the global `URL`
 // resolves a relative path against jsdom's document URL (http://localhost:3000)
