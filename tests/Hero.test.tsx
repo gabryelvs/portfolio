@@ -22,6 +22,14 @@ vi.mock("@/components/HeroMesh", () => ({
 afterEach(() => {
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
+  // Inline styles set directly on `documentElement` (as `--bg-fx-opacity` is,
+  // by both Hero's gate effect and HeroMesh's own rig) are not touched by
+  // `vi.unstubAllGlobals()` — they are real DOM state, not a stubbed global —
+  // so without an explicit reset here a value one test sets survives into
+  // the next test and can make an assertion pass for the wrong reason. See
+  // the "unmounts the mesh on a resize back below the breakpoint" test for a
+  // case that bit this before the reset existed.
+  document.documentElement.style.removeProperty("--bg-fx-opacity");
 });
 
 describe("Hero", () => {
@@ -149,6 +157,13 @@ describe("Hero", () => {
       render(<Hero />);
       await act(async () => {});
       expect(screen.queryByTestId("hero-mesh-mount")).not.toBeNull();
+
+      // Dirty the value before resizing — otherwise, since this mocked
+      // HeroMesh never writes --bg-fx-opacity itself, the assertion below
+      // would pass even if the gate's reset were deleted entirely, simply
+      // because the property was never touched (or was left at "1" by a
+      // previous test, before the afterEach reset covered that case).
+      document.documentElement.style.setProperty("--bg-fx-opacity", "0.4");
 
       vi.stubGlobal("innerWidth", 500);
       await act(async () => {

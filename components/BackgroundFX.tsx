@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { prefersReducedMotion } from "@/lib/gsap";
 import { clampDpr, LINK_DISTANCE_2D, linkPairs, nodeCount, parseAccent } from "@/lib/mesh";
 
 type Node = { x: number; y: number; vx: number; vy: number };
@@ -20,7 +21,7 @@ export function BackgroundFX() {
     const cv = el;
     const ctx = context;
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduced = prefersReducedMotion();
 
     let width = 0;
     let height = 0;

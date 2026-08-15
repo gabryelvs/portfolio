@@ -60,3 +60,56 @@ export function shouldRenderMesh({
 }): boolean {
   return width >= MESH_BREAKPOINT && !reducedMotion;
 }
+
+/** Values the hero mesh's scroll rig derives from progress through the hero
+ *  section, applied every frame to the three.js scene and the `--bg-fx-opacity`
+ *  handoff to the 2D `BackgroundFX` canvas. */
+export type HeroScrollDerived = {
+  /** Camera distance along Z: dollies back as the user scrolls. */
+  cameraZ: number;
+  /** Multiplier applied to each node's home position: nodes disperse outward. */
+  spread: number;
+  /** Opacity of the link line segments. */
+  linkOpacity: number;
+  /** Opacity of the node points. */
+  nodeOpacity: number;
+  /** Opacity the 2D background canvas should have (`--bg-fx-opacity`); 0 while
+   *  the 3D mesh owns the screen, 1 once the hero has fully scrolled away. */
+  backgroundOpacity: number;
+};
+
+const HERO_CAMERA_Z_HOME = 14;
+const HERO_CAMERA_Z_RANGE = 6;
+const HERO_SPREAD_HOME = 1;
+const HERO_SPREAD_RANGE = 1.8;
+const HERO_LINK_OPACITY_HOME = 0.28;
+const HERO_NODE_OPACITY_HOME = 0.95;
+
+/** Derives the hero mesh's scroll-driven visual state from progress through
+ *  the hero section (0 = top of page, 1 = hero fully scrolled past). Pure —
+ *  no DOM, no three.js, no React — so `HeroMesh` can call it every rendered
+ *  frame with a smoothed/eased progress value and this stays unit-testable
+ *  under jsdom.
+ *
+ *  Three overlapping phases (matches the choreography comment in
+ *  `HeroMesh.tsx`):
+ *    0.0-0.3  camera dollies back (spread and opacities untouched)
+ *    0.3-0.7  nodes disperse, links fade out
+ *    0.7-1.0  nodes fade out, the 2D background canvas fades in
+ *
+ *  `progress` is clamped to [0, 1] before anything is derived from it, so
+ *  out-of-range input (a caller passing an unclamped or momentarily
+ *  overshooting value) still returns a well-defined, in-range result instead
+ *  of extrapolating past the choreography's intended bounds. */
+export function heroScrollState(progress: number): HeroScrollDerived {
+  const p = Math.min(Math.max(progress, 0), 1);
+  const disperse = Math.min(Math.max((p - 0.3) / 0.4, 0), 1);
+  const handoff = Math.min(Math.max((p - 0.7) / 0.3, 0), 1);
+  return {
+    cameraZ: HERO_CAMERA_Z_HOME + HERO_CAMERA_Z_RANGE * p,
+    spread: HERO_SPREAD_HOME + HERO_SPREAD_RANGE * disperse,
+    linkOpacity: HERO_LINK_OPACITY_HOME * (1 - disperse),
+    nodeOpacity: HERO_NODE_OPACITY_HOME * (1 - handoff),
+    backgroundOpacity: handoff,
+  };
+}
