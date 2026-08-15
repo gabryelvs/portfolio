@@ -206,3 +206,38 @@ theme toggle mid-animation, the sub-768px fallback, and the reduced-motion fallb
   element and WebGL is deferred, but this needs measuring, not assuming.
 - **Animation feel is subjective.** The three scroll phases are a starting point and expected
   to need tuning against the real thing.
+
+## Amendments during implementation
+
+Recorded during the final whole-branch review (finding M9): three places where the shipped
+code deviates from this document. All three are improvements made while implementing and
+hardening the scroll rig across several review rounds; this section records what changed and
+why, rather than rewriting the original text above to match.
+
+- **Mount gate location.** The Testing section above (`HeroMesh` renders nothing when the
+  gate is false, and registers no ScrollTrigger) implies the viewport/reduced-motion gate is
+  evaluated inside `HeroMesh` itself. It actually lives in the caller, `components/Hero.tsx`
+  (see `shouldRenderMesh` and the `meshEnabled` state there): `Hero` only ever renders
+  `<HeroMesh />` once the gate has already passed, so the lazily-imported `three` module is
+  never requested otherwise, and `HeroMesh` never has to duplicate the decision. This is
+  stronger than the original plan — it means a regressed gate can't even trigger the dynamic
+  `import()`, rather than triggering it and then rendering nothing.
+- **Gate test location and shape.** Following from the above, the gate test described in the
+  Testing section ("`HeroMesh` renders nothing when the gate is false, and registers no
+  ScrollTrigger") no longer exists in that form. The equivalent coverage now lives in
+  `tests/Hero.test.tsx`'s "hero mesh gate" describe block, and asserts on a mocked
+  `HeroMesh`'s presence/absence in the DOM (via `next/dynamic`'s lazy-loaded mount, flushed
+  with `await act(async () => {})`) rather than on `HeroMesh` declining to render or register
+  a ScrollTrigger internally — because, per the point above, `HeroMesh` is never even
+  requested when the gate is closed, so it has nothing to assert on directly.
+- **Link topology: computed once, not `setDrawRange` plus per-frame pair checks.** The
+  Render loop section above describes link positions being "published with `setDrawRange`"
+  implying per-frame recomputation of which pairs are linked. The shipped code
+  (`components/HeroMesh.tsx`) computes link topology once, via `linkPairs(homePoints,
+  HERO_LINK_DISTANCE)` from the `lib/mesh.ts` helper, immediately after generating the home
+  positions — so dispersing the nodes on scroll stretches the existing links instead of
+  rewiring the graph every frame, and the link `Float32Array`/`BufferGeometry` is sized
+  exactly to the fixed link count up front, with no `setDrawRange` call needed. This is
+  cheaper (no per-frame O(n²) pair search) and correct for this scene specifically because
+  the link graph is a fixed topology stretched by a uniform `spread` multiplier, not a set of
+  nodes that actually move independently relative to one another.

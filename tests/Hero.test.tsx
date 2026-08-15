@@ -15,13 +15,29 @@ import { fireReducedMotionChange, stubReducedMotion } from "./helpers";
 //    closed side of the gate — is to never load the real module.
 // 2. It gives the gate tests a `data-testid` to assert on directly, instead
 //    of reaching into HeroMesh's internal markup.
+//
+// `heroMeshMock.shouldThrow` (finding I1) lets one test — "hero mesh error
+// boundary" below — make this stand-in throw during render, simulating a
+// rejected `next/dynamic` chunk fetch, without needing a separate mock module
+// per test file. `vi.hoisted` is required for the same reason `gsapMock` in
+// tests/HeroMesh.test.tsx needs it: `vi.mock` factories are hoisted above all
+// module-scope code, including a plain `const`/`let` at this point in the
+// file.
+const heroMeshMock = vi.hoisted(() => ({ shouldThrow: false }));
+
 vi.mock("@/components/HeroMesh", () => ({
-  HeroMesh: () => <div data-testid="hero-mesh-mount" aria-hidden="true" />,
+  HeroMesh: () => {
+    if (heroMeshMock.shouldThrow) {
+      throw new Error("simulated chunk fetch failure");
+    }
+    return <div data-testid="hero-mesh-mount" aria-hidden="true" />;
+  },
 }));
 
 afterEach(() => {
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
+  heroMeshMock.shouldThrow = false;
   // Inline styles set directly on `documentElement` (as `--bg-fx-opacity` is,
   // by both Hero's gate effect and HeroMesh's own rig) are not touched by
   // `vi.unstubAllGlobals()` — they are real DOM state, not a stubbed global —
@@ -59,6 +75,28 @@ describe("Hero", () => {
     const fromToSpy = vi.spyOn(gsap, "fromTo");
     render(<Hero />);
     expect(fromToSpy).toHaveBeenCalledTimes(1);
+  });
+
+  // Finding I3: `gsap.fromTo` applies its *from* state immediately, so at
+  // assertion time under jsdom the hero content is genuinely at opacity: 0 —
+  // and the tests above pass regardless, because they assert `textContent`/
+  // `toBeInTheDocument()`, neither of which is affected by opacity. Without
+  // this test, a regression leaving the hero permanently invisible in a real
+  // browser (e.g. an end state that never reaches opacity: 1) would be
+  // caught by nothing here. Asserting the tween's argument shapes directly —
+  // starts hidden, ends fully visible and un-offset — is the plan's binding
+  // constraint that "content must never depend on animation running": the
+  // animation must actually be capable of making it visible, even though
+  // jsdom never runs it.
+  it("tweens hero content from hidden to fully visible", () => {
+    stubReducedMotion(false);
+    const fromToSpy = vi.spyOn(gsap, "fromTo");
+    render(<Hero />);
+    expect(fromToSpy).toHaveBeenCalledTimes(1);
+    const [target, from, to] = fromToSpy.mock.calls[0];
+    expect(target).toBe("[data-hero-item]");
+    expect(from).toMatchObject({ opacity: 0, y: 18 });
+    expect(to).toMatchObject({ opacity: 1, y: 0 });
   });
 
   // Structural contract that Tasks 5 and 6 build on: the WebGL hero mesh and
@@ -195,6 +233,32 @@ describe("Hero", () => {
         fireReducedMotionChange(media, false);
       });
       expect(screen.queryByTestId("hero-mesh-mount")).not.toBeNull();
+    });
+  });
+
+  // Finding I1: a rejected next/dynamic({ ssr: false }) import throws during
+  // render (it's React.lazy underneath — see the HeroMeshBoundary comment in
+  // components/Hero.tsx), and this app has no app/error.tsx or
+  // app/global-error.tsx, so an uncaught throw here would take down the
+  // entire page via Next's built-in global error UI. Every other WebGL
+  // failure path in HeroMesh degrades quietly to the 2D background instead,
+  // so a mesh mount failure must too. `heroMeshMock.shouldThrow` (see the
+  // module mock above) makes the stand-in throw the way a real chunk-fetch
+  // rejection would.
+  describe("hero mesh error boundary", () => {
+    it("keeps the rest of the hero rendered when the mesh mount throws", async () => {
+      stubReducedMotion(false, 1024);
+      heroMeshMock.shouldThrow = true;
+      render(<Hero />);
+      await act(async () => {});
+
+      // The boundary swallowed the throw: no mesh mount in the DOM...
+      expect(screen.queryByTestId("hero-mesh-mount")).toBeNull();
+      // ...but the rest of the hero — the actual content a visitor reads —
+      // is still there, not replaced by a global error page.
+      expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/software engineer/i);
+      expect(screen.getByText(/view projects/i)).toBeInTheDocument();
+      expect(document.querySelector("[data-hero]")).not.toBeNull();
     });
   });
 });

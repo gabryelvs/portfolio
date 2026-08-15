@@ -1,6 +1,7 @@
 import { cleanup, render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { HeroMesh } from "@/components/HeroMesh";
+import { BG_FX_OPACITY_PROPERTY } from "@/lib/mesh";
 
 // HeroMesh unconditionally constructs `new THREE.WebGLRenderer(...)` in its
 // setup effect, and jsdom has no real WebGL context — the constructor throws,
@@ -13,6 +14,18 @@ import { HeroMesh } from "@/components/HeroMesh";
 // separate from, and does not touch, the `@/components/HeroMesh` mock that
 // `tests/Hero.test.tsx` and `tests/copy.test.tsx` use to avoid reaching this
 // file at all — this file's whole purpose is to reach it.
+// Tracks every stubbed BufferGeometry created by a mounted HeroMesh, in
+// creation order — HeroMesh creates the node geometry first and the link
+// geometry second (see components/HeroMesh.tsx), so `geometries[0]` is
+// always the node geometry whose `attributes.position.array` a test can read
+// to observe the scene's actual per-frame node positions, the same
+// `Float32Array` reference `writePositions()` mutates in place. `vi.hoisted`
+// is required for the same reason `gsapMock` below needs it: `vi.mock`
+// factories are hoisted above all imports/module-scope code.
+const meshInstances = vi.hoisted(() => ({
+  geometries: [] as { attributes: Record<string, { array: Float32Array }> }[],
+}));
+
 vi.mock("three", () => {
   class Object3DStub {
     rotation = { x: 0, y: 0, z: 0 };
@@ -53,6 +66,9 @@ vi.mock("three", () => {
 
   class BufferGeometry {
     attributes: Record<string, BufferAttribute> = {};
+    constructor() {
+      meshInstances.geometries.push(this);
+    }
     setAttribute(name: string, attribute: BufferAttribute) {
       this.attributes[name] = attribute;
       return this;
@@ -186,6 +202,7 @@ afterEach(() => {
   gsapMock.state.progress = 0;
   gsapMock.lastConfig = null;
   gsapMock.kill.mockClear();
+  meshInstances.geometries.length = 0;
   document.documentElement.style.removeProperty("--bg-fx-opacity");
   vi.restoreAllMocks();
 });
@@ -316,5 +333,249 @@ describe("HeroMesh scroll endpoint", () => {
       return n > 0 && n < 1;
     });
     expect(midFade.length).toBeGreaterThan(0);
+  });
+});
+
+// Finding I4: components/HeroMesh.tsx:125-170 (the entranceFinished,
+// entranceElapsedMs and handoffBlendElapsedMs latches) and :300-333 are the
+// most intricate code in the branch, but the only test above that drives the
+// rAF loop ("HeroMesh scroll endpoint") mounts at progress 0.5, where seeding
+// has already called finishEntrance() — so the entrance's own fly-in and its
+// handoff blend were never actually executed by any test. These two cases
+// mount at progress 0 instead, so the entrance genuinely runs.
+describe("HeroMesh entrance and handoff", () => {
+  function nodeMagnitude(array: Float32Array, index: number): number {
+    const i = index * 3;
+    return Math.hypot(array[i], array[i + 1], array[i + 2]);
+  }
+
+  it("contracts node spread monotonically from 3x home radius toward 1x while the entrance plays out", () => {
+    const frames: FrameRequestCallback[] = [];
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation((cb) => {
+      frames.push(cb);
+      return frames.length;
+    });
+    vi.spyOn(window, "cancelAnimationFrame").mockImplementation(() => {});
+
+    gsapMock.state.progress = 0;
+    render(
+      <div data-hero>
+        <HeroMesh />
+      </div>,
+    );
+
+    // meshInstances.geometries[0] is the node geometry (created before the
+    // link geometry — see components/HeroMesh.tsx) whose position array is
+    // the exact Float32Array writePositions() mutates in place each frame.
+    const nodeArray = meshInstances.geometries[0].attributes.position.array;
+
+    // Drive frames at a steady 16ms/frame past the entrance's full 1.2s
+    // window, capturing node 0's magnitude after every frame actually
+    // rendered — writePositions() only runs inside tick(), so nothing before
+    // the first driven frame reflects the entrance at all.
+    let now = 0;
+    let framesRun = 0;
+    const magnitudes: number[] = [];
+    while (frames.length > 0 && framesRun < 100) {
+      const cb = frames.shift()!;
+      now += 16;
+      framesRun += 1;
+      cb(now);
+      magnitudes.push(nodeMagnitude(nodeArray, 0));
+      if (now > 1400) break;
+    }
+
+    expect(magnitudes.length).toBeGreaterThan(10);
+
+    // The very first driven tick has dt === 0 (start() seeds lastTickTime to
+    // null), so entranceElapsedMs is still 0 and the cubic ease-out reads
+    // t = 0, spread = 3 exactly. Expressing every later frame as a ratio
+    // against this first one avoids needing a direct reference to the
+    // (randomised per test run) home positions.
+    const homeMagnitude = magnitudes[0] / 3;
+    const spreadRatios = magnitudes.map((m) => m / homeMagnitude);
+
+    expect(spreadRatios[0]).toBeCloseTo(3, 1);
+
+    // Monotonic contraction: progress never moves off 0 in this test, so the
+    // rig's own baseline spread (1, at progress 0) never overrides the
+    // entrance before it finishes on its own, and the entrance's cubic
+    // ease-out is monotonically decreasing by construction — no frame should
+    // read a larger spread than the one before it.
+    for (let i = 1; i < spreadRatios.length; i++) {
+      expect(spreadRatios[i]).toBeLessThanOrEqual(spreadRatios[i - 1] + 1e-6);
+    }
+
+    // ...and it actually reaches the rig's progress-0 baseline (1x) once the
+    // entrance's 1.2s window elapses, not just "smaller than before".
+    expect(spreadRatios[spreadRatios.length - 1]).toBeCloseTo(1, 1);
+  });
+
+  // A scroll big enough to cross ENTRANCE_HANDOFF_PROGRESS while the entrance
+  // is still mid-flight must not let the rig's baseline spread replace the
+  // entrance's current spread in a single frame — that is exactly what
+  // HANDOFF_BLEND_MS exists to prevent (see its comment in
+  // components/HeroMesh.tsx). This proves the blend is load-bearing by
+  // computing the actual frame-to-frame spread delta throughout a crossing,
+  // using the same node-magnitude-ratio technique as the case above.
+  it("blends the entrance into the rig's spread with no single-frame jump when scroll crosses the handoff threshold mid-entrance", () => {
+    const frames: FrameRequestCallback[] = [];
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation((cb) => {
+      frames.push(cb);
+      return frames.length;
+    });
+    vi.spyOn(window, "cancelAnimationFrame").mockImplementation(() => {});
+
+    gsapMock.state.progress = 0;
+    render(
+      <div data-hero>
+        <HeroMesh />
+      </div>,
+    );
+
+    const nodeArray = meshInstances.geometries[0].attributes.position.array;
+    const spreadRatios: number[] = [];
+    let homeMagnitude: number | null = null;
+    let now = 0;
+
+    function runFrame() {
+      const cb = frames.shift()!;
+      now += 16;
+      cb(now);
+      const magnitude = nodeMagnitude(nodeArray, 0);
+      if (homeMagnitude === null) homeMagnitude = magnitude / 3;
+      spreadRatios.push(magnitude / homeMagnitude);
+    }
+
+    // A handful of frames with the entrance still running and scroll
+    // untouched (target progress 0) — well short of both the 1.2s entrance
+    // window and the 0.05 handoff threshold.
+    for (let i = 0; i < 5; i++) runFrame();
+
+    // A scroll jump straight to the end, exactly as a fast flick or a
+    // scrollbar drag would report through onUpdate — see the "HeroMesh
+    // scroll endpoint" describe above for the same real-GSAP behaviour this
+    // mirrors.
+    gsapMock.lastConfig?.onUpdate?.({ progress: 1 });
+
+    // Drive enough further frames for renderedProgress's own easing to cross
+    // ENTRANCE_HANDOFF_PROGRESS and for the 400ms handoff blend window to run
+    // its course (or for the loop to park at the endpoint, whichever first).
+    for (let i = 0; i < 60 && frames.length > 0; i++) runFrame();
+
+    expect(spreadRatios.length).toBeGreaterThan(20);
+
+    let maxDelta = 0;
+    for (let i = 1; i < spreadRatios.length; i++) {
+      maxDelta = Math.max(maxDelta, Math.abs(spreadRatios[i] - spreadRatios[i - 1]));
+    }
+
+    // Simulating this exact scenario against an unblended version of this
+    // math (handoff overwriting state.spread with the rig's baseline the
+    // instant the threshold is crossed, deleting the HANDOFF_BLEND_MS
+    // branch) produces a single-frame delta of about 1.7 — see the task
+    // report for the simulation. 0.5 is comfortably below that and
+    // comfortably above the ~0.08 the real blended code produces, so this
+    // bound only passes when the blend is actually smoothing the
+    // transition.
+    expect(maxDelta).toBeLessThan(0.5);
+  });
+});
+
+// Finding I5: tests/HeroMesh.test.tsx used to create `kill: vi.fn()` on the
+// fake ScrollTrigger and clear it every afterEach, but no test ever asserted
+// on it, and nothing covered the unmount cleanup or the webglcontextlost
+// path at all.
+describe("HeroMesh lifecycle", () => {
+  it("kills the ScrollTrigger and restores --bg-fx-opacity on unmount", () => {
+    gsapMock.state.progress = 0.3;
+    const { unmount } = render(
+      <div data-hero>
+        <HeroMesh />
+      </div>,
+    );
+
+    // Dirty the property first (the dirty-before-assert pattern used
+    // elsewhere in this file) so the post-unmount read is only meaningful
+    // because cleanup actually touched it.
+    document.documentElement.style.setProperty(BG_FX_OPACITY_PROPERTY, "0.4");
+
+    unmount();
+
+    expect(gsapMock.kill).toHaveBeenCalledTimes(1);
+
+    // Cleanup removes the property (finding M7) rather than setting it to
+    // the literal "1": app/globals.css already defaults
+    // `var(--bg-fx-opacity, 1)` to 1, so an unset property reads as 1
+    // through that fallback without permanently shadowing the token with an
+    // identical inline value.
+    expect(document.documentElement.style.getPropertyValue(BG_FX_OPACITY_PROPERTY)).toBe("");
+  });
+
+  it("removes its resize, visibilitychange, and webglcontextlost listeners on unmount", () => {
+    const windowAdd = vi.spyOn(window, "addEventListener");
+    const windowRemove = vi.spyOn(window, "removeEventListener");
+    const docAdd = vi.spyOn(document, "addEventListener");
+    const docRemove = vi.spyOn(document, "removeEventListener");
+    const canvasAdd = vi.spyOn(HTMLCanvasElement.prototype, "addEventListener");
+    const canvasRemove = vi.spyOn(HTMLCanvasElement.prototype, "removeEventListener");
+
+    gsapMock.state.progress = 0.3;
+    const { unmount } = render(
+      <div data-hero>
+        <HeroMesh />
+      </div>,
+    );
+
+    expect(windowAdd).toHaveBeenCalledWith("resize", expect.any(Function));
+    expect(docAdd).toHaveBeenCalledWith("visibilitychange", expect.any(Function));
+    expect(canvasAdd).toHaveBeenCalledWith("webglcontextlost", expect.any(Function));
+    const resizeHandler = windowAdd.mock.calls.find(([type]) => type === "resize")?.[1];
+    const visibilityHandler = docAdd.mock.calls.find(([type]) => type === "visibilitychange")?.[1];
+    const contextLostHandler = canvasAdd.mock.calls.find(([type]) => type === "webglcontextlost")?.[1];
+
+    unmount();
+
+    expect(windowRemove).toHaveBeenCalledWith("resize", resizeHandler);
+    expect(docRemove).toHaveBeenCalledWith("visibilitychange", visibilityHandler);
+    expect(canvasRemove).toHaveBeenCalledWith("webglcontextlost", contextLostHandler);
+  });
+
+  it("stops the render loop and hands the screen back to the 2D canvas on WebGL context loss, and the latch blocks a later restart", () => {
+    const frames: FrameRequestCallback[] = [];
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation((cb) => {
+      frames.push(cb);
+      return frames.length;
+    });
+    const cancelSpy = vi.spyOn(window, "cancelAnimationFrame").mockImplementation(() => {});
+
+    gsapMock.state.progress = 0.3;
+    const { container } = render(
+      <div data-hero>
+        <HeroMesh />
+      </div>,
+    );
+
+    const canvas = container.querySelector("canvas");
+    expect(canvas).not.toBeNull();
+
+    // Dirty the property first so the restoration below is only true because
+    // onContextLost actually wrote it, not coincidence.
+    document.documentElement.style.setProperty(BG_FX_OPACITY_PROPERTY, "0.4");
+
+    const framesQueuedBeforeLoss = frames.length;
+    canvas!.dispatchEvent(new Event("webglcontextlost"));
+
+    expect(document.documentElement.style.getPropertyValue(BG_FX_OPACITY_PROPERTY)).toBe("1");
+    expect(canvas!.style.opacity).toBe("0");
+    expect(cancelSpy).toHaveBeenCalled();
+
+    // The latch must prevent a later visibilitychange (e.g. a tab refocus)
+    // from resurrecting the rAF loop onto a now-dead context. jsdom's
+    // `document.hidden` defaults to false, so onVisibility would otherwise
+    // call start() here; if the contextLost latch were missing, start()
+    // would queue a new frame and this assertion would catch it.
+    document.dispatchEvent(new Event("visibilitychange"));
+    expect(frames.length).toBeLessThanOrEqual(framesQueuedBeforeLoss);
   });
 });

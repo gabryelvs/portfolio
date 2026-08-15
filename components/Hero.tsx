@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Component, useEffect, useRef, useState, type ReactNode } from "react";
 import dynamic from "next/dynamic";
 import {
   gsap,
@@ -8,7 +8,7 @@ import {
   subscribeReducedMotion,
   useIsomorphicLayoutEffect,
 } from "@/lib/gsap";
-import { shouldRenderMesh } from "@/lib/mesh";
+import { BG_FX_OPACITY_PROPERTY, shouldRenderMesh } from "@/lib/mesh";
 
 // ssr: false keeps three.js out of the server-rendered HTML and out of the
 // initial chunk, so the hero text stays the LCP element. The mount gate below
@@ -18,6 +18,40 @@ import { shouldRenderMesh } from "@/lib/mesh";
 const HeroMesh = dynamic(() => import("@/components/HeroMesh").then((m) => m.HeroMesh), {
   ssr: false,
 });
+
+/** `next/dynamic({ ssr: false })` is `React.lazy` underneath
+ *  (node_modules/next/dist/shared/lib/lazy-dynamic/loadable.js), and a
+ *  rejected lazy import throws during render — a stale chunk request after a
+ *  redeploy with a tab still open, or a plain network blip, are both
+ *  realistic triggers. This app has no `app/error.tsx` or
+ *  `app/global-error.tsx`, so an uncaught throw here would bubble all the way
+ *  to Next's built-in global error UI and replace the entire page over a
+ *  purely decorative failure. Every other WebGL failure path in HeroMesh
+ *  (its own try/catch around `WebGLRenderer` construction, its
+ *  `webglcontextlost` handler) already degrades quietly to the 2D
+ *  `BackgroundFX` canvas instead — this boundary makes a failed mesh mount
+ *  degrade the same way. React error boundaries must be class components;
+ *  this one is kept local to Hero and deliberately minimal — it renders
+ *  nothing rather than any fallback UI, since the mesh itself is decorative
+ *  and BackgroundFX is always underneath it. */
+class HeroMeshBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch() {
+    // Intentionally no logging beyond React's own default console.error: a
+    // failed decorative chunk fetch is not an application error a user or
+    // an error-tracking integration needs paged on.
+  }
+
+  render() {
+    if (this.state.hasError) return null;
+    return this.props.children;
+  }
+}
 
 const metrics = [
   { value: "6", label: "shipped projects" },
@@ -50,7 +84,7 @@ export function Hero() {
       // React's schedule, not synchronously with this effect), so reset here
       // too: a user must never be left with an invisible background.
       if (!enabled) {
-        document.documentElement.style.setProperty("--bg-fx-opacity", "1");
+        document.documentElement.style.setProperty(BG_FX_OPACITY_PROPERTY, "1");
       }
     };
     const unsubscribe = subscribeReducedMotion((reduced) => {
@@ -86,7 +120,11 @@ export function Hero() {
       data-hero
       className="relative mx-auto flex min-h-[88svh] max-w-5xl flex-col justify-center px-6 py-20"
     >
-      {meshEnabled && <HeroMesh className="pointer-events-none absolute inset-0 -z-10" />}
+      {meshEnabled && (
+        <HeroMeshBoundary>
+          <HeroMesh className="pointer-events-none absolute inset-0 -z-10" />
+        </HeroMeshBoundary>
+      )}
 
       <p
         data-hero-item

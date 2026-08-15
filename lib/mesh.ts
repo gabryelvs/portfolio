@@ -7,6 +7,14 @@ export type Link = { a: number; b: number; distance: number };
 
 /** Viewport width at or above which the 3D hero mesh is allowed to mount. */
 export const MESH_BREAKPOINT = 768;
+/** CSS custom property that hands the screen off between the 3D hero mesh and
+ *  the 2D `BackgroundFX` canvas: `0` while the mesh owns the screen, `1` once
+ *  it hands off (see `heroScrollState`'s `backgroundOpacity`). Exported so
+ *  `components/Hero.tsx`, `components/HeroMesh.tsx` and
+ *  `components/BackgroundFX.tsx` share one literal instead of each repeating
+ *  the string — `app/globals.css` necessarily keeps its own copy, since it is
+ *  plain CSS and cannot import a TS constant. */
+export const BG_FX_OPACITY_PROPERTY = "--bg-fx-opacity";
 /** Link radius in CSS pixels for the 2D background canvas. */
 export const LINK_DISTANCE_2D = 155;
 /** Node count for the 3D hero scene (fixed — the scene is a fixed-size object). */

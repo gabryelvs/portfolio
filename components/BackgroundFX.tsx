@@ -2,7 +2,14 @@
 
 import { useEffect, useRef } from "react";
 import { prefersReducedMotion } from "@/lib/gsap";
-import { clampDpr, LINK_DISTANCE_2D, linkPairs, nodeCount, parseAccent } from "@/lib/mesh";
+import {
+  BG_FX_OPACITY_PROPERTY,
+  clampDpr,
+  LINK_DISTANCE_2D,
+  linkPairs,
+  nodeCount,
+  parseAccent,
+} from "@/lib/mesh";
 
 type Node = { x: number; y: number; vx: number; vy: number };
 
@@ -116,7 +123,7 @@ export function BackgroundFX() {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      style={{ opacity: "var(--bg-fx-opacity, 1)" }}
+      style={{ opacity: `var(${BG_FX_OPACITY_PROPERTY}, 1)` }}
       className="pointer-events-none fixed inset-0 -z-10 h-full w-full"
     />
   );

@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Reveal } from "@/components/Reveal";
-import { ScrollTrigger } from "@/lib/gsap";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { stubReducedMotion } from "./helpers";
 
 afterEach(() => {
@@ -57,7 +57,31 @@ describe("Reveal", () => {
     expect(createSpy).toHaveBeenCalledTimes(1);
   });
 
-  it("leaves content visible after unmount", () => {
+  // Finding I3: `gsap.fromTo` applies its *from* state immediately, so at
+  // assertion time under jsdom the revealed content is genuinely at
+  // opacity: 0 — and the tests above pass regardless, since they assert
+  // `textContent`/`toBeInTheDocument()`/registration calls, none of which is
+  // affected by opacity. Without this test, a regression leaving every
+  // `Reveal`-wrapped section (the project cards) permanently invisible in a
+  // real browser would be caught by nothing here. This is the same binding
+  // constraint as the equivalent test in tests/Hero.test.tsx: the animation
+  // must actually be capable of reaching full visibility, even though jsdom
+  // never runs it.
+  it("tweens its content from hidden to fully visible", () => {
+    stubReducedMotion(false);
+    const fromToSpy = vi.spyOn(gsap, "fromTo");
+    render(<Reveal>visible content</Reveal>);
+    expect(fromToSpy).toHaveBeenCalledTimes(1);
+    const [, from, to] = fromToSpy.mock.calls[0];
+    expect(from).toMatchObject({ opacity: 0, y: 18 });
+    expect(to).toMatchObject({ opacity: 1, y: 0 });
+  });
+
+  // Named for exactly what this asserts: RTL's unmount() removes the whole
+  // subtree, so this cannot actually observe post-unmount visibility — only
+  // that ctx.revert() (see Reveal.tsx) doesn't throw while tearing down a
+  // live tween/ScrollTrigger.
+  it("does not throw when unmounted mid-animation", () => {
     stubReducedMotion(false);
     const { unmount } = render(<Reveal>visible content</Reveal>);
     expect(() => unmount()).not.toThrow();
