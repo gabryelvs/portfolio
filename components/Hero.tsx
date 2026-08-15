@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { gsap, prefersReducedMotion, useIsomorphicLayoutEffect } from "@/lib/gsap";
 
 const metrics = [
   { value: "6", label: "shipped projects" },
@@ -8,28 +9,41 @@ const metrics = [
   { value: "5", label: "live deployments" },
 ];
 
-const ease = [0.16, 1, 0.3, 1] as const;
-
 export function Hero() {
+  const root = useRef<HTMLElement>(null);
+
+  useIsomorphicLayoutEffect(() => {
+    const el = root.current;
+    if (!el || prefersReducedMotion()) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        "[data-hero-item]",
+        { opacity: 0, y: 18 },
+        { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", stagger: 0.08 },
+      );
+    }, el);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section
+      ref={root}
       id="top"
-      className="mx-auto flex min-h-[88svh] max-w-5xl flex-col justify-center px-6 py-20"
+      data-hero
+      className="relative mx-auto flex min-h-[88svh] max-w-5xl flex-col justify-center px-6 py-20"
     >
-      <motion.p
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease }}
+      <p
+        data-hero-item
         className="mb-6 font-[family-name:var(--font-mono)] text-sm text-[var(--fg-muted)]"
       >
         <span className="text-[var(--ok)]">~/gabryel</span>{" "}
         <span className="text-[var(--accent-text)]">$</span> whoami
-      </motion.p>
+      </p>
 
-      <motion.h1
-        initial={{ opacity: 0, y: 18 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.08, duration: 0.5, ease }}
+      <h1
+        data-hero-item
         className="font-[family-name:var(--font-display)] text-5xl font-bold leading-[1.05] tracking-tight sm:text-7xl"
       >
         Software engineer who ships{" "}
@@ -37,25 +51,18 @@ export function Hero() {
           reliable systems
         </span>
         .
-      </motion.h1>
+      </h1>
 
-      <motion.p
-        initial={{ opacity: 0, y: 18 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.16, duration: 0.5, ease }}
+      <p
+        data-hero-item
         className="mt-6 max-w-2xl text-lg leading-relaxed text-[var(--fg-muted)]"
       >
         Computer Science student building production-grade APIs in Python (FastAPI) and
         Java (Spring Boot) — payments, ledgers, async services, and reliable delivery —
         plus fullstack tools with React and TypeScript.
-      </motion.p>
+      </p>
 
-      <motion.div
-        initial={{ opacity: 0, y: 18 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.24, duration: 0.5, ease }}
-        className="mt-10 flex flex-wrap gap-3"
-      >
+      <div data-hero-item className="mt-10 flex flex-wrap gap-3">
         <a
           href="#projects"
           className="rounded-lg bg-[var(--accent)] px-6 py-3 font-semibold text-[var(--accent-contrast)] transition-colors hover:opacity-90"
@@ -68,12 +75,10 @@ export function Hero() {
         >
           Download CV
         </a>
-      </motion.div>
+      </div>
 
-      <motion.dl
-        initial={{ opacity: 0, y: 18 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.32, duration: 0.5, ease }}
+      <dl
+        data-hero-item
         className="mt-14 flex flex-wrap gap-x-10 gap-y-4 border-t border-[var(--border)] pt-8"
       >
         {metrics.map((m) => (
@@ -84,7 +89,7 @@ export function Hero() {
             <dd className="mt-1 text-sm text-[var(--fg-muted)]">{m.label}</dd>
           </div>
         ))}
-      </motion.dl>
+      </dl>
     </section>
   );
 }
