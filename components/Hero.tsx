@@ -1,7 +1,14 @@
 "use client";
 
 import { useRef } from "react";
+import dynamic from "next/dynamic";
 import { gsap, prefersReducedMotion, useIsomorphicLayoutEffect } from "@/lib/gsap";
+
+// ssr: false keeps three.js out of the server-rendered HTML and out of the
+// initial chunk, so the hero text stays the LCP element.
+const HeroMesh = dynamic(() => import("@/components/HeroMesh").then((m) => m.HeroMesh), {
+  ssr: false,
+});
 
 const metrics = [
   { value: "6", label: "shipped projects" },
@@ -34,6 +41,8 @@ export function Hero() {
       data-hero
       className="relative mx-auto flex min-h-[88svh] max-w-5xl flex-col justify-center px-6 py-20"
     >
+      <HeroMesh className="pointer-events-none absolute inset-0 -z-10" />
+
       <p
         data-hero-item
         className="mb-6 font-[family-name:var(--font-mono)] text-sm text-[var(--fg-muted)]"
