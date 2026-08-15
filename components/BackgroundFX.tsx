@@ -115,6 +115,7 @@ export function BackgroundFX() {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
+      style={{ opacity: "var(--bg-fx-opacity, 1)" }}
       className="pointer-events-none fixed inset-0 -z-10 h-full w-full"
     />
   );

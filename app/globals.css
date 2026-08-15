@@ -19,6 +19,8 @@
   --ok: #059669;            /* live status */
   --warn: #b45309;
   --grid: rgba(15, 15, 25, 0.035);
+  /* 1 by default; the 3D hero drives this to 0 while it owns the viewport. */
+  --bg-fx-opacity: 1;
 }
 .dark {
   --bg: #0a0a0f;

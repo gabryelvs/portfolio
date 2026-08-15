@@ -2,7 +2,7 @@ import { act, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Hero } from "@/components/Hero";
 import { gsap } from "@/lib/gsap";
-import { stubReducedMotion } from "./helpers";
+import { fireReducedMotionChange, stubReducedMotion } from "./helpers";
 
 // The real HeroMesh is swapped for a trivial, synchronous stand-in for every
 // test in this file. Two reasons:
@@ -114,12 +114,72 @@ describe("Hero", () => {
       expect(screen.queryByTestId("hero-mesh-mount")).not.toBeNull();
     });
 
-    it("leaves the background canvas at full opacity when the mesh is gated off", () => {
+    // Task 6 makes --bg-fx-opacity real: the mesh's own scroll rig (and its
+    // unmount) are what drive it, and the gate effect resets it too the
+    // moment it closes. Dirtying the value before render — rather than just
+    // checking it's untouched — is what makes this a genuine assertion on
+    // the reset instead of a check that would pass even if nothing ever
+    // wrote the property at all.
+    it("resets the background canvas opacity to 1 when the mesh is gated off", () => {
+      stubReducedMotion(false, 500);
+      document.documentElement.style.setProperty("--bg-fx-opacity", "0.4");
+      render(<Hero />);
+      expect(document.documentElement.style.getPropertyValue("--bg-fx-opacity")).toBe("1");
+    });
+
+    // Neither re-evaluation path (resize, live reduced-motion change) was
+    // previously covered — both are exercised here by firing the real event
+    // inside `act` and checking the mesh actually mounts/unmounts in
+    // response, not just on the initial synchronous evaluation.
+    it("mounts the mesh on a resize across the breakpoint", async () => {
       stubReducedMotion(false, 500);
       render(<Hero />);
-      expect(
-        document.documentElement.style.getPropertyValue("--bg-fx-opacity"),
-      ).not.toBe("0");
+      await act(async () => {});
+      expect(screen.queryByTestId("hero-mesh-mount")).toBeNull();
+
+      vi.stubGlobal("innerWidth", 1024);
+      await act(async () => {
+        window.dispatchEvent(new Event("resize"));
+      });
+      expect(screen.queryByTestId("hero-mesh-mount")).not.toBeNull();
+    });
+
+    it("unmounts the mesh on a resize back below the breakpoint, restoring the background", async () => {
+      stubReducedMotion(false, 1024);
+      render(<Hero />);
+      await act(async () => {});
+      expect(screen.queryByTestId("hero-mesh-mount")).not.toBeNull();
+
+      vi.stubGlobal("innerWidth", 500);
+      await act(async () => {
+        window.dispatchEvent(new Event("resize"));
+      });
+      expect(screen.queryByTestId("hero-mesh-mount")).toBeNull();
+      expect(document.documentElement.style.getPropertyValue("--bg-fx-opacity")).toBe("1");
+    });
+
+    it("unmounts the mesh when reduced-motion is turned on live", async () => {
+      const media = stubReducedMotion(false, 1024);
+      render(<Hero />);
+      await act(async () => {});
+      expect(screen.queryByTestId("hero-mesh-mount")).not.toBeNull();
+
+      await act(async () => {
+        fireReducedMotionChange(media, true);
+      });
+      expect(screen.queryByTestId("hero-mesh-mount")).toBeNull();
+    });
+
+    it("mounts the mesh when reduced-motion is turned off live", async () => {
+      const media = stubReducedMotion(true, 1024);
+      render(<Hero />);
+      await act(async () => {});
+      expect(screen.queryByTestId("hero-mesh-mount")).toBeNull();
+
+      await act(async () => {
+        fireReducedMotionChange(media, false);
+      });
+      expect(screen.queryByTestId("hero-mesh-mount")).not.toBeNull();
     });
   });
 });

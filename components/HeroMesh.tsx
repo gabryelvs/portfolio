@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import * as THREE from "three";
+import { ScrollTrigger } from "@/lib/gsap";
 import {
   clampDpr,
   HERO_LINK_DISTANCE,
@@ -153,14 +154,18 @@ export function HeroMesh({ className }: { className?: string }) {
 
     function tick(now: number) {
       // Entrance: nodes fly in from 3x their home radius over 1.2s of actually
-      // animated time, ease-out cubic.
+      // animated time, ease-out cubic. Guarded to only write `state.spread`
+      // near the top of the page (scrollState.progress < 0.05) so it stops
+      // fighting the scroll rig's own `state.spread` writes the moment the
+      // user starts scrolling away — otherwise the two would alternate
+      // control of the same field frame to frame.
       const dt = lastTickTime === null ? 0 : now - lastTickTime;
       lastTickTime = now;
       if (entranceElapsedMs < ENTRANCE_MS) {
         entranceElapsedMs = Math.min(entranceElapsedMs + dt, ENTRANCE_MS);
         const t = entranceElapsedMs / ENTRANCE_MS;
         const eased = 1 - Math.pow(1 - t, 3);
-        state.spread = 3 - 2 * eased;
+        if (scrollState.progress < 0.05) state.spread = 3 - 2 * eased;
       }
 
       group.rotation.y += 0.0008;
@@ -202,6 +207,15 @@ export function HeroMesh({ className }: { className?: string }) {
       contextLost = true;
       stop();
       renderer.domElement.style.opacity = "0";
+      // The scroll rig's onUpdate is driven by ScrollTrigger's own ticker, not
+      // by our rAF loop — stop() above does not stop it. Without killing it
+      // here too, a further scroll would keep calling applyProgress() and
+      // writing --bg-fx-opacity from scroll position alone, which can hold it
+      // at 0 while the mesh canvas is (now) invisible: both layers gone at
+      // once, exactly what this variable exists to prevent. Kill the trigger
+      // and hand the screen back immediately.
+      scrollTrigger.kill();
+      document.documentElement.style.setProperty("--bg-fx-opacity", "1");
     }
 
     // Re-read the accent when the theme toggles, same trick as BackgroundFX.
@@ -222,12 +236,57 @@ export function HeroMesh({ className }: { className?: string }) {
     renderer.domElement.addEventListener("webglcontextlost", onContextLost);
     start();
 
+    // Scroll choreography, scrubbed against the hero section's own progress.
+    //   0.0-0.3  camera dollies back
+    //   0.3-0.7  nodes disperse, links fade out
+    //   0.7-1.0  scene fades out, the 2D background canvas fades in
+    //
+    // Bounding-sphere note: THREE computes each BufferGeometry's bounding
+    // sphere lazily, from whatever positions are live on the geometry's first
+    // render — here, frame 1 of the entrance, where state.spread is still its
+    // initial 3 (the entrance's own maximum). The rig below tops out at
+    // spread = 1 + 1.8 = 2.8 (its `p` clamps to 1), which stays inside that
+    // first-frame sphere, so the mesh is never frustum-culled mid-scroll. If
+    // either constant changes, re-check that the new maximum stays below the
+    // entrance's maximum spread of 3.
+    const trigger = host.closest("[data-hero]") ?? host;
+    const scrollState = { progress: 0 };
+
+    function applyProgress(p: number) {
+      state.cameraZ = 14 + 6 * p;
+      state.spread = 1 + 1.8 * Math.min(Math.max((p - 0.3) / 0.4, 0), 1);
+      state.linkOpacity = 0.28 * (1 - Math.min(Math.max((p - 0.3) / 0.4, 0), 1));
+      const handoff = Math.min(Math.max((p - 0.7) / 0.3, 0), 1);
+      nodeMaterial.opacity = 0.95 * (1 - handoff);
+      document.documentElement.style.setProperty("--bg-fx-opacity", String(handoff));
+    }
+
+    const scrollTrigger = ScrollTrigger.create({
+      trigger: trigger as Element,
+      start: "top top",
+      end: "bottom top",
+      scrub: 0.6,
+      onUpdate: (self) => {
+        scrollState.progress = self.progress;
+        applyProgress(self.progress);
+      },
+      onToggle: (self) => {
+        // Stop burning frames once the hero is off screen.
+        if (self.isActive) start();
+        else stop();
+      },
+    });
+
+    applyProgress(0);
+
     return () => {
       stop();
       themeObserver.disconnect();
       window.removeEventListener("resize", onResize);
       document.removeEventListener("visibilitychange", onVisibility);
       renderer.domElement.removeEventListener("webglcontextlost", onContextLost);
+      scrollTrigger.kill();
+      document.documentElement.style.setProperty("--bg-fx-opacity", "1");
       nodeGeometry.dispose();
       linkGeometry.dispose();
       nodeMaterial.dispose();

@@ -2,7 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import { gsap, prefersReducedMotion, useIsomorphicLayoutEffect } from "@/lib/gsap";
+import {
+  gsap,
+  prefersReducedMotion,
+  subscribeReducedMotion,
+  useIsomorphicLayoutEffect,
+} from "@/lib/gsap";
 import { shouldRenderMesh } from "@/lib/mesh";
 
 // ssr: false keeps three.js out of the server-rendered HTML and out of the
@@ -28,20 +33,34 @@ export function Hero() {
   // `shouldRenderMesh` is the single source of that decision (shared with the
   // 2D BackgroundFX fallback's own sizing maths). Evaluated on the client
   // after mount, then re-evaluated on resize and on a live change to the
-  // reduced-motion OS setting, so crossing the breakpoint or toggling the
-  // setting mounts/unmounts the scene without a reload.
+  // reduced-motion OS setting (via `subscribeReducedMotion`, the one place
+  // `lib/gsap.ts` owns that media query — no second, divergent
+  // `matchMedia("(prefers-reduced-motion: reduce)")` call here), so crossing
+  // the breakpoint or toggling the setting mounts/unmounts the scene without
+  // a reload.
   useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const evaluate = () =>
-      setMeshEnabled(
-        shouldRenderMesh({ width: window.innerWidth, reducedMotion: media.matches }),
-      );
-    evaluate();
+    let reducedMotion = false;
+    const evaluate = () => {
+      const enabled = shouldRenderMesh({ width: window.innerWidth, reducedMotion });
+      setMeshEnabled(enabled);
+      // The mesh (and its own scroll rig) is the only thing that ever drives
+      // --bg-fx-opacity below 1. The moment the gate closes — narrower
+      // viewport or reduced motion turning on — the mesh is on its way out
+      // (HeroMesh's own unmount also resets this, but that cleanup runs on
+      // React's schedule, not synchronously with this effect), so reset here
+      // too: a user must never be left with an invisible background.
+      if (!enabled) {
+        document.documentElement.style.setProperty("--bg-fx-opacity", "1");
+      }
+    };
+    const unsubscribe = subscribeReducedMotion((reduced) => {
+      reducedMotion = reduced;
+      evaluate();
+    });
     window.addEventListener("resize", evaluate);
-    media.addEventListener("change", evaluate);
     return () => {
       window.removeEventListener("resize", evaluate);
-      media.removeEventListener("change", evaluate);
+      unsubscribe();
     };
   }, []);
 
