@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { cleanup, render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { HeroMesh } from "@/components/HeroMesh";
 
@@ -128,22 +128,63 @@ vi.mock("three", () => {
 // plain module-scope `let`) because Vitest hoists `vi.mock` factories above
 // all imports, including any variables a plain `const`/`let` at this point in
 // the file would create.
+type FakeSelf = { progress: number };
+type FakeConfig = {
+  onUpdate?: (self: FakeSelf) => void;
+  onToggle?: (self: FakeSelf) => void;
+};
+
 const gsapMock = vi.hoisted(() => ({
   state: { progress: 0 },
   kill: vi.fn(),
+  // The config object passed to the most recent `ScrollTrigger.create(...)`
+  // call, so a test can simulate scroll activity *after* HeroMesh has
+  // mounted — a later `onUpdate`, or the `onToggle` endpoint force-snap —
+  // the same way real GSAP would invoke these callbacks off its own ticker.
+  lastConfig: null as FakeConfig | null,
 }));
 
 vi.mock("@/lib/gsap", () => ({
   ScrollTrigger: {
-    create: (config: { onUpdate?: (self: { progress: number }) => void }) => {
-      config.onUpdate?.({ progress: gsapMock.state.progress });
+    create: (config: FakeConfig) => {
+      gsapMock.lastConfig = config;
+      // Real GSAP's synchronous refresh inside `ScrollTrigger.create()`
+      // only invokes `onUpdate` when the freshly-computed progress differs
+      // from the trigger's own starting value (0) — a trigger that already
+      // reads progress 0 at creation has nothing to report, since nothing
+      // changed from its default. Firing unconditionally here (as an
+      // earlier version of this fake did) would let a regression that seeds
+      // solely from the `onUpdate` callback — and never reads
+      // `scrollTrigger.progress` directly, the actual bug finding 1 was
+      // about — pass anyway, since `onUpdate` would always fire regardless
+      // of which mechanism the component used. Gating on this same
+      // condition is what makes the "critical case" test below a genuine
+      // regression guard rather than a tautology.
+      if (gsapMock.state.progress !== 0) {
+        config.onUpdate?.({ progress: gsapMock.state.progress });
+      }
       return { progress: gsapMock.state.progress, kill: gsapMock.kill };
     },
   },
 }));
 
 afterEach(() => {
+  // Explicit, ordered cleanup rather than relying on the relative order of
+  // this hook and React Testing Library's own auto-registered
+  // `afterEach(cleanup)` (a side effect of importing `render` above, active
+  // because Vitest's `globals: true` exposes a global `afterEach` for RTL to
+  // hook). Unmounting HeroMesh runs its own effect cleanup, which sets
+  // `--bg-fx-opacity` back to `"1"` — if that unmount happened *after* the
+  // `removeProperty` below (whichever way Vitest happens to order same-level
+  // `afterEach` hooks from different modules), the reset here would be
+  // clobbered and leak `"1"` into the next test regardless of what that test
+  // itself does. Calling `cleanup()` here first makes the unmount happen at
+  // a known point relative to the reset, independent of hook registration
+  // order; RTL's own auto-cleanup afterward is then a harmless no-op on an
+  // already-unmounted tree.
+  cleanup();
   gsapMock.state.progress = 0;
+  gsapMock.lastConfig = null;
   gsapMock.kill.mockClear();
   document.documentElement.style.removeProperty("--bg-fx-opacity");
   vi.restoreAllMocks();
@@ -187,6 +228,41 @@ describe("HeroMesh scroll rig seeding", () => {
         <HeroMesh />
       </div>,
     );
+    expect(document.documentElement.style.getPropertyValue("--bg-fx-opacity")).toBe("1");
+  });
+});
+
+describe("HeroMesh onToggle endpoint", () => {
+  // Review finding 6b: `onToggle`'s force-snap (see the component: on
+  // `self.progress === 1` it sets `renderedProgress = 1` and calls
+  // `applyProgress(1)` directly, before `stop()`) is the *only* mechanism
+  // that guarantees `--bg-fx-opacity` reaches exactly `"1"` once the hero
+  // has fully scrolled past on the ordinary scroll path — the eased
+  // `renderedProgress` driven by `onUpdate` only ever approaches 1
+  // asymptotically. That force-snap had zero test coverage before this.
+  it("snaps --bg-fx-opacity to exactly 1 when onToggle reports the hero fully scrolled past", () => {
+    // Mount mid-scroll, so the mesh genuinely owns the screen at creation
+    // (well before the 0.7 handoff phase even begins) rather than starting
+    // from an edge case this test isn't about.
+    gsapMock.state.progress = 0.5;
+    render(
+      <div data-hero>
+        <HeroMesh />
+      </div>,
+    );
+    expect(document.documentElement.style.getPropertyValue("--bg-fx-opacity")).not.toBe("1");
+    // Dirty the property to a value `onToggle` could not produce by
+    // coincidence (matching the dirty-before-assert pattern used elsewhere
+    // in this codebase for the same reason — see tests/Hero.test.tsx), so
+    // the final assertion is only true because `onToggle`'s handler
+    // actually ran, not because the property already happened to read "1".
+    document.documentElement.style.setProperty("--bg-fx-opacity", "0.4");
+
+    // Real GSAP invokes `onToggle` off its own scroll ticker whenever the
+    // trigger's active/progress state changes — simulate the hero having
+    // just fully scrolled past.
+    gsapMock.lastConfig?.onToggle?.({ progress: 1 });
+
     expect(document.documentElement.style.getPropertyValue("--bg-fx-opacity")).toBe("1");
   });
 });

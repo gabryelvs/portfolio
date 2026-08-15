@@ -144,6 +144,26 @@ export function HeroMesh({ className }: { className?: string }) {
     // it under the rig's control for good.
     let entranceFinished = false;
 
+    // Window (ms of animated time, accumulated the same delta-time way as
+    // `entranceElapsedMs` and for the same reason — rAF doesn't run in
+    // hidden tabs) over which the entrance's last `state.spread` value is
+    // faded into the rig's own value once the handoff happens naturally in
+    // `tick`, below, instead of being replaced in a single frame. Without
+    // this, the handoff frame itself can jump `state.spread` by a lot: the
+    // entrance starts nodes at 3x the rig's baseline spread of 1 and only
+    // comes within 0.2 of it after ~640ms (spread = 3 - 2*(1-(1-t)^3), t =
+    // elapsed/1200), so a user who starts scrolling immediately on landing
+    // crosses the 0.05 handoff threshold around 400ms in, while the
+    // entrance's own spread is still around 1.6 — roughly a 60%-of-radius
+    // contraction on one frame if taken uneased. `handoffBlendElapsedMs`
+    // starts at `HANDOFF_BLEND_MS` (i.e. "no blend pending") precisely so a
+    // handoff that happens before any entrance frame ever actually rendered
+    // — mounting mid-scroll, seeded directly from real progress below —
+    // does not spuriously blend from a value nothing ever drew.
+    const HANDOFF_BLEND_MS = 400;
+    let handoffBlendElapsedMs = HANDOFF_BLEND_MS;
+    let handoffBlendFromSpread = 1;
+
     function finishEntrance() {
       entranceFinished = true;
       entranceElapsedMs = ENTRANCE_MS;
@@ -174,14 +194,37 @@ export function HeroMesh({ className }: { className?: string }) {
     // forever behind an invisible canvas.
     let contextLost = false;
 
-    // Smoothing time constant (seconds) for the scroll rig, shared with the
-    // `scrub` option passed to ScrollTrigger.create below so the two can't
-    // silently diverge. GSAP's own `scrub` tween only exists when a
-    // ScrollTrigger has an `animation` attached — this one has none, so
-    // passing `scrub` alone does not smooth anything by itself; the actual
-    // smoothing happens in `tick`, which eases `renderedProgress` toward
-    // `targetProgress` every frame using this same constant.
-    const SCRUB_SECONDS = 0.6;
+    // GSAP's own scrub tweening only exists when a ScrollTrigger has an
+    // `animation` attached — this one has none, so this option does not
+    // smooth anything by itself. What it actually does here, and why it
+    // must stay: GSAP only fires `onUpdate` on *every* scroll tick when
+    // `scrub` is truthy or exactly `0`; remove it (leave it `undefined`) and
+    // this trigger is instead treated as a plain enter/leave toggle, so
+    // `onUpdate` only fires on those state changes and `targetProgress`
+    // freezes mid-scroll between them. The specific number below has no
+    // effect of its own for a triggerless-animation scrub like this one —
+    // any truthy value (or `0`) behaves identically — so it must NOT be read
+    // as, or reused as, the actual smoothing time constant: that is a
+    // different quantity with different units of meaning to GSAP than to
+    // this loop, and conflating the two (an earlier version of this file
+    // shared one constant between them) is exactly how the smoothing bug
+    // below arose.
+    const GSAP_SCRUB_OPTION = 0.6;
+    // Smoothing time constant (seconds) for `tick`'s own exponential-decay
+    // easing of `renderedProgress` toward `targetProgress`, below. An
+    // exponential decay with time constant τ reaches only ~63% of the way
+    // to its target after τ seconds and needs about 5τ to fully converge —
+    // so this must be small relative to a typical scroll traversal, not
+    // equal to some GSAP-side "feels like 0.6s" duration. At τ = 0.6, a
+    // ~1.5s scroll across the hero (an ordinary scroll speed) leaves
+    // `renderedProgress` around 0.63 at the moment true progress hits 1 —
+    // short of 0.7, where the background handoff even begins — so
+    // `onToggle`'s endpoint force-snap would visibly jump `--bg-fx-opacity`
+    // from ~0 to 1 in a single frame instead of the crossfade playing. At
+    // τ = 0.15 (5τ = 0.75s, comfortably inside ordinary scroll speeds) the
+    // same 1.5s traversal reaches ~0.90 instead, well past the handoff
+    // start, while still smoothing out per-frame scroll jitter.
+    const PROGRESS_EASE_SECONDS = 0.15;
     // Once the eased progress is within this of its target, snap to the
     // target exactly. Exponential easing only ever approaches a target
     // asymptotically — without a snap, --bg-fx-opacity would ease toward 1
@@ -220,10 +263,10 @@ export function HeroMesh({ className }: { className?: string }) {
 
       // Scrub smoothing: ease the rendered progress toward the latest raw
       // scroll target, frame-rate independently (exponential decay toward
-      // the target with time constant SCRUB_SECONDS).
+      // the target with time constant PROGRESS_EASE_SECONDS).
       const remaining = targetProgress - renderedProgress;
       if (remaining !== 0) {
-        const ease = dt > 0 ? 1 - Math.exp(-dt / (SCRUB_SECONDS * 1000)) : 1;
+        const ease = dt > 0 ? 1 - Math.exp(-dt / (PROGRESS_EASE_SECONDS * 1000)) : 1;
         renderedProgress += remaining * ease;
         if (Math.abs(targetProgress - renderedProgress) < PROGRESS_SNAP_EPSILON) {
           renderedProgress = targetProgress;
@@ -233,8 +276,13 @@ export function HeroMesh({ className }: { className?: string }) {
       // Entrance-to-rig handoff: one-way. The instant the eased progress
       // reaches the threshold, the entrance is retired for good (see
       // `entranceFinished`'s own comment) rather than merely skipped for
-      // this frame.
+      // this frame. Capture the entrance's last spread value first so the
+      // blend below (see `HANDOFF_BLEND_MS`) has a continuous starting
+      // point instead of picking up wherever the rig's own value happens to
+      // be.
       if (!entranceFinished && renderedProgress >= ENTRANCE_HANDOFF_PROGRESS) {
+        handoffBlendFromSpread = state.spread;
+        handoffBlendElapsedMs = 0;
         finishEntrance();
       }
 
@@ -252,6 +300,19 @@ export function HeroMesh({ className }: { className?: string }) {
         const eased = 1 - Math.pow(1 - t, 3);
         state.spread = 3 - 2 * eased;
         if (entranceElapsedMs >= ENTRANCE_MS) finishEntrance();
+      } else if (handoffBlendElapsedMs < HANDOFF_BLEND_MS) {
+        // Blend the entrance's last value into the rig's own value — already
+        // written to `state.spread` by `applyProgress`, above — over
+        // `HANDOFF_BLEND_MS` instead of taking it in a single frame. Linear
+        // in blend-elapsed time, so it stays monotonic between the two
+        // values (no overshoot) and is frame-rate independent the same way
+        // the entrance and the scrub easing above are. Once
+        // `handoffBlendElapsedMs` reaches `HANDOFF_BLEND_MS` this branch
+        // stops running and `state.spread` is simply whatever `applyProgress`
+        // wrote — the rig has fully taken over.
+        handoffBlendElapsedMs = Math.min(handoffBlendElapsedMs + dt, HANDOFF_BLEND_MS);
+        const blendT = handoffBlendElapsedMs / HANDOFF_BLEND_MS;
+        state.spread = handoffBlendFromSpread + (state.spread - handoffBlendFromSpread) * blendT;
       }
 
       group.rotation.y += 0.0008;
@@ -278,8 +339,17 @@ export function HeroMesh({ className }: { className?: string }) {
     }
 
     function onVisibility() {
-      if (document.hidden) stop();
-      else start();
+      if (document.hidden) {
+        stop();
+        return;
+      }
+      // Mirror `onToggle`'s own on-screen test (`progress < 1`, not
+      // `isActive` — see its comment) rather than restarting unconditionally.
+      // Without this, refocusing a tab after the hero has fully scrolled
+      // away (the loop already stopped, deliberately, by `onToggle`) would
+      // resurrect the rAF loop and run it forever rendering an off-screen,
+      // invisible canvas every frame until the next scroll-driven toggle.
+      if (renderedProgress < 1) start();
     }
 
     function onResize() {
@@ -304,17 +374,23 @@ export function HeroMesh({ className }: { className?: string }) {
     // That is not a bug: the mesh group is centred on the origin and the
     // camera always looks straight down it, so whichever sphere gets
     // computed from an early frame is never used to cull the group out of
-    // the frustum, regardless of which spread produced it. If frustum
-    // culling is ever turned on for this group specifically (it is not,
-    // today), this note stops being true and the sphere would need
-    // recomputing per frame instead.
+    // the frustum, regardless of which spread produced it.
+    // `Object3D.frustumCulled` defaults to `true` and nothing in this file
+    // (or elsewhere) sets it `false` for this group, so frustum culling
+    // really is on for it, today — it just never matters, because the
+    // frozen sphere, wherever it was computed from, always intersects the
+    // frustum given the origin-centred/on-axis geometry above. If that
+    // geometry assumption ever changes (an off-centre group, or a camera
+    // that doesn't always look straight down the group's axis), this note
+    // stops being true and the sphere would need recomputing per frame
+    // instead.
     const trigger = host.closest("[data-hero]") ?? host;
 
     const scrollTrigger = ScrollTrigger.create({
       trigger: trigger as Element,
       start: "top top",
       end: "bottom top",
-      scrub: SCRUB_SECONDS,
+      scrub: GSAP_SCRUB_OPTION,
       onUpdate: (self) => {
         targetProgress = self.progress;
       },
