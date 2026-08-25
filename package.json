@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "cv:docx": "node cv/build_cv.js",
+    "cv:pdf": "python cv/build_cv_pdf.py"
   },
   "dependencies": {
     "gsap": "^3.15.0",
@@ -26,6 +28,7 @@
     "@types/react-dom": "^19",
     "@types/three": "^0.185.4",
     "@vitejs/plugin-react": "^6.0.2",
+    "docx": "^9.7.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
     "jsdom": "^29.1.1",

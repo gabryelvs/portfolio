@@ -1,0 +1,8 @@
+# Toolchain for build_cv_pdf.py, which renders cv-data.json to public/cv.pdf.
+#
+# Pinned exactly: the builder is reproducible (see the invariant note in
+# build_cv_pdf.py), and a different ReportLab release can change layout or
+# output bytes, which would show up as a diff in the checked-in PDF.
+#
+#   python -m pip install -r cv/requirements.txt
+reportlab==5.0.0
