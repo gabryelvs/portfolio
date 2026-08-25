@@ -149,33 +149,24 @@
       ]
     }
   ],
-  "academic": {
-    "heading": "Academic & coursework projects",
-    "items": [
-      {
-        "name": "Secure Web App with Multi-Factor Authentication",
-        "tech": "Python · University of Greenwich",
-        "bullets": [
-          "Built and presented a website with a secure multi-step login system (with a classmate), strengthening my programming and problem-solving skills."
-        ]
-      },
-      {
-        "name": "Database Design, Security & Optimisation",
-        "tech": "SQL · Greenwich & City of Westminster College",
-        "bullets": [
-          "Designed a database from scratch focused on security and reliability, and improved an existing company database by identifying vulnerabilities and optimising its structure."
-        ]
-      }
-    ],
-    "closing": "Other team projects: led a team of four building an e-commerce website (HTML/CSS/JavaScript); built a Python + database family-tree system with real-time updates; and collaborated on an educational mobile game — developing leadership, teamwork, and full-stack fundamentals."
-  },
   "experience": [
     {
-      "role": "Web Designer & Media",
-      "org": "Impact Brixton",
-      "period": "2021",
+      "role": "Runner",
+      "org": "The Ivy Market Grill, Covent Garden",
+      "period": "Jun 2026 – Present",
       "bullets": [
-        "Worked within a team to build a new company website, assisting with layout design, visual content, and user experience; also supported social media management and digital marketing."
+        "Front-of-house runner in a restaurant serving 400–600 covers a day: running food to section, handling allergen and dietary requirements, and keeping pace and accuracy through peak service.",
+        "Hold accuracy and composure through the busiest services; train new starters on section layout, allergen handling and service flow."
+      ]
+    },
+    {
+      "role": "Youth Leader (Volunteer)",
+      "org": "Cathedral International, West Norwood",
+      "period": "Jun 2023 – Present",
+      "bullets": [
+        "Lead a weekly session for 10–15 teenagers as part of the youth leadership team, covering mentoring, pastoral support, and planning session content.",
+        "Co-organised two youth events for 100–150 attendees, owning the technical side: live projection, visual design and art direction.",
+        "Serve on the church projection team (2024 – Present), operating live visuals across weekly services — cueing lyrics, media and slides in real time with no pre-built running order (ProPresenter)."
       ]
     }
   ],

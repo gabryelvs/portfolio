@@ -101,13 +101,13 @@ const projectBlocks = cv.projects.flatMap((p) => [
   ...p.bullets.map(bullet),
 ]);
 
-const academicBlocks = [
+const academicBlocks = cv.academic ? [
   new Paragraph({ spacing: { before: 140, after: 30 }, children: [
     new TextRun({ text: cv.academic.heading, italics: true, size: 19, color: GREY }),
   ]}),
   ...cv.academic.items.flatMap((a) => [projectTitle(a.name, a.tech), ...a.bullets.map(bullet)]),
   bullet(cv.academic.closing),
-];
+] : [];
 
 const experienceBlocks = cv.experience.flatMap((job) => [
   datedLine(

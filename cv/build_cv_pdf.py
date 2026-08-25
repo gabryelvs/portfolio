@@ -112,12 +112,13 @@ for project in CV["projects"]:
     story.append(Paragraph(SEP.join(meta), S["meta"]))
     story.append(bullets([esc(b) for b in project["bullets"]]))
 
-# ---- academic ----
-story.append(Paragraph(f"<i>{esc(CV['academic']['heading'])}</i>", S["small"]))
-story.append(bullets([
-    f"<b>{esc(item['name'])}</b> ({esc(item['tech'])}) — {esc(item['bullets'][0])}"
-    for item in CV["academic"]["items"]
-] + [esc(CV["academic"]["closing"])]))
+# ---- academic (optional) ----
+if CV.get("academic"):
+    story.append(Paragraph(f"<i>{esc(CV['academic']['heading'])}</i>", S["small"]))
+    story.append(bullets([
+        f"<b>{esc(item['name'])}</b> ({esc(item['tech'])}) — {esc(item['bullets'][0])}"
+        for item in CV["academic"]["items"]
+    ] + [esc(CV["academic"]["closing"])]))
 
 # ---- experience ----
 story.append(Paragraph("WORK EXPERIENCE", S["h"]))
