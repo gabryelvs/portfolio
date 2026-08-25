@@ -73,7 +73,7 @@ function linkLine(project) {
 }
 
 /** Right-aligned date against a bold left-hand label, e.g. a job or a school. */
-function datedLine(runs, period, size = 21) {
+function datedLine(runs, period) {
   return new Paragraph({
     spacing: { before: 60, after: 4 },
     tabStops: [{ type: TabStopType.RIGHT, position: TabStopPosition.MAX }],
