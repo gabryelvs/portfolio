@@ -4,6 +4,38 @@
 // same file to portfolio/public/cv.pdf. Two builders exist because docx and PDF
 // need different libraries, not because the content differs. Edit the JSON.
 
+// --- Reproducible output ---------------------------------------------------
+// This script regenerates a checked-in artefact, so two builds of unchanged
+// input must produce a byte-identical file. Otherwise every rebuild shows as a
+// diff and a real content change is lost in the noise.
+//
+// Two sources of per-run variance have to be pinned before docx is loaded:
+//   * Relationship IDs — docx mints them with nanoid, whose non-secure build
+//     draws from Math.random().
+//   * docProps/core.xml timestamps and zip entry mtimes — plain new Date().
+//
+// Patching the globals is safe here: this is a one-shot generator that exits
+// as soon as the file is written, so the patch cannot reach anything else.
+const BUILD_EPOCH = Date.UTC(2024, 0, 1);
+
+let seed = 0x9e3779b9;
+Math.random = () => {
+  seed = (seed + 0x6d2b79f5) | 0;
+  let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+  t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+};
+
+const RealDate = Date;
+global.Date = class extends RealDate {
+  constructor(...args) {
+    super(...(args.length ? args : [BUILD_EPOCH]));
+  }
+  static now() {
+    return BUILD_EPOCH;
+  }
+};
+
 const fs = require("fs");
 const {
   Document, Packer, Paragraph, TextRun, AlignmentType, LevelFormat,

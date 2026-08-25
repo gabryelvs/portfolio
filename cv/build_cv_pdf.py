@@ -12,6 +12,15 @@ import html
 import json
 from pathlib import Path
 
+from reportlab import rl_config
+
+# This script regenerates a checked-in artefact, so two builds of unchanged
+# input must produce a byte-identical file — otherwise every rebuild shows as a
+# diff and a real content change is lost in the noise. `invariant` pins the
+# per-run values ReportLab would otherwise vary: /CreationDate, /ModDate, and
+# the random /ID pair in the trailer. Must be set before the canvas is built.
+rl_config.invariant = 1
+
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.lib.colors import HexColor
