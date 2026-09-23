@@ -3,7 +3,9 @@
 Date: 2026-09-23
 Repo: `portfolio` (Next.js 16.2.9, React 19.2.4, Tailwind 4, TypeScript, Vitest)
 Branch: `redesign`
-Status: decisions agreed in grilling sessions. Project fixes are in flight; the mockup comes next, then the plan.
+Status: implemented on `redesign`.
+- **Mockup:** signed off by Gabryel on 2026-09-23 (`docs/superpowers/mockups/2026-09-23-redesign-mockup.html`). Inter and the numbered sections are kept by his explicit choice.
+- **Direction:** set by the owner in grilling sessions, then pinned. The design skill's concept roll was skipped on purpose, because a user-pinned direction takes precedence over it.
 
 ## Goal
 

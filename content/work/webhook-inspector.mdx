@@ -4,23 +4,37 @@ When you integrate with Stripe, GitHub or any other service that sends webhooks,
 
 ## Constraints
 
+<Claim>
 - **The capture endpoint is public.** There are no accounts. The bin id in the URL, a random 32-character UUID, is the only secret.
 - **The sender must never see our failures.** A webhook provider that gets errors back will retry, back off, and eventually disable the endpoint. Whatever goes wrong on our side, capture answers 200.
 - **Payloads can be any size; memory can't.** The whole app runs on one machine with 256 MB of RAM.
 - **Storage stays bounded.** A bin keeps its latest 500 requests, bins expire after seven days, and each client can create at most ten bins a minute.
 
+<Evidence path="backend/app/routers/capture.py" lines="14-15">the 1 MB body cap and 500-request limit</Evidence>
+</Claim>
+
 ## Architecture
 
+<Claim>
 A FastAPI backend using SQLAlchemy, on PostgreSQL in production and SQLite in tests. There are two tables: `bins` and the captured `requests`, which store headers and query parameters as JSON. A catch-all route under `/in/{bin_id}` accepts any HTTP method and path. The JSON API lives under `/api`. The React and TypeScript front end is built into the same container and served by FastAPI, and a bin's page polls for new requests every two seconds. At the commit this page describes, it runs on Fly.io behind Fly's proxy.
+
+<Evidence path="backend/app/models.py" lines="20-43">the two tables</Evidence>
+</Claim>
 
 ## Hard problems
 
 ### Never failing the sender, without hiding bugs
 
 <Claim>
-The whole capture path sits inside one `try`. An unknown bin still gets a 404, because that tells the sender it has the wrong URL. Any other exception is logged and swallowed, and the sender gets its 200. A test breaks the database on purpose and checks that the response is still 200.
+The whole capture path sits inside one `try`. An unknown bin still gets a 404, because that tells the sender it has the wrong URL. Any other exception is logged and swallowed, and the sender gets its 200.
 
 <Evidence path="backend/app/routers/capture.py" lines="27-62">the capture route: 404 for unknown bins, 200 for everything else</Evidence>
+</Claim>
+
+<Claim>
+A test breaks the database on purpose and checks that the response is still 200.
+
+<Evidence path="backend/tests/test_capture.py" lines="86-95">test_capture_returns_200_when_db_fails</Evidence>
 </Claim>
 
 <Claim>
@@ -37,7 +51,24 @@ The first version read the whole body into memory, so one multi-gigabyte POST co
 <Evidence path="backend/app/routers/capture.py" lines="31-41">the stream loop with its 1 MB cap</Evidence>
 </Claim>
 
+```python
+raw = bytearray()
+truncated = False
+async for chunk in request.stream():
+    if len(raw) < MAX_BODY_BYTES:
+        need = MAX_BODY_BYTES - len(raw)
+        raw.extend(chunk[:need])
+        if len(chunk) > need:
+            truncated = True
+    elif chunk:
+        truncated = True
+```
+
+<Claim>
 Tests cover truncation, pruning and expiry. What they don't prove is that memory stays flat under a huge upload, only that the stored body is capped. That gap is listed below.
+
+<Evidence path="backend/tests/test_capture.py" lines="59-66">test_capture_truncates_large_body</Evidence>
+</Claim>
 
 ### Bugs only production found
 
@@ -48,14 +79,24 @@ Two bugs appeared only after the first deploy. On a cold start the app booted fa
 </Claim>
 
 <Claim>
-The second: every captured request recorded the same IP address, the proxy's. Behind Fly, the connection the app sees comes from Fly's proxy, not the sender. I fixed capture to read the `Fly-Client-IP` header. Weeks later, an audit found the bin-creation rate limit had the same bug: it keyed on the socket address too, so every visitor shared one budget of ten bins a minute. Both now go through a single helper, so they can't disagree about who a client is. It also stopped trusting the left-most `X-Forwarded-For` entry, which any client can set to dodge the limit. A test sends from two clients behind the same proxy and checks that one can't use up the other's quota.
+The second: every captured request recorded the same IP address, the proxy's. Behind Fly, the connection the app sees comes from Fly's proxy, not the sender. I fixed capture to read the `Fly-Client-IP` header. Weeks later, an audit found the bin-creation rate limit had the same bug: it keyed on the socket address too, so every visitor shared one budget of ten bins a minute. Both now go through a single helper, so they can't disagree about who a client is. It also stopped trusting the left-most `X-Forwarded-For` entry, which any client can set to dodge the limit.
 
 <Evidence path="backend/app/client_ip.py" lines="13-30">one client-IP rule for capture and the rate limiter</Evidence>
 </Claim>
 
+<Claim>
+A test sends from two clients behind the same proxy and checks that one can't use up the other's quota.
+
+<Evidence path="backend/tests/test_ratelimit.py" lines="10-22">test_rate_limit_is_per_client_behind_proxy</Evidence>
+</Claim>
+
 ## How it's tested
 
-27 backend tests with pytest cover bins, capture, requests, database start-up, health and rate limiting. 7 front-end tests with Vitest cover the request list and the detail panel. GitHub Actions runs both suites on every pull request, along with the front end's lint, type-check and production build. The backend tests run on SQLite, which is fast but not the production database, and that gap is how the content-type bug got past every test.
+27 backend tests with pytest cover bins, capture, requests, database start-up, health and rate limiting. 7 front-end tests with Vitest cover the request list and the detail panel. <Claim>
+GitHub Actions runs both suites on every pull request, along with the front end's lint, type-check and production build. The backend tests run on SQLite, which is fast but not the production database, and that gap is how the content-type bug got past every test.
+
+<Evidence path=".github/workflows/ci.yml">backend and front-end jobs</Evidence>
+</Claim>
 
 ## What I'd change
 
@@ -68,4 +109,5 @@ The second: every captured request recorded the same IP address, the proxy's. Be
 ## Links
 
 - [Source at the commit this page describes](https://github.com/gabryelvs/webhook-inspector/tree/c98d29be55d412c5a8638f8d87769fd15caa513b)
+- [The rate-limit test](https://github.com/gabryelvs/webhook-inspector/blob/c98d29be55d412c5a8638f8d87769fd15caa513b/backend/tests/test_ratelimit.py#L10-L22)
 - [Live app](https://webhook-inspector-gv.fly.dev)

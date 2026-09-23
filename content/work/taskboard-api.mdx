@@ -4,15 +4,23 @@ A Trello-style REST API: projects with invite-only membership, ordered columns, 
 
 ## Constraints
 
+<Claim>
 - **Positions stay dense.** The cards in a column are numbered 0 to n−1: no gaps, no duplicates, whatever order the moves arrive in.
 - **No existence leaks.** Someone who isn't a member of a project can't tell whether that project, its columns or its cards exist.
 - **Short-lived access, rotating refresh.** Access tokens last 15 minutes. Refresh tokens last 7 days, are single-use, and are stored only as hashes.
 - **Errors are machine-readable.** Every error is an RFC 7807 problem+json response.
 - **The schema belongs to migrations.** Flyway creates it, and Hibernate only validates that the code matches.
 
+<Evidence path="src/main/resources/application.yml" lines="13-17">token lifetimes</Evidence>
+</Claim>
+
 ## Architecture
 
+<Claim>
 Spring Boot 3 on Java 21. A stateless Spring Security filter chain verifies the JWT on every request. Behind it, one service per aggregate (projects, members, columns, cards, comments) owns the business rules, and every service goes through a single access check before touching data. Spring Data repositories sit over PostgreSQL. There are 28 endpoints, documented with OpenAPI and browsable in Swagger UI. At the commit this page describes, it runs on Fly.io.
+
+<Evidence path="src/main/resources/db/migration/V1__init.sql">the schema, owned by Flyway</Evidence>
+</Claim>
 
 ## Hard problems
 
@@ -24,7 +32,20 @@ A card move touches up to two columns: close the gap in the source, open one in 
 <Evidence path="src/main/java/com/gabryel/taskboard/card/CardService.java" lines="122-140">sorted column locks, then a re-read of the card</Evidence>
 </Claim>
 
+```java
+// serialize concurrent moves per project: lock source and target column rows
+// in deterministic id order to avoid deadlock
+Set<UUID> lockedColumnIds = java.util.stream.Stream.of(card.getColumn().getId(), target.getId())
+        .distinct().sorted()
+        .peek(colId -> columns.lockById(colId))
+        .collect(java.util.stream.Collectors.toSet());
+```
+
+<Claim>
 The first version read the card before taking the locks, and had an off-by-one when moving a card to the end of its own column. Both were fixed with tests. The concurrency tests fire five threads moving cards at once, and four threads moving the same card at once. They assert the positions stay dense and every response is either a success or a clean 409.
+
+<Evidence path="src/test/java/com/gabryel/taskboard/card/CardMoveTest.java" lines="90-121">concurrentMovesKeepPositionsDense</Evidence>
+</Claim>
 
 ### A refresh token used twice
 
@@ -32,6 +53,12 @@ The first version read the card before taking the locks, and had an off-by-one w
 Every refresh revokes the token it used and issues a new pair. A refresh token that is presented again after it was revoked means two parties hold it, and one of them shouldn't. So the service revokes every refresh token that user has, signing them out everywhere. The request still fails with 401, and normally a failing request rolls back its transaction, which would undo the revocation too. The method is annotated to commit on that particular error, so the revocation survives.
 
 <Evidence path="src/main/java/com/gabryel/taskboard/auth/AuthService.java" lines="63-77">token reuse revokes every session</Evidence>
+</Claim>
+
+<Claim>
+A test rotates a token, replays the old one, and checks that the new one no longer works either.
+
+<Evidence path="src/test/java/com/gabryel/taskboard/auth/RefreshTest.java" lines="41-51">reusedRefreshTokenRevokesWholeFamily</Evidence>
 </Claim>
 
 ### Not found, not forbidden
@@ -53,7 +80,11 @@ A last review before launch found four real problems, and each was fixed with a 
 
 ## How it's tested
 
+<Claim>
 62 tests. 59 are integration tests that run the real application against a real PostgreSQL, started once per test run with Testcontainers and exercised through Spring's MockMvc. Nothing about locking or transactions is mocked. The other 3 are unit tests for the JWT service. The suite grew from 55 to 62 during the final review: seven tests across the four fixes. GitHub Actions runs it on every push to main and every pull request.
+
+<Evidence path="src/test/java/com/gabryel/taskboard/IntegrationTest.java" lines="12-32">one shared PostgreSQL container for every integration test</Evidence>
+</Claim>
 
 ## What I'd change
 
@@ -65,4 +96,5 @@ A last review before launch found four real problems, and each was fixed with a 
 ## Links
 
 - [Source at the commit this page describes](https://github.com/gabryelvs/taskboard-api/tree/d5d852447f437738e815d2fa66cbaf287f652640)
+- [The concurrent-move test](https://github.com/gabryelvs/taskboard-api/blob/d5d852447f437738e815d2fa66cbaf287f652640/src/test/java/com/gabryel/taskboard/card/CardMoveTest.java#L90-L121)
 - [Live API docs](https://taskboard-gv.fly.dev/swagger-ui.html)
