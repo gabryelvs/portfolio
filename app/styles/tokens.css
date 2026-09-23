@@ -1,0 +1,46 @@
+/* Colour and font tokens. Light on :root, dark on .dark (dark is the default via the inline script in layout). */
+:root {
+  /* Unlayered, so these override Tailwind's theme-layer defaults for both our CSS and the font-sans/font-mono utilities.
+     --font-inter / --font-jetbrains come from next/font classes on <html>. */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+  --bg: #fafafa;
+  --surface-1: #ffffff;
+  --surface-2: #f3f3f4;
+  --surface-3: #ececee;
+  --line: #e8e8e8;
+  --line-strong: #d6d6d8;
+  --fg: #171717;
+  --fg-2: #404047;
+  --muted: #6b6b70;
+  --accent: #4f46e5;
+  --accent-soft: rgba(79, 70, 229, 0.1);
+  --live: #15803d;
+  --grid: rgba(0, 0, 0, 0.045);
+  --btn-bg: #171717;
+  --btn-fg: #fafafa;
+  --code-bg: #ffffff;
+  --selection: rgba(79, 70, 229, 0.18);
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #08090a;
+  --surface-1: #0e0f11;
+  --surface-2: #141518;
+  --surface-3: #1b1c20;
+  --line: #202226;
+  --line-strong: #2f3137;
+  --fg: #f7f8f8;
+  --fg-2: #b6bac1;
+  --muted: #8a8f98;
+  --accent: #9296fb;
+  --accent-soft: rgba(146, 150, 251, 0.14);
+  --live: #3ecf8e;
+  --grid: rgba(255, 255, 255, 0.04);
+  --btn-bg: #f7f8f8;
+  --btn-fg: #08090a;
+  --code-bg: #0e0f11;
+  --selection: rgba(146, 150, 251, 0.32);
+  color-scheme: dark;
+}
