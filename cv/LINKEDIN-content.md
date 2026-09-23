@@ -31,7 +31,7 @@ Code: https://github.com/gabryelvs/fx-service  |  Live demo: https://fx-service-
 • Webhook-Dispatcher — reliable webhook delivery via a Redis queue and a separate worker. Requests are signed (HMAC-SHA256), failures retry with exponential backoff, and exhausted deliveries are dead-lettered and replayable.
 Code: https://github.com/gabryelvs/webhook-dispatcher
 
-• Taskboard API — a Trello-like task manager API in Java and Spring Boot. JWT auth with refresh-token rotation (reuse revokes every session for that user), 404-no-leak authorization, and transactional card ordering under pessimistic locking — 62 Testcontainers tests.
+• Taskboard API — a Trello-like task manager API in Java and Spring Boot. JWT auth with refresh-token rotation (reuse revokes every session for that user), 404-no-leak authorization, and transactional card ordering under pessimistic locking — 62 tests, 59 on real PostgreSQL.
 Code: https://github.com/gabryelvs/taskboard-api  |  Live demo: https://taskboard-gv.fly.dev/swagger-ui.html
 
 • OWASP Security Lab — an intentionally-vulnerable FastAPI app covering six OWASP Top 10 issues, each with a working exploit, a hardened fix, and tests proving both — a hands-on study in secure coding.
@@ -102,7 +102,7 @@ LinkedIn → your profile → Featured → "+" → Add a link. Add these (lead w
 
 **Link 13**
 - URL: `https://github.com/gabryelvs/taskboard-api`
-- Title: `Taskboard API — JWT refresh-token rotation, transactional card ordering, 62 Testcontainers tests`
+- Title: `Taskboard API — JWT refresh-token rotation, transactional card ordering, 62 tests (59 on real PostgreSQL)`
 
 *If you only pin a handful: portfolio first, then Webhook Inspector (fullstack), Taskboard
 (Java/Spring — the one most London backend roles screen for), and PayLedger (fintech).*
@@ -162,7 +162,7 @@ Stack: Python, FastAPI, PostgreSQL, React, TypeScript, Tailwind, Docker.
 - Name: `Taskboard API — Trello-like task manager API`
 - Description:
 ```
-A Trello-like task manager REST API in Java and Spring Boot. Authentication uses JWT with refresh-token rotation: reusing a rotated refresh token revokes every session for that user, so a stolen refresh token is useless once the real client has rotated it, and every session is signed out. Project membership is role-based (OWNER/MEMBER) with 404-no-leak authorization, so an unauthorised user cannot even confirm a resource exists. Drag-and-drop card ordering is transactional with pessimistic column locking in a deterministic lock order, proven under concurrent-move integration tests; errors are RFC 7807 problem+json. Test-driven with 62 Testcontainers integration tests against a real PostgreSQL, OpenAPI/Swagger docs, GitHub Actions CI, deployed on Fly.io.
+A Trello-like task manager REST API in Java and Spring Boot. Authentication uses JWT with refresh-token rotation: reusing a rotated refresh token revokes every session for that user, so a stolen refresh token is useless once the real client has rotated it, and every session is signed out. Project membership is role-based (OWNER/MEMBER) with 404-no-leak authorization, so an unauthorised user cannot even confirm a resource exists. Drag-and-drop card ordering is transactional with pessimistic column locking in a deterministic lock order, proven under concurrent-move integration tests; errors are RFC 7807 problem+json. Test-driven with 62 tests, 59 of them Testcontainers integration tests against a real PostgreSQL, OpenAPI/Swagger docs, GitHub Actions CI, deployed on Fly.io.
 Stack: Java 21, Spring Boot, Spring Security, PostgreSQL, Testcontainers, Docker.
 ```
 - Link: `https://taskboard-gv.fly.dev/swagger-ui.html`

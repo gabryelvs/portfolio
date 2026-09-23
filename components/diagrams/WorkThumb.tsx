@@ -31,7 +31,7 @@ function WebhookInspectorThumb() {
   return (
     <svg className="dgm" viewBox="0 0 400 176" role="img" aria-labelledby="th-wi-t" aria-describedby="th-wi-d">
       <title id="th-wi-t">Webhook Inspector capture path</title>
-      <desc id="th-wi-d">A webhook sender reaches the Fly proxy, then the capture route, which stores at most one megabyte per request in Postgres and always answers 200. The browser polls every two seconds.</desc>
+      <desc id="th-wi-d">A webhook sender reaches Vercel&apos;s edge, then the capture route, which stores at most one megabyte per request in Postgres and always answers 200. The browser polls every two seconds.</desc>
       <path className="link" d="M200 102 V138" />
       <path className="hot" d="M60 38 H200 V88 H340" />
       <path className="hot-draw" pathLength={1} d="M60 38 H200 V88 H340" />
@@ -39,7 +39,7 @@ function WebhookInspectorThumb() {
         <rect className="node" x="12" y="24" width="96" height="28" rx="4" />
         <text x="60" y="42" textAnchor="middle">sender</text>
         <rect className="node" x="152" y="24" width="96" height="28" rx="4" />
-        <text x="200" y="42" textAnchor="middle" className="t-muted">Fly proxy</text>
+        <text x="200" y="42" textAnchor="middle" className="t-muted">Vercel edge</text>
         <rect className="node-strong" x="132" y="74" width="136" height="28" rx="4" />
         <text x="200" y="92" textAnchor="middle">/in/{"{bin}"} ≤1 MB</text>
         <rect className="node-strong" x="292" y="74" width="96" height="28" rx="4" />

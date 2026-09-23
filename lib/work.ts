@@ -60,19 +60,19 @@ export const caseStudies: CaseStudy[] = [
     title: "Webhook Inspector",
     repoName: "webhook-inspector",
     summary:
-      "A public endpoint that captures any webhook sent to it and shows it live, on a 256 MB machine that must never tell the sender something went wrong.",
+      "A public endpoint that captures any webhook sent to it and shows it live, and never tells the sender that something went wrong on its side.",
     facts: [
       { label: "Capture", value: "Body streamed, capped at 1 MB, always answers 200" },
       { label: "In prod", value: "Cold-start crash and wrong client IP, found live and fixed" },
-      { label: "Proof", value: "27 pytest · 7 Vitest · CI on every push" },
+      { label: "Proof", value: "47 pytest · 7 Vitest · CI on every PR" },
     ],
     stack: ["FastAPI", "PostgreSQL", "React", "TypeScript", "Docker"],
     role: "Solo: design, build, deploy",
-    tests: "27 pytest · 7 Vitest, run in CI",
+    tests: "47 pytest · 7 Vitest, run in CI",
     repoUrl: "https://github.com/gabryelvs/webhook-inspector",
     liveUrl: "https://webhook-inspector-gv.vercel.app",
     liveLabel: "Live app",
-    commit: "c98d29be55d412c5a8638f8d87769fd15caa513b",
+    commit: "48e5aec92726cce021ae3b46225bf1f1d8dfb087",
     thumbCaption: "Capture first, fail quietly, never block the sender.",
   },
   {
@@ -84,7 +84,7 @@ export const caseStudies: CaseStudy[] = [
     facts: [
       { label: "Ordering", value: "Columns locked in UUID order; positions stay dense" },
       { label: "Auth", value: "Refresh rotation; reuse revokes every session" },
-      { label: "Proof", value: "62 tests on real PostgreSQL (Testcontainers)" },
+      { label: "Proof", value: "62 tests, 59 on real PostgreSQL (Testcontainers)" },
     ],
     stack: ["Java 21", "Spring Boot", "PostgreSQL", "Testcontainers", "Docker"],
     role: "Solo: design, build, deploy",
