@@ -22,7 +22,7 @@ export const LINKS = {
   email: "mailto:hello@gabryelverissimo.dev",
   emailLabel: "hello@gabryelverissimo.dev",
   github: "https://github.com/gabryelvs",
-  linkedin: "https://www.linkedin.com/in/gabryel-ver%C3%ADssimo-b1b931261",
+  linkedin: "https://www.linkedin.com/in/gabryel-verissimo-b1b931261",
   cv: "/cv.pdf",
   source: "https://github.com/gabryelvs/portfolio",
 } as const;
