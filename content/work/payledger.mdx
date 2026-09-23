@@ -45,7 +45,7 @@ The first version looked the key up, ran the transfer and committed, then stored
 ### A wallet that isn't yours
 
 <Claim>
-While preparing this write-up I audited the API and found that a transfer never checked who owned the source wallet: any signed-in user could move money out of anyone's. Every wallet, statement and transaction route now checks ownership and answers with the same 404 body as a missing id. Transfers can still go *to* anyone's wallet, since that's what a payment is. That means a transfer response can reveal whether a destination exists and whether its currency matches, and response times aren't constant. The README says so plainly.
+An audit I ran with AI review while preparing this write-up found that a transfer never checked who owned the source wallet: any signed-in user could move money out of anyone's. Every wallet, statement and transaction route now checks ownership and answers with the same 404 body as a missing id. Transfers can still go *to* anyone's wallet, since that's what a payment is. That means a transfer response can reveal whether a destination exists and whether its currency matches, and response times aren't constant. The README says so plainly.
 
 <Evidence path="app/services/transfer_service.py" lines="137-140">the source wallet must belong to the caller</Evidence>
 </Claim>
