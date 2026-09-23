@@ -9,8 +9,8 @@ const skills = {
 
 export function About() {
   return (
-    <section id="about" className="mx-auto max-w-4xl px-6 py-24">
-      <SectionHeading index="02" title="About" />
+    <section id="about" aria-labelledby="about-title" className="mx-auto max-w-4xl px-6 py-24">
+      <SectionHeading index="02" title="About" id="about-title" />
       <p className="mb-12 max-w-3xl text-lg leading-relaxed text-[var(--fg-muted)]">
         I&apos;m a software engineer in London. I build small, production-shaped services —
         tested, containerised, and deployed — and I care about correctness, resilience, and clean

@@ -8,7 +8,7 @@ import type { Project } from "@/lib/github";
 export function Projects({ projects }: { projects: Project[] }) {
   return (
     <section id="projects" className="mx-auto max-w-6xl px-6 py-24">
-      <SectionHeading index="01" title="Projects" />
+      <SectionHeading index="01" title="Projects" id="projects-title" />
       {projects.length === 0 ? (
         <p className="text-[var(--fg-muted)]">No projects to show yet — check back soon.</p>
       ) : (
