@@ -5,7 +5,7 @@
 If you discover a security issue in this project, please report it privately
 rather than opening a public issue.
 
-- **Email:** gabryelverissimo12@gmail.com
+- **Email:** hello@gabryelverissimo.dev
 - Please include steps to reproduce, affected URL/route, and impact.
 - I aim to acknowledge reports within **5 working days** and to provide a
   remediation timeline after triage.

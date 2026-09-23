@@ -19,8 +19,8 @@ export const BUILT_WITH =
   "AI-assisted development (Claude Code). I set the design and direction, reviewed each change, and verified it with the tests below.";
 
 export const LINKS = {
-  email: "mailto:gabryelverissimo12@gmail.com",
-  emailLabel: "gabryelverissimo12@gmail.com",
+  email: "mailto:hello@gabryelverissimo.dev",
+  emailLabel: "hello@gabryelverissimo.dev",
   github: "https://github.com/gabryelvs",
   linkedin: "https://www.linkedin.com/in/gabryel-ver%C3%ADssimo-b1b931261",
   cv: "/cv.pdf",

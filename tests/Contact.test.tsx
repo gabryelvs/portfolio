@@ -12,9 +12,9 @@ describe("Contact", () => {
 
   it("links email, GitHub, LinkedIn and the CV", () => {
     render(<Contact />);
-    expect(screen.getByRole("link", { name: "gabryelverissimo12@gmail.com" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "hello@gabryelverissimo.dev" })).toHaveAttribute(
       "href",
-      "mailto:gabryelverissimo12@gmail.com",
+      "mailto:hello@gabryelverissimo.dev",
     );
     expect(screen.getByRole("link", { name: "GitHub" })).toHaveAttribute("href", "https://github.com/gabryelvs");
     expect(screen.getByRole("link", { name: "LinkedIn" })).toHaveAttribute("href", expect.stringContaining("linkedin.com"));
