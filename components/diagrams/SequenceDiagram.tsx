@@ -10,12 +10,22 @@ const NARROW_ROW = 52;
  * The part before the separator is the short main label; the rest,
  * trimmed, is an optional detail line. Labels without the separator
  * have no detail.
+ *
+ * Trims trailing separators (` ·` and whitespace) from main and
+ * leading separators (`· ` and whitespace) from detail.
  */
 export function splitLabel(label: string): { main: string; detail: string | null } {
   const i = label.indexOf("  ");
   if (i === -1) return { main: label, detail: null };
-  const main = label.slice(0, i);
-  const detail = label.slice(i + 2).trim();
+  let main = label.slice(0, i);
+  let detail = label.slice(i + 2).trim();
+
+  // Trim trailing separator from main (` ·` and whitespace)
+  main = main.replace(/\s·\s*$/, "");
+
+  // Trim leading separator from detail (`· ` and whitespace)
+  detail = detail.replace(/^\s*·\s+/, "");
+
   return { main, detail: detail.length > 0 ? detail : null };
 }
 

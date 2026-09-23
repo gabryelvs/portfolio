@@ -1,5 +1,5 @@
 svg.dgm { display: block; width: 100%; height: auto; overflow: visible; }
-.dgm text { font-family: var(--font-mono); fill: var(--fg-2); }
+.dgm text { font-family: var(--font-mono); fill: var(--fg-2); font-variant-ligatures: none; font-feature-settings: "calt" 0; }
 .dgm .t-muted { fill: var(--muted); }
 .dgm .node { fill: var(--surface-2); stroke: var(--line-strong); stroke-width: 1; }
 .dgm .node-strong { fill: var(--surface-3); stroke: var(--muted); stroke-width: 1; }

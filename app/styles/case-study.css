@@ -45,8 +45,8 @@
 .prose li::marker { color: var(--muted); }
 .prose a { color: var(--accent); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent); text-underline-offset: 3px; text-decoration-thickness: 1px; }
 .prose a:hover { text-decoration-color: var(--accent); }
-.prose :not(pre) > code { font-family: var(--font-mono); font-size: 0.84em; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; color: var(--fg); }
-.prose pre { margin: 8px 0 24px; padding: 18px 20px; background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px; overflow-x: auto; font-family: var(--font-mono); font-size: 13px; line-height: 20px; color: var(--fg-2); max-width: 680px; tab-size: 4; }
+.prose :not(pre) > code { font-family: var(--font-mono); font-size: 0.84em; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; color: var(--fg); font-variant-ligatures: none; font-feature-settings: "calt" 0; }
+.prose pre { margin: 8px 0 24px; padding: 18px 20px; background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px; overflow-x: auto; font-family: var(--font-mono); font-size: 13px; line-height: 20px; color: var(--fg-2); max-width: 680px; tab-size: 4; font-variant-ligatures: none; font-feature-settings: "calt" 0; }
 .prose pre code { font: inherit; background: none; border: 0; padding: 0; color: inherit; }
 
 .pair { display: grid; grid-template-columns: minmax(0, 680px) 220px; column-gap: 56px; align-items: start; }
@@ -54,7 +54,7 @@
 .pair > aside.note { grid-column: 2; grid-row: 1 / span 99; }
 aside.note { font-size: 12px; line-height: 1.55; color: var(--muted); border-left: 1px solid var(--line-strong); padding: 2px 0 2px 12px; margin-top: 6px; }
 aside.note .k { display: block; color: var(--fg-2); margin-bottom: 4px; }
-aside.note a { color: var(--accent); word-break: break-word; }
+aside.note a { color: var(--accent); overflow-wrap: break-word; }
 aside.note a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .cs-next { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--line); margin-top: 72px; }

@@ -112,6 +112,22 @@ describe("splitLabel", () => {
   it("trims the detail", () => {
     expect(splitLabel("main   detail  ")).toEqual({ main: "main", detail: "detail" });
   });
+
+  it("trims trailing separator from main and leading separator from detail", () => {
+    // Example 1: "UPDATE balances ·  save response on the key"
+    expect(splitLabel("UPDATE balances ·  save response on the key")).toEqual({
+      main: "UPDATE balances",
+      detail: "save response on the key",
+    });
+  });
+
+  it("trims trailing separator from multi-level main labels", () => {
+    // Example 2: "park at −1 · close gap ·  open gap · place"
+    expect(splitLabel("park at −1 · close gap ·  open gap · place")).toEqual({
+      main: "park at −1 · close gap",
+      detail: "open gap · place",
+    });
+  });
 });
 
 describe("narrow sequence diagram labels fit the phone frame", () => {
