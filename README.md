@@ -78,7 +78,7 @@ npm start
    - Add it to your Vercel project's **Environment Variables** as `GITHUB_TOKEN`.
 4. **Deploy**: Your site is live. Vercel automatically redeploys on every push to the main branch.
 
-**Live URL**: https://portfolio-gabryelverissimo.vercel.app/
+**Live URL**: https://gabryelverissimo.dev (the old portfolio-gabryelverissimo.vercel.app address redirects here)
 
 ## Curating Your Showcase
 
@@ -134,12 +134,12 @@ This site is treated as a small production deployment and hardened accordingly:
 Verify the headers live:
 
 ```bash
-curl -sI https://portfolio-gabryelverissimo.vercel.app/ | grep -i \
+curl -sI https://gabryelverissimo.dev/ | grep -i \
   -e content-security-policy -e strict-transport -e x-frame -e x-content-type \
   -e referrer-policy -e permissions-policy
 ```
 
-Or scan at [securityheaders.com](https://securityheaders.com/?q=https://portfolio-gabryelverissimo.vercel.app/).
+Or scan at [securityheaders.com](https://securityheaders.com/?q=https://gabryelverissimo.dev/).
 
 ## License
 

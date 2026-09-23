@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import { AVAILABILITY, BUILT_WITH, CONTACT_LEAD, CONTACT_LINE, LINKS, ROLE, SITE_NAME, SITE_URL } from "@/lib/site";
 
 describe("site constants", () => {
-  it("uses an https site URL without a trailing slash", () => {
-    expect(SITE_URL).toMatch(/^https:\/\/[^/]+$/);
+  it("uses the custom domain, https, without a trailing slash", () => {
+    expect(SITE_URL).toBe("https://gabryelverissimo.dev");
   });
 
   it("names the person and the role", () => {

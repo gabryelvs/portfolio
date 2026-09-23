@@ -1,7 +1,6 @@
 /** Site-wide facts. The single source for metadata, UI copy and links. */
 
-// Swap to https://gabryelverissimo.dev once the domain is live (see spec, Rollout step 8).
-export const SITE_URL = "https://portfolio-gabryelverissimo.vercel.app";
+export const SITE_URL = "https://gabryelverissimo.dev";
 
 export const SITE_NAME = "Gabryel Veríssimo";
 export const ROLE = "Software Engineer";

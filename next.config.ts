@@ -40,10 +40,26 @@ const securityHeaders = [
   { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
 ];
 
+/**
+ * Hosts that must redirect to the custom domain. Exact names only, so Vercel
+ * preview deployments (portfolio-git-<branch>-….vercel.app) keep working.
+ * The old vercel.app address is on CVs already sent, so it redirects rather
+ * than disappearing.
+ */
+const REDIRECT_HOSTS = ["www.gabryelverissimo.dev", "portfolio-gabryelverissimo.vercel.app"];
+
 const nextConfig: NextConfig = {
   pageExtensions: ["ts", "tsx", "md", "mdx"],
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
+  },
+  async redirects() {
+    return REDIRECT_HOSTS.map((host) => ({
+      source: "/:path*",
+      has: [{ type: "host" as const, value: host }],
+      destination: "https://gabryelverissimo.dev/:path*",
+      permanent: true,
+    }));
   },
 };
 

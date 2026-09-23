@@ -42,7 +42,7 @@ Code: https://github.com/gabryelvs/store-demo  |  Live demo: https://store-demo-
 
 I'm looking for graduate and junior software engineer roles in London from summer 2027, where I can keep learning from experienced engineers and contribute to real systems.
 
-Portfolio: https://portfolio-gabryelverissimo.vercel.app
+Portfolio: https://gabryelverissimo.dev
 GitHub: https://github.com/gabryelvs
 ```
 
@@ -53,7 +53,7 @@ GitHub: https://github.com/gabryelvs
 LinkedIn → your profile → Featured → "+" → Add a link. Add these (lead with the portfolio site):
 
 **Link 1 (feature this first)**
-- URL: `https://portfolio-gabryelverissimo.vercel.app`
+- URL: `https://gabryelverissimo.dev`
 - Title: `Portfolio — software projects, live demos & CV`
 
 **Link 2**
