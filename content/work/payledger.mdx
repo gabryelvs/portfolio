@@ -103,7 +103,9 @@ The ownership tests act as a second user against transfers, wallets, statements 
 - demo deposits racing transfers to the treasury, which caught a deadlock where one path locked the treasury out of order;
 - 20 first-ever deposits racing to create the treasury, which caught a 500 on a unique constraint.
 
-The last two were found by an independent review of the fixes above. <Claim>
+The last two were found by an independent review of the fixes above.
+
+<Claim>
 CI runs the linter and the full suite against PostgreSQL 16 on every push and pull request. Before this round of work the suite had 31 tests.
 
 <Evidence path=".github/workflows/ci.yml">ruff and pytest against a PostgreSQL 16 service</Evidence>

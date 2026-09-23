@@ -54,6 +54,11 @@ describe.each(caseStudies.map((c) => [c.slug, c] as const))("content/work/%s.mdx
     expect(words).toBeLessThanOrEqual(1300);
   });
 
+  it("opens every Claim on its own line after a blank line (MDX needs a block)", () => {
+    expect(mdx).not.toMatch(/[^\n] *<Claim>/);
+    expect(mdx).not.toMatch(/[^\n]\n<Claim>/);
+  });
+
   it("uses Evidence with a repo path and never a raw URL", () => {
     for (const m of mdx.matchAll(/<Evidence\s+([^>]*)>/g)) {
       expect(m[1]).toMatch(/path="[^"]+"/);

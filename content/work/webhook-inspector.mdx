@@ -92,7 +92,9 @@ A test sends from two clients behind the same proxy and checks that one can't us
 
 ## How it's tested
 
-27 backend tests with pytest cover bins, capture, requests, database start-up, health and rate limiting. 7 front-end tests with Vitest cover the request list and the detail panel. <Claim>
+27 backend tests with pytest cover bins, capture, requests, database start-up, health and rate limiting. 7 front-end tests with Vitest cover the request list and the detail panel.
+
+<Claim>
 GitHub Actions runs both suites on every pull request, along with the front end's lint, type-check and production build. The backend tests run on SQLite, which is fast but not the production database, and that gap is how the content-type bug got past every test.
 
 <Evidence path=".github/workflows/ci.yml">backend and front-end jobs</Evidence>
