@@ -64,6 +64,10 @@ describe("helpers", () => {
     ]);
   });
 
+  it("strips curly apostrophes too", () => {
+    expect(slugify("What I’d change")).toBe("what-id-change");
+  });
+
   it("builds code links pinned to a commit", () => {
     const sha = "a".repeat(40);
     expect(codeUrl("https://github.com/gabryelvs/x", sha, "app/main.py")).toBe(
