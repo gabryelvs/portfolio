@@ -16,7 +16,7 @@ When you integrate with Stripe, GitHub or any other service that sends webhooks,
 ## Architecture
 
 <Claim>
-A FastAPI backend using SQLAlchemy, on PostgreSQL in production and SQLite in tests. There are two tables: `bins` and the captured `requests`, which store headers and query parameters as JSON. A catch-all route under `/in/{bin_id}` accepts any HTTP method and path. The JSON API lives under `/api`. The React and TypeScript front end is built into the same container and served by FastAPI, and a bin's page polls for new requests every two seconds. At the commit this page describes, it runs on Fly.io behind Fly's proxy.
+A FastAPI backend using SQLAlchemy, on PostgreSQL in production and SQLite in tests. There are two tables: `bins` and the captured `requests`, which store headers and query parameters as JSON. A catch-all route under `/in/{bin_id}` accepts any HTTP method and path. The JSON API lives under `/api`. The React and TypeScript front end is built into the same container and served by FastAPI, and a bin's page polls for new requests every two seconds. At the commit this page describes, it ran on Fly.io behind Fly's proxy. It has since moved to Vercel with Neon's serverless PostgreSQL, where the client IP comes from Vercel's own header instead.
 
 <Evidence path="backend/app/models.py" lines="20-43">the two tables</Evidence>
 </Claim>
@@ -118,4 +118,4 @@ GitHub Actions runs both suites on every pull request, along with the front end'
 
 - [Source at the commit this page describes](https://github.com/gabryelvs/webhook-inspector/tree/c98d29be55d412c5a8638f8d87769fd15caa513b)
 - [The rate-limit test](https://github.com/gabryelvs/webhook-inspector/blob/c98d29be55d412c5a8638f8d87769fd15caa513b/backend/tests/test_ratelimit.py#L10-L22)
-- [Live app](https://webhook-inspector-gv.fly.dev)
+- [Live app](https://webhook-inspector-gv.vercel.app)

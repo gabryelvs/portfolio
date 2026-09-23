@@ -89,7 +89,7 @@ LinkedIn → your profile → Featured → "+" → Add a link. Add these (lead w
 - Title: `SECTOR—9 — Storefront demo source: accessible overlays, tested cart, Lighthouse 99–100`
 
 **Link 10**
-- URL: `https://webhook-inspector-gv.fly.dev`
+- URL: `https://webhook-inspector-gv.vercel.app`
 - Title: `Webhook Inspector — Live fullstack tool (FastAPI + React/TypeScript)`
 
 **Link 11**
@@ -153,10 +153,10 @@ Stack: TypeScript, Next.js 16, React 19, Tailwind 4, GSAP, Docker, Vitest.
 - Name: `Webhook Inspector — Fullstack webhook debugging tool`
 - Description:
 ```
-A fullstack tool for debugging webhooks: you create a disposable URL, point any provider at it, and watch requests arrive live in a React interface showing headers, pretty-printed body, and query parameters. Hardened for public deployment — per-client rate limiting keyed on the real client IP behind the proxy, request bodies streamed and capped at 1 MB so a large payload cannot exhaust memory, per-bin retention limits, and a capture endpoint that always answers 200 so a database fault never breaks the sender's webhook. Test-driven across the stack (27 backend pytest + 7 frontend Vitest tests), single-container Docker build serving the API and the compiled React app, deployed on Fly.io with PostgreSQL.
+A fullstack tool for debugging webhooks: you create a disposable URL, point any provider at it, and watch requests arrive live in a React interface showing headers, pretty-printed body, and query parameters. Hardened for public deployment — per-client rate limiting keyed on the real client IP behind the proxy, request bodies streamed and capped at 1 MB so a large payload cannot exhaust memory, per-bin retention limits, and a capture endpoint that always answers 200 so a database fault never breaks the sender's webhook. Test-driven across the stack (27 backend pytest + 7 frontend Vitest tests), the React app built and served alongside the API, deployed on Vercel with Neon PostgreSQL.
 Stack: Python, FastAPI, PostgreSQL, React, TypeScript, Tailwind, Docker.
 ```
-- Link: `https://webhook-inspector-gv.fly.dev`
+- Link: `https://webhook-inspector-gv.vercel.app`
 
 **Project 6**
 - Name: `Taskboard API — Trello-like task manager API`

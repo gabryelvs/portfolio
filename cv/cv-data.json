@@ -61,13 +61,13 @@
         "url": "https://github.com/gabryelvs/webhook-inspector"
       },
       "live": {
-        "label": "webhook-inspector-gv.fly.dev",
-        "url": "https://webhook-inspector-gv.fly.dev"
+        "label": "webhook-inspector-gv.vercel.app",
+        "url": "https://webhook-inspector-gv.vercel.app"
       },
       "bullets": [
         "Fullstack tool for debugging webhooks: users create a disposable URL, point any provider at it, and watch requests arrive live in a React interface showing headers, pretty-printed body, and query parameters.",
         "Hardened for public deployment: per-client rate limiting keyed on the real client IP behind the proxy, streamed request bodies capped at 1 MB so a large payload cannot exhaust memory, per-bin retention limits, and a capture endpoint that always answers 200 so a database fault never breaks the sender's webhook.",
-        "Test-driven across the stack (27 backend pytest + 7 frontend Vitest tests), single-container Docker build serving the API and compiled React app, deployed on Fly.io with PostgreSQL."
+        "Test-driven across the stack (27 backend pytest + 7 frontend Vitest tests), the React app built and served alongside the API, deployed on Vercel with Neon PostgreSQL."
       ]
     },
     {

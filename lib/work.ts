@@ -70,7 +70,7 @@ export const caseStudies: CaseStudy[] = [
     role: "Solo: design, build, deploy",
     tests: "27 pytest · 7 Vitest, run in CI",
     repoUrl: "https://github.com/gabryelvs/webhook-inspector",
-    liveUrl: "https://webhook-inspector-gv.fly.dev",
+    liveUrl: "https://webhook-inspector-gv.vercel.app",
     liveLabel: "Live app",
     commit: "c98d29be55d412c5a8638f8d87769fd15caa513b",
     thumbCaption: "Capture first, fail quietly, never block the sender.",

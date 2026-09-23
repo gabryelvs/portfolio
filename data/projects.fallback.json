@@ -43,7 +43,7 @@
     "name": "webhook-inspector",
     "description": "Fullstack webhook debugging tool: disposable URLs, live request viewer (FastAPI, React, TypeScript).",
     "url": "https://github.com/gabryelvs/webhook-inspector",
-    "homepage": "https://webhook-inspector-gv.fly.dev",
+    "homepage": "https://webhook-inspector-gv.vercel.app",
     "language": "Python",
     "topics": ["fastapi", "react", "typescript", "fullstack", "postgresql"],
     "stars": 0,
