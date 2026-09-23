@@ -23,7 +23,7 @@ export function Nav({ current }: { current?: "work" }) {
           <ul>
             {LINKS.map((l) => (
               <li key={l.key} className={l.optional ? "opt" : undefined}>
-                <a href={l.href} aria-current={current === l.key ? "page" : undefined}>
+                <a href={l.href} aria-current={current === l.key ? "true" : undefined}>
                   {l.label}
                 </a>
               </li>

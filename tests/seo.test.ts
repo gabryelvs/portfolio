@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { URL as NodeURL } from "node:url";
 import { describe, expect, it } from "vitest";
+import { metadata as homeMetadata } from "@/app/page";
 import robots from "@/app/robots";
 import sitemap from "@/app/sitemap";
 import { SITE_URL } from "@/lib/site";
@@ -22,6 +23,12 @@ describe("robots", () => {
     const r = robots();
     expect(r.rules).toEqual({ userAgent: "*", allow: "/" });
     expect(r.sitemap).toBe(`${SITE_URL}/sitemap.xml`);
+  });
+});
+
+describe("home metadata", () => {
+  it("sets the canonical to the site root", () => {
+    expect(homeMetadata.alternates?.canonical).toBe("/");
   });
 });
 

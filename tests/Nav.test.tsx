@@ -25,7 +25,7 @@ describe("Nav", () => {
     const { rerender } = render(<Nav />);
     expect(screen.getByRole("link", { name: "Work" })).not.toHaveAttribute("aria-current");
     rerender(<Nav current="work" />);
-    expect(screen.getByRole("link", { name: "Work" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: "Work" })).toHaveAttribute("aria-current", "true");
   });
 
   it("keeps the theme toggle", async () => {

@@ -16,6 +16,12 @@ export function CaseStudyNav({ slug }: { slug: Slug }) {
           <strong>Selected work</strong>
         </Link>
       )}
+      {prev && next ? (
+        <Link href="/work" className="cs-all">
+          <small className="mono">All work</small>
+          <strong>Selected work</strong>
+        </Link>
+      ) : null}
       {next ? (
         <Link href={`/work/${next.slug}`}>
           <small className="mono">Next case study →</small>

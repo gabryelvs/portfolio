@@ -33,6 +33,12 @@ describe("/work/[slug]", () => {
     expect(meta.alternates?.canonical).toBe("/work/payledger");
   });
 
+  it("gives the OG image a case-study-specific alt, not the generic file-convention one", async () => {
+    const meta = await generateMetadata(params("payledger"));
+    const images = meta.openGraph?.images as Array<{ alt?: string }> | undefined;
+    expect(images?.[0]?.alt).toBe("PayLedger: case study");
+  });
+
   it("renders header, disclosure, contents and neighbours", async () => {
     render(await CaseStudyPage(params("payledger")));
     expect(screen.getByRole("heading", { level: 1, name: "PayLedger" })).toBeInTheDocument();
@@ -42,12 +48,26 @@ describe("/work/[slug]", () => {
     expect(screen.getByRole("link", { name: /Next case study/ })).toHaveAttribute("href", "/work/webhook-inspector");
     expect(screen.getAllByRole("img", { name: "Sequence of a PayLedger transfer" })).toHaveLength(2);
     const primary = screen.getByRole("navigation", { name: "Primary" });
-    expect(within(primary).getByRole("link", { name: "Work" })).toHaveAttribute("aria-current", "page");
+    expect(within(primary).getByRole("link", { name: "Work" })).toHaveAttribute("aria-current", "true");
     expect(screen.getByRole("navigation", { name: "Breadcrumb" })).toHaveTextContent("Work/PayLedger");
   });
 
   it("404s an unknown slug", async () => {
     await expect(CaseStudyPage(params("nope"))).rejects.toThrow("NEXT_NOT_FOUND");
+  });
+
+  it("always links back to all work, even from the middle case study", async () => {
+    render(await CaseStudyPage(params("webhook-inspector")));
+    const nav = screen.getByRole("navigation", { name: "More case studies" });
+    expect(within(nav).getByRole("link", { name: /Previous case study/ })).toHaveAttribute(
+      "href",
+      "/work/payledger",
+    );
+    expect(within(nav).getByRole("link", { name: /Next case study/ })).toHaveAttribute(
+      "href",
+      "/work/taskboard-api",
+    );
+    expect(within(nav).getByRole("link", { name: /All work/ })).toHaveAttribute("href", "/work");
   });
 });
 

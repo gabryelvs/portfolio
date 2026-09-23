@@ -10,6 +10,13 @@ const p = (over: Partial<Project>): Project => ({
 });
 
 describe("MoreWork", () => {
+  it("renders the list with the more-list class, not the Tailwind-colliding table class", () => {
+    render(<MoreWork projects={[p({}), p({ name: "payledger" })]} />);
+    const list = screen.getByRole("list");
+    expect(list).toHaveClass("more-list");
+    expect(list).not.toHaveClass("table");
+  });
+
   it("lists non-featured showcase repos with repo and demo links", () => {
     render(<MoreWork projects={[p({}), p({ name: "payledger" })]} />);
     expect(screen.getByRole("heading", { level: 2, name: "More work" })).toBeInTheDocument();

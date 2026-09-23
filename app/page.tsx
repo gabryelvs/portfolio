@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { About } from "@/components/About";
 import { Contact } from "@/components/Contact";
 import { Experience } from "@/components/Experience";
@@ -9,6 +10,11 @@ import { SelectedWork } from "@/components/SelectedWork";
 import { getShowcaseProjects } from "@/lib/github";
 
 export const revalidate = 86400;
+
+// Title and description come from the root layout and stay untouched; this only adds the canonical.
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default async function Home() {
   const projects = await getShowcaseProjects();

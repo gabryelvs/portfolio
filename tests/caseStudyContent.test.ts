@@ -32,13 +32,19 @@ describe.each(caseStudies.map((c) => [c.slug, c] as const))("content/work/%s.mdx
   });
 
   it("pins every GitHub code link to a full commit SHA", () => {
-    for (const m of mdx.matchAll(/github\.com\/gabryelvs\/[\w.-]+\/(?:blob|tree)\/([^/\s)]+)/g)) {
+    const links = [...mdx.matchAll(/github\.com\/gabryelvs\/[\w.-]+\/(?:blob|tree)\/([^/\s)]+)/g)];
+    expect(links.length).toBeGreaterThan(0);
+    for (const m of links) {
       expect(m[1]).toMatch(/^[0-9a-f]{40}$/);
     }
   });
 
   it("uses the registry's commit for its own repo links", () => {
-    for (const m of mdx.matchAll(new RegExp(`github\\.com/gabryelvs/${cs.repoName}/(?:blob|tree)/([0-9a-f]{40})`, "g"))) {
+    const links = [
+      ...mdx.matchAll(new RegExp(`github\\.com/gabryelvs/${cs.repoName}/(?:blob|tree)/([0-9a-f]{40})`, "g")),
+    ];
+    expect(links.length).toBeGreaterThan(0);
+    for (const m of links) {
       expect(m[1]).toBe(cs.commit);
     }
   });
@@ -60,7 +66,9 @@ describe.each(caseStudies.map((c) => [c.slug, c] as const))("content/work/%s.mdx
   });
 
   it("uses Evidence with a repo path and never a raw URL", () => {
-    for (const m of mdx.matchAll(/<Evidence\s+([^>]*)>/g)) {
+    const evidence = [...mdx.matchAll(/<Evidence\s+([^>]*)>/g)];
+    expect(evidence.length).toBeGreaterThan(0);
+    for (const m of evidence) {
       expect(m[1]).toMatch(/path="[^"]+"/);
       expect(m[1]).not.toMatch(/https?:/);
     }

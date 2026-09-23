@@ -7,6 +7,7 @@ import { Evidence, type EvidenceInput } from "@/components/case-study/Evidence";
 import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
 import { loadCaseStudyBody } from "@/lib/content";
+import { OG_SIZE } from "@/lib/og";
 import { SITE_NAME } from "@/lib/site";
 import { caseStudies, getCaseStudy } from "@/lib/work";
 
@@ -26,7 +27,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${cs.title} — case study · ${SITE_NAME}`,
     description: cs.summary,
     alternates: { canonical: `/work/${cs.slug}` },
-    openGraph: { title: `${cs.title} — case study`, description: cs.summary, type: "article", url: `/work/${cs.slug}` },
+    openGraph: {
+      title: `${cs.title} — case study`,
+      description: cs.summary,
+      type: "article",
+      url: `/work/${cs.slug}`,
+      // Overrides the opengraph-image.tsx file convention's generic alt with one specific to
+      // this case study; see the comment in that file for why it isn't done via generateImageMetadata.
+      images: [{ url: `/work/${cs.slug}/opengraph-image`, ...OG_SIZE, alt: `${cs.title}: case study` }],
+    },
   };
 }
 

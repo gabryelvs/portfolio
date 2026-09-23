@@ -1,4 +1,7 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
+@source "../app";
+@source "../components";
+@source "../mdx-components.tsx";
 @import "./styles/tokens.css";
 @import "./styles/base.css";
 @import "./styles/home.css";

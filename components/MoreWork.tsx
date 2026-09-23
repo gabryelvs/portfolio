@@ -20,7 +20,7 @@ export function MoreWork({ projects }: { projects: Project[] }) {
             <a href={LINKS.github}>All repositories on GitHub</a>
           </p>
         ) : (
-          <ul className="table">
+          <ul className="more-list">
             {rest.map((proj) => (
               <li key={proj.name} className="trow reveal">
                 <a className="pname" href={proj.url}>
