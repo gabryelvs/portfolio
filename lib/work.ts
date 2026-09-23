@@ -48,11 +48,11 @@ export const caseStudies: CaseStudy[] = [
     ],
     stack: ["Python", "FastAPI", "PostgreSQL", "Alembic", "Docker"],
     role: "Solo: design, build, deploy",
-    tests: "61 pytest on real PostgreSQL",
+    tests: "67 pytest on real PostgreSQL",
     repoUrl: "https://github.com/gabryelvs/payledger",
     liveUrl: "https://payledger-gv.vercel.app/docs",
     liveLabel: "API docs",
-    commit: "7e572e612dd1af6a03382b12a197e852bcc58d31",
+    commit: "ebb1a8a16770513562010f2ec9de9031bf22037f",
     thumbCaption: "One transaction: lock, write both sides, commit.",
   },
   {
