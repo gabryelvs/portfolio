@@ -149,9 +149,9 @@ export function Hero() {
         data-hero-item
         className="mt-6 max-w-2xl text-lg leading-relaxed text-[var(--fg-muted)]"
       >
-        Computer Science student building production-grade APIs in Python (FastAPI) and
-        Java (Spring Boot) — payments, ledgers, async services, and reliable delivery —
-        plus fullstack tools with React and TypeScript.
+        Building production-grade APIs in Python (FastAPI) and Java (Spring Boot) —
+        payments, ledgers, async services, and reliable delivery — plus fullstack tools
+        with React and TypeScript.
       </p>
 
       <div data-hero-item className="mt-10 flex flex-wrap gap-3">

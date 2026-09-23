@@ -8,7 +8,7 @@ auto-links URLs).
 ## 1. Headline (the line under your name — max 220 characters)
 
 ```
-Computer Science Student @ University of Greenwich | Aspiring Backend Software Engineer | Python · FastAPI · Java · Spring Boot · PostgreSQL | Building & deploying fintech APIs
+Software Engineer | Python · Java · TypeScript | Fintech & reliable systems | BSc CS, Greenwich '27
 ```
 
 ---
@@ -16,7 +16,7 @@ Computer Science Student @ University of Greenwich | Aspiring Backend Software E
 ## 2. About section
 
 ```
-Final-year Computer Science student at the University of Greenwich, focused on becoming a backend software engineer in London.
+Software engineer in London, focused on fintech and reliable systems.
 
 I build small, production-shaped backend services in Python and FastAPI — each one tested, run in continuous integration, containerised with Docker, and deployed live with interactive documentation you can try in the browser. I'm especially drawn to fintech problems: handling money correctly, keeping systems consistent under load, and staying reliable when things go wrong.
 
@@ -40,7 +40,7 @@ Code: https://github.com/gabryelvs/owasp-security-lab
 • SECTOR—9 — an animated demo storefront, built as a sales asset for freelance work: a reducer-driven cart with 30 tests, focus-trapping overlays that respect reduced-motion, and Lighthouse 99–100.
 Code: https://github.com/gabryelvs/store-demo  |  Live demo: https://store-demo-gv.fly.dev
 
-I'm looking for a junior or placement backend developer role where I can keep learning from experienced engineers and contribute to real systems.
+I'm looking for graduate and junior software engineer roles in London from summer 2027, where I can keep learning from experienced engineers and contribute to real systems.
 
 Portfolio: https://portfolio-gabryelverissimo.vercel.app
 GitHub: https://github.com/gabryelvs
@@ -54,7 +54,7 @@ LinkedIn → your profile → Featured → "+" → Add a link. Add these (lead w
 
 **Link 1 (feature this first)**
 - URL: `https://portfolio-gabryelverissimo.vercel.app`
-- Title: `Portfolio — backend projects, live demos & CV (Next.js)`
+- Title: `Portfolio — software projects, live demos & CV`
 
 **Link 2**
 - URL: `https://github.com/gabryelvs/payledger`
@@ -169,7 +169,36 @@ Stack: Java 21, Spring Boot, Spring Security, PostgreSQL, Testcontainers, Docker
 
 ---
 
-## 5. Skills to add
+## 5. Experience (add a position)
+
+LinkedIn → Add profile section → Core → Add position. List it above the restaurant and
+volunteer roles.
+
+- Title: `Freelance Software Engineer`
+- Employment type: `Self-employed`
+- Company name: `Self-employed`
+- Location: `London, England, United Kingdom`
+- Start date: `Sep 2026` · tick "I am currently working in this role"
+- Description:
+```
+Auto Boutique London (pro bono): designed, built and deployed the production website for a Central London car-storage business, replacing its WordPress site with a static Astro build and a PHP enquiry endpoint that sends mail through Resend.
+Set up push-to-deploy from GitHub Actions to SiteGround over SSH, archived the old WordPress install with verified backups, and completed a UK consumer-law pass: legal pages, consent-gated enquiry form, and no unverified reviews on the site.
+```
+
+*Add further clients here only once their site is live and they have agreed to be named;
+mark unpaid work "(pro bono)".*
+
+---
+
+## 6. Education (update the degree)
+
+- School: `University of Greenwich`
+- Degree: `Bachelor of Science - BS` · Field of study: `Computer Science`
+- Start date: `2023` · End date (or expected): `Jul 2027`
+
+---
+
+## 7. Skills to add
 
 LinkedIn → Skills → add these (and mark the top 3 as "pinned"):
 
@@ -177,5 +206,7 @@ Python · FastAPI · PostgreSQL · Redis · SQLAlchemy · REST APIs · Docker ·
 
 ---
 
-*Tip: after adding the About and Featured links, set your profile to "Open to work →
-Backend Developer / Software Engineer, London" so recruiters find you.*
+*Tip: after adding the About and Featured links, set your profile to "Open to work" with the
+job titles Software Engineer, Graduate Software Engineer and Backend Developer, location London,
+so recruiters find you. "Backend Developer" belongs here, as a search term recruiters use, and
+not in the headline.*
