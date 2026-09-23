@@ -1,13 +1,15 @@
 import type { NextConfig } from "next";
+import createMDX from "@next/mdx";
 
 /**
  * Content-Security-Policy.
  *
  * `script-src`/`style-src` include `'unsafe-inline'` because the Next.js App
- * Router emits inline bootstrap/streaming scripts (and Framer Motion sets inline
- * style attributes) that have no stable hash across ISR revalidations, and a
- * nonce-based policy would force every page to render dynamically — defeating the
- * static/ISR caching this site relies on. Everything else is locked to `'self'`.
+ * Router emits inline bootstrap/streaming scripts (and React sets inline style
+ * attributes, e.g. the hero's animation-delay custom properties) that have no
+ * stable hash across ISR revalidations, and a nonce-based policy would force
+ * every page to render dynamically — defeating the static/ISR caching this site
+ * relies on. Everything else is locked to `'self'`.
  * This is a deliberate, documented trade-off (see README "Security").
  */
 const csp = [
@@ -39,9 +41,10 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  pageExtensions: ["ts", "tsx", "md", "mdx"],
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
 };
 
-export default nextConfig;
+export default createMDX({})(nextConfig);

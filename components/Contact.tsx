@@ -1,35 +1,23 @@
-const links = [
-  { label: "Email", href: "mailto:gabryelverissimo12@gmail.com" },
-  { label: "GitHub", href: "https://github.com/gabryelvs" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/gabryel-ver%C3%ADssimo-b1b931261" },
-  { label: "Download CV", href: "/cv.pdf" },
-];
+import { SectionHeading } from "@/components/SectionHeading";
+import { AVAILABILITY, CONTACT_LEAD, LINKS } from "@/lib/site";
 
 export function Contact() {
   return (
-    <section id="contact" className="mx-auto max-w-3xl px-6 py-24 text-center">
-      <span className="font-[family-name:var(--font-mono)] text-sm text-[var(--accent-text)]">
-        03 /
-      </span>
-      <h2 className="mb-6 mt-2 font-[family-name:var(--font-display)] text-3xl font-bold tracking-tight sm:text-4xl">
-        Get in touch
-      </h2>
-      <p className="mb-8 text-[var(--fg-muted)]">
-        Open to graduate and junior software engineer roles in London from summer 2027.
-        Let&apos;s talk.
-      </p>
-      <div className="flex flex-wrap justify-center gap-4">
-        {links.map((l) => (
-          <a
-            key={l.label}
-            href={l.href}
-            target={l.href.startsWith("http") ? "_blank" : undefined}
-            rel="noopener noreferrer"
-            className="rounded-lg border border-[var(--border-strong)] px-5 py-2.5 font-medium transition-colors hover:border-[var(--accent)] hover:bg-[var(--surface)]"
-          >
-            {l.label}
-          </a>
-        ))}
+    <section className="block" id="contact" aria-labelledby="contact-title">
+      <div className="wrap">
+        <SectionHeading index="05" id="contact-title" title="Contact" />
+        <p className="contact-line">
+          {CONTACT_LEAD}{" "}
+          <span className="soft">{AVAILABILITY.when}.</span>
+        </p>
+        <a className="mail" href={LINKS.email}>
+          {LINKS.emailLabel}
+        </a>
+        <div className="contact-links">
+          <a className="btn btn-line" href={LINKS.github}>GitHub</a>
+          <a className="btn btn-line" href={LINKS.linkedin}>LinkedIn</a>
+          <a className="btn btn-line" href={LINKS.cv}>Download CV</a>
+        </div>
       </div>
     </section>
   );

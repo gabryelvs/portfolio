@@ -1,18 +1,21 @@
 export function SectionHeading({
   index,
   title,
+  id,
+  sub,
 }: {
   index: string;
   title: string;
+  id: string;
+  sub?: string;
 }) {
   return (
-    <div className="mb-10">
-      <span className="font-[family-name:var(--font-mono)] text-sm text-[var(--accent-text)]">
-        {index} /
-      </span>
-      <h2 className="mt-2 font-[family-name:var(--font-display)] text-3xl font-bold tracking-tight sm:text-4xl">
-        {title}
-      </h2>
-    </div>
+    <>
+      <div className={sub ? "sec-head" : "sec-head solo"}>
+        <span className="num mono">{index}</span>
+        <h2 id={id}>{title}</h2>
+      </div>
+      {sub ? <p className="sec-sub">{sub}</p> : null}
+    </>
   );
 }

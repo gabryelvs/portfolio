@@ -1,0 +1,125 @@
+## The problem
+
+Moving money between two wallets looks like one `UPDATE`. It isn't. Two transfers at the same moment can both spend the same balance. A client that times out and retries can pay twice. And an API that trusts the wallet id in a request lets anyone spend anyone else's money. PayLedger is a small payments API built to get those three things right. Users hold wallets in several currencies and move money between them, and every movement is written as balanced double-entry ledger lines, the way a bank books it.
+
+## Constraints
+
+<Claim>
+- **Money is an integer.** Amounts are stored in minor units (pence, cents); floats never touch a balance.
+- **Every transaction balances.** Its ledger entries sum to zero per currency, checked before anything is written.
+- **No overdraft**, even under concurrent load.
+- **Retries are safe.** The same idempotency key and body return the same result. The same key with a different body is a conflict, never a second transfer.
+- **Only the owner moves money out of a wallet**, and the API doesn't confirm that other people's wallets exist.
+
+<Evidence path="app/services/ledger.py" lines="11-16">assert_balanced() rejects entries that don't sum to zero</Evidence>
+</Claim>
+
+## Architecture
+
+<Claim>
+A FastAPI app with thin routers over a service layer, on PostgreSQL, with the schema managed by Alembic migrations. Seven tables: users, accounts, wallets (each holding a cached balance), transactions, ledger entries, idempotency keys and events. A transfer is one database transaction, from claiming the idempotency key to writing the stored response. The diagram above is the whole path. There is never a moment where money has left one wallet and not arrived in the other, or where the key is saved without the transfer it describes.
+
+<Evidence path="migrations/versions/0045bb75cb4a_initial_schema.py">the initial schema: seven tables</Evidence>
+</Claim>
+
+The live demo runs as a Vercel Function in London against Neon's serverless PostgreSQL. Each invocation opens its own connection through Neon's pooler, because a connection pool inside a short-lived function would hand out connections the database had already dropped.
+
+## Hard problems
+
+### Two transfers, one balance
+
+<Claim>
+The failure here is a lost update: two requests read a balance of 100, both decide 100 is available, and both spend it. PostgreSQL's default isolation doesn't prevent that on its own. Both wallet rows are read with `SELECT … FOR UPDATE`, and the balance is checked only after the locks are held. Locking two rows invites a deadlock when two opposite transfers each grab one first, so the wallets are always locked in ascending id order.
+
+<Evidence path="app/services/transfer_service.py" lines="142-150">sorted lock order; balance checked under the lock</Evidence>
+</Claim>
+
+```python
+# Lock wallet rows in a deterministic order to avoid deadlocks.
+first, second = sorted([from_wallet_id, to_wallet_id])
+locked = {first: _lock_wallet(db, first), second: _lock_wallet(db, second)}
+src, dst = locked[from_wallet_id], locked[to_wallet_id]
+
+if src.currency != currency or dst.currency != currency:
+    raise CurrencyMismatch()
+if src.balance_minor < amount_minor:
+    raise InsufficientFunds()
+```
+
+<Claim>
+A test fires 20 threads at a wallet holding exactly enough for ten transfers: ten succeed, the source never goes below zero, and the total is conserved.
+
+<Evidence path="tests/integration/test_concurrent_transfers.py" lines="20-52">test_no_lost_updates_under_concurrency</Evidence>
+</Claim>
+
+### A lock that read a stale balance
+
+<Claim>
+Adding ownership checks and demo deposits exposed a subtler bug. An ownership check loads the wallet, and the lock then runs `SELECT … FOR UPDATE` on the same row. SQLAlchemy already held that wallet in its session, so it kept the old attribute values instead of the ones read under the lock, and the transfer was checked against a balance someone else had already spent. In a reproduction, a wallet that should have ended at 600 ended at 900: money created from nothing. The lock now forces a fresh read.
+
+<Evidence path="app/services/transfer_service.py" lines="32-44">the lock refreshes the row it locks</Evidence>
+</Claim>
+
+<Claim>
+A test loads the wallet before locking it, on purpose, and proves the balance used is the current one.
+
+<Evidence path="tests/services/test_transfer_service.py" lines="51-62">test_locked_balance_is_fresh_even_if_the_wallet_was_loaded_earlier</Evidence>
+</Claim>
+
+### A retry that pays twice
+
+<Claim>
+The first version looked the key up, ran the transfer and committed, then stored the key in a second commit. One retry at a time was fine. Two at once both missed the lookup, both transferred, and the second then crashed with a 500 on the key's primary key. Now the key is claimed first, inside the transfer's own transaction, with `INSERT … ON CONFLICT DO NOTHING`. A duplicate waits on the unique index. If the first request commits, the duplicate returns its stored response; if the first rolls back, the duplicate does the work itself. Keys are scoped per user.
+
+<Evidence path="app/services/idempotency.py" lines="36-62">claim(): insert first, then read the winner's response</Evidence>
+</Claim>
+
+<Claim>
+Ten parallel retries with one key used to make ten transfers and nine errors; now they make exactly one transfer.
+
+<Evidence path="tests/integration/test_concurrent_idempotency.py" lines="51-95">test_parallel_retries_with_one_key_transfer_exactly_once</Evidence>
+</Claim>
+
+### A wallet that isn't yours
+
+<Claim>
+An audit I ran with AI review while preparing this write-up found that a transfer never checked who owned the source wallet: any signed-in user could move money out of anyone's. Every wallet, statement and transaction route now checks ownership and answers with the same 404 body as a missing id. Transfers can still go *to* anyone's wallet, since that's what a payment is. That means a transfer response can reveal whether a destination exists and whether its currency matches, and response times aren't constant. The README says so plainly.
+
+<Evidence path="app/services/transfer_service.py" lines="137-140">the source wallet must belong to the caller</Evidence>
+</Claim>
+
+<Claim>
+The ownership tests act as a second user against transfers, wallets, statements and transactions, and expect the same 404 as a missing id.
+
+<Evidence path="tests/routers/test_ownership.py" lines="69-77">test_cannot_transfer_from_another_users_wallet</Evidence>
+</Claim>
+
+## How it's tested
+
+67 tests. The suite runs against a real PostgreSQL, with the schema recreated before each test, because the bugs that matter here don't exist in a mock or in SQLite. Unit tests cover the money and ledger rules, service tests cover transfers and idempotency, and API tests go through HTTP. The concurrency tests use real threads with separate database sessions:
+
+- 20 transfers racing for one balance;
+- 10 parallel retries sharing one key;
+- demo deposits racing transfers to the treasury, which caught a deadlock where one path locked the treasury out of order;
+- 20 first-ever deposits racing to create the treasury, which caught a 500 on a unique constraint.
+
+The last two were found by an independent review of the fixes above.
+
+<Claim>
+CI runs the linter and the full suite against PostgreSQL 16 on every push and pull request. Before this round of work the suite had 31 tests.
+
+<Evidence path=".github/workflows/ci.yml">ruff and pytest against a PostgreSQL 16 service</Evidence>
+</Claim>
+
+## What I'd change
+
+- Enforce the balance rule in the database too. It lives only in Python today; a deferred constraint trigger would make an unbalanced transaction impossible rather than unlikely.
+- Reconcile each wallet's cached balance against its ledger entries on a schedule, and give the treasury's opening balance its own ledger entry.
+- Opening a second wallet in the same currency returns a 500 rather than a clear error, and a wallet can transfer to itself.
+- Events are recorded but never delivered. My Webhook-Dispatcher project is the missing half.
+
+## Links
+
+- [Source at the commit this page describes](https://github.com/gabryelvs/payledger/tree/ebb1a8a16770513562010f2ec9de9031bf22037f)
+- [The concurrency test](https://github.com/gabryelvs/payledger/blob/ebb1a8a16770513562010f2ec9de9031bf22037f/tests/integration/test_concurrent_transfers.py#L20-L52)
+- [Live API docs](https://payledger-gv.vercel.app/docs)

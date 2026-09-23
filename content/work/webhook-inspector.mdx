@@ -1,0 +1,127 @@
+## The problem
+
+When you integrate with Stripe, GitHub or any other service that sends webhooks, you need somewhere to point them while you work out what they actually send. Webhook Inspector gives you a disposable URL. Every request that arrives there is recorded (method, path, headers, query string, body and the sender's IP) and appears in the browser within a couple of seconds. It's the debugging counterpart to my Webhook-Dispatcher project, which sends webhooks reliably; this one receives them and shows you exactly what came in.
+
+## Constraints
+
+<Claim>
+- **The capture endpoint is public.** There are no accounts. The bin id in the URL, a random 32-character UUID, is the only secret.
+- **The sender must never see our failures.** A webhook provider that gets errors back will retry, back off, and eventually disable the endpoint. Whatever goes wrong on our side, capture answers 200.
+- **Payloads can be any size; memory can't.** The app first ran on a single machine with 256 MB of RAM. On Vercel, the platform rejects bodies over 4.5 MB before they reach the app.
+- **Storage stays bounded.** A bin keeps its latest 500 requests, bins expire after seven days, and each client can create at most ten bins a minute, counted per server instance.
+
+<Evidence path="backend/app/routers/capture.py" lines="16-17">the 1 MB body cap and 500-request limit</Evidence>
+</Claim>
+
+## Architecture
+
+<Claim>
+A FastAPI backend using SQLAlchemy, on PostgreSQL in production and SQLite in tests. There are two tables: `bins` and the captured `requests`, which store headers and query parameters as JSON. A catch-all route under `/in/{bin_id}` accepts any HTTP method and path. The JSON API lives under `/api`. The React and TypeScript front end is built with the API and served alongside it, and a bin's page polls for new requests every two seconds. It started on Fly.io behind Fly's proxy. It now runs as a Vercel Function in London, with Neon's serverless PostgreSQL.
+
+<Evidence path="backend/app/models.py" lines="20-43">the two tables</Evidence>
+</Claim>
+
+<Claim>
+Vercel's edge adds its own headers to every request, including the sender's approximate city and coordinates. On Vercel those are dropped before a request is stored, so a bin shows what the sender actually sent, not what the platform added on the way.
+
+<Evidence path="backend/app/platform_headers.py" lines="27-34">platform-added headers removed on Vercel only</Evidence>
+</Claim>
+
+## Hard problems
+
+### Never failing the sender, without hiding bugs
+
+<Claim>
+The whole capture path sits inside one `try`. An unknown bin still gets a 404, because that tells the sender it has the wrong URL. Any other exception is logged and swallowed, and the sender gets its 200.
+
+<Evidence path="backend/app/routers/capture.py" lines="29-64">the capture route: 404 for unknown bins, 200 for everything else</Evidence>
+</Claim>
+
+<Claim>
+A test breaks the database on purpose and checks that the response is still 200.
+
+<Evidence path="backend/tests/test_capture.py" lines="86-95">test_capture_returns_200_when_db_fails</Evidence>
+</Claim>
+
+<Claim>
+Swallowing errors has a cost, and it showed up as soon as the app ran against PostgreSQL. PostgreSQL enforces column lengths and SQLite doesn't. A `Content-Type` header longer than 255 characters made the insert fail while every SQLite test passed, and because the route swallows errors, the sender got 200 and the request simply vanished. The fix truncates the header to the column width, with a test. The lesson I took away is that a route which hides errors needs its logs watched and its tests run against the real database.
+
+<Evidence path="backend/app/routers/capture.py" lines="52">content type truncated to the column width</Evidence>
+</Claim>
+
+### Bounding memory on a public endpoint
+
+<Claim>
+The first version read the whole body into memory, so on the original 256 MB machine one multi-gigabyte POST could have taken it down. The body is now read as a stream. The first megabyte is kept, flagged as truncated if there was more, and the rest is read and thrown away so the connection closes cleanly. After each capture the bin is pruned back to its latest 500 requests, and creating a bin clears out bins older than seven days.
+
+<Evidence path="backend/app/routers/capture.py" lines="33-43">the stream loop with its 1 MB cap</Evidence>
+</Claim>
+
+```python
+raw = bytearray()
+truncated = False
+async for chunk in request.stream():
+    if len(raw) < MAX_BODY_BYTES:
+        need = MAX_BODY_BYTES - len(raw)
+        raw.extend(chunk[:need])
+        if len(chunk) > need:
+            truncated = True
+    elif chunk:
+        truncated = True
+```
+
+<Claim>
+Tests cover truncation, pruning and expiry. What they don't prove is that memory stays flat under a huge upload, only that the stored body is capped. That gap is listed below.
+
+<Evidence path="backend/tests/test_capture.py" lines="59-66">test_capture_truncates_large_body</Evidence>
+</Claim>
+
+### Bugs only production found
+
+<Claim>
+Two bugs appeared only after the first deploy, on Fly. On a cold start the app booted faster than the database woke up, table creation failed, and the app crash-looped. Startup now retries instead: ten times, three seconds apart, on a long-running server, and three times, a second apart, on Vercel, where a request can't wait half a minute. Even with retries, the first visitor after an idle period on Fly waited for both the machine and the database, and got a 503. That fix was configuration, not code: keep one machine warm.
+
+<Evidence path="backend/app/db.py" lines="47-94">startup waits for the database instead of crashing</Evidence>
+</Claim>
+
+<Claim>
+Tests cover both the recovery and the give-up path.
+
+<Evidence path="backend/tests/test_db.py" lines="87-106">test_init_db_retries_until_db_ready and test_init_db_raises_after_exhausted_retries</Evidence>
+</Claim>
+
+<Claim>
+The second: every captured request recorded the same IP address, the proxy's. Behind Fly, the connection the app sees comes from Fly's proxy, not the sender. I fixed capture to read the `Fly-Client-IP` header. Weeks later, an audit found the bin-creation rate limit had the same bug: it keyed on the socket address too, so every visitor shared one budget of ten bins a minute. Both now go through a single helper, so they can't disagree about who a client is. It also stopped trusting the left-most `X-Forwarded-For` entry, which any client can set to dodge the limit. On Vercel the same helper trusts the `x-real-ip` header Vercel sets, and ignores it anywhere else.
+
+<Evidence path="backend/app/client_ip.py" lines="15-51">one client-IP rule for capture and the rate limiter</Evidence>
+</Claim>
+
+<Claim>
+A test sends from two clients behind the same proxy and checks that one can't use up the other's quota.
+
+<Evidence path="backend/tests/test_ratelimit.py" lines="10-22">test_rate_limit_is_per_client_behind_proxy</Evidence>
+</Claim>
+
+## How it's tested
+
+47 backend tests with pytest cover bins, capture, requests, database start-up, client IP, platform headers, health and rate limiting. 7 front-end tests with Vitest cover the request list and the detail panel.
+
+<Claim>
+GitHub Actions runs both suites on every pull request and every push to master, along with the front end's lint, type-check and production build. The backend tests run on SQLite, which is fast but not the production database, and that gap is how the content-type bug got past every test.
+
+<Evidence path=".github/workflows/ci.yml">backend and front-end jobs</Evidence>
+</Claim>
+
+## What I'd change
+
+- Run the backend tests against PostgreSQL, so the tests and production enforce the same constraints.
+- Replace two-second polling with a live stream. Today every poll re-fetches up to 100 full requests, keeps polling in background tabs, and costs a function call on Vercel; an expired bin shows "Waiting" forever because errors are swallowed on the client too.
+- Make the health check touch the database, so it catches a database outage, not just a dead process.
+- Store bodies as bytes: binary payloads are decoded as UTF-8 and lose data, and repeated headers collapse into one.
+- Move the rate limit out of process memory. On serverless, each instance keeps its own count, so the real limit is looser than ten a minute.
+
+## Links
+
+- [Source at the commit this page describes](https://github.com/gabryelvs/webhook-inspector/tree/48e5aec92726cce021ae3b46225bf1f1d8dfb087)
+- [The rate-limit test](https://github.com/gabryelvs/webhook-inspector/blob/48e5aec92726cce021ae3b46225bf1f1d8dfb087/backend/tests/test_ratelimit.py#L10-L22)
+- [Live app](https://webhook-inspector-gv.vercel.app)

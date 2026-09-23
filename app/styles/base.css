@@ -1,0 +1,86 @@
+html {
+  background: var(--bg);
+  color: var(--fg);
+  scrollbar-color: var(--line-strong) var(--bg);
+  -webkit-text-size-adjust: 100%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-optical-sizing: auto;
+  font-size: 16px;
+  line-height: 1.6;
+  font-feature-settings: "cv11", "ss01";
+  -webkit-font-smoothing: antialiased;
+  caret-color: var(--accent);
+}
+::selection { background: var(--selection); color: var(--fg); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.mono { font-family: var(--font-mono); font-feature-settings: "calt" 0; }
+.wrap { width: min(1120px, 100% - 48px); margin-inline: auto; }
+@media (max-width: 640px) { .wrap { width: calc(100% - 32px); } }
+
+.skip {
+  position: absolute; left: 16px; top: -48px; z-index: 30;
+  padding: 8px 12px; border-radius: 6px; background: var(--btn-bg); color: var(--btn-fg);
+  font-size: 14px; font-weight: 500;
+}
+.skip:focus { top: 12px; }
+
+/* nav */
+.nav { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 92%, transparent); border-bottom: 1px solid var(--line); }
+.nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 56px; gap: 16px; }
+.nav .name { font-weight: 600; font-size: 15px; letter-spacing: -0.01em; }
+.nav ul { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; align-items: center; }
+.nav ul a { display: block; padding: 6px 10px; font-size: 14px; color: var(--muted); border-radius: 6px; transition: color 0.15s ease-out; }
+.nav ul a:hover { color: var(--fg); }
+.nav ul a[aria-current] { color: var(--accent); }
+@media (max-width: 720px) { .nav ul li.opt { display: none; } }
+.icon-btn {
+  display: grid; place-items: center; width: 32px; height: 32px; margin-left: 6px;
+  border: 1px solid var(--line-strong); border-radius: 6px; background: transparent; color: var(--fg-2);
+  cursor: pointer; transition: border-color 0.15s ease-out, color 0.15s ease-out;
+}
+.icon-btn:hover { color: var(--fg); border-color: var(--muted); }
+
+/* buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px;
+  font-size: 14px; font-weight: 500; border-radius: 6px; border: 1px solid transparent;
+  transition: background-color 0.15s ease-out, border-color 0.15s ease-out, color 0.15s ease-out;
+}
+.btn-solid { background: var(--btn-bg); color: var(--btn-fg); }
+.btn-solid:hover { background: color-mix(in srgb, var(--btn-bg) 86%, var(--bg)); }
+.btn-line { border-color: var(--line-strong); color: var(--fg); }
+.btn-line:hover { border-color: var(--muted); background: var(--surface-2); }
+.btn svg { width: 14px; height: 14px; }
+
+/* sections */
+section.block { padding: 72px 0; border-top: 1px solid var(--line); scroll-margin-top: 56px; }
+.sec-head { display: flex; align-items: baseline; gap: 14px; margin: 0 0 8px; }
+.sec-head h2 { margin: 0; font-size: 24px; line-height: 32px; font-weight: 600; letter-spacing: -0.02em; }
+.sec-head .num { font-size: 13px; color: var(--muted); }
+.sec-head.solo { margin-bottom: 36px; }
+.sec-sub { margin: 0 0 40px; color: var(--muted); font-size: 15px; max-width: 60ch; }
+
+/* footer */
+.foot { border-top: 1px solid var(--line); padding: 28px 0 48px; font-size: 13px; color: var(--muted); }
+.foot .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.foot a:hover { color: var(--fg); }
+
+/* scroll reveal: CSS scroll-driven animation only where supported and wanted; visible otherwise */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal { animation: reveal linear both; animation-timeline: view(); animation-range: entry 0% entry 40%; }
+    @keyframes reveal { from { transform: translateY(12px); } }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

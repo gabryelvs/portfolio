@@ -1,187 +1,39 @@
-"use client";
+import type { CSSProperties } from "react";
+import { AVAILABILITY, LINKS, ROLE, SITE_NAME } from "@/lib/site";
 
-import { Component, useEffect, useRef, useState, type ReactNode } from "react";
-import dynamic from "next/dynamic";
-import {
-  gsap,
-  prefersReducedMotion,
-  subscribeReducedMotion,
-  useIsomorphicLayoutEffect,
-} from "@/lib/gsap";
-import { BG_FX_OPACITY_PROPERTY, shouldRenderMesh } from "@/lib/mesh";
-
-// ssr: false keeps three.js out of the server-rendered HTML and out of the
-// initial chunk, so the hero text stays the LCP element. The mount gate below
-// means this module is only ever requested once the gate has already passed —
-// the `{condition && <Component />}` idiom this Next version's own lazy-loading
-// guide shows, rather than gating inside the lazily-imported component itself.
-const HeroMesh = dynamic(() => import("@/components/HeroMesh").then((m) => m.HeroMesh), {
-  ssr: false,
-});
-
-/** `next/dynamic({ ssr: false })` is `React.lazy` underneath
- *  (node_modules/next/dist/shared/lib/lazy-dynamic/loadable.js), and a
- *  rejected lazy import throws during render — a stale chunk request after a
- *  redeploy with a tab still open, or a plain network blip, are both
- *  realistic triggers. This app has no `app/error.tsx` or
- *  `app/global-error.tsx`, so an uncaught throw here would bubble all the way
- *  to Next's built-in global error UI and replace the entire page over a
- *  purely decorative failure. Every other WebGL failure path in HeroMesh
- *  (its own try/catch around `WebGLRenderer` construction, its
- *  `webglcontextlost` handler) already degrades quietly to the 2D
- *  `BackgroundFX` canvas instead — this boundary makes a failed mesh mount
- *  degrade the same way. React error boundaries must be class components;
- *  this one is kept local to Hero and deliberately minimal — it renders
- *  nothing rather than any fallback UI, since the mesh itself is decorative
- *  and BackgroundFX is always underneath it. */
-class HeroMeshBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
-  state = { hasError: false };
-
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-
-  componentDidCatch() {
-    // Intentionally no logging beyond React's own default console.error: a
-    // failed decorative chunk fetch is not an application error a user or
-    // an error-tracking integration needs paged on.
-  }
-
-  render() {
-    if (this.state.hasError) return null;
-    return this.props.children;
-  }
-}
-
-const metrics = [
-  { value: "6", label: "shipped projects" },
-  { value: "220+", label: "automated tests" },
-  { value: "5", label: "live deployments" },
-];
+const step = (i: number) => ({ "--i": i }) as CSSProperties;
 
 export function Hero() {
-  const root = useRef<HTMLElement>(null);
-  const [meshEnabled, setMeshEnabled] = useState(false);
-
-  // The 3D hero mesh mounts only on wide viewports with motion allowed.
-  // `shouldRenderMesh` is the single source of that decision (shared with the
-  // 2D BackgroundFX fallback's own sizing maths). Evaluated on the client
-  // after mount, then re-evaluated on resize and on a live change to the
-  // reduced-motion OS setting (via `subscribeReducedMotion`, the one place
-  // `lib/gsap.ts` owns that media query — no second, divergent
-  // `matchMedia("(prefers-reduced-motion: reduce)")` call here), so crossing
-  // the breakpoint or toggling the setting mounts/unmounts the scene without
-  // a reload.
-  useEffect(() => {
-    let reducedMotion = false;
-    const evaluate = () => {
-      const enabled = shouldRenderMesh({ width: window.innerWidth, reducedMotion });
-      setMeshEnabled(enabled);
-      // The mesh (and its own scroll rig) is the only thing that ever drives
-      // --bg-fx-opacity below 1. The moment the gate closes — narrower
-      // viewport or reduced motion turning on — the mesh is on its way out
-      // (HeroMesh's own unmount also resets this, but that cleanup runs on
-      // React's schedule, not synchronously with this effect), so reset here
-      // too: a user must never be left with an invisible background.
-      if (!enabled) {
-        document.documentElement.style.setProperty(BG_FX_OPACITY_PROPERTY, "1");
-      }
-    };
-    const unsubscribe = subscribeReducedMotion((reduced) => {
-      reducedMotion = reduced;
-      evaluate();
-    });
-    window.addEventListener("resize", evaluate);
-    return () => {
-      window.removeEventListener("resize", evaluate);
-      unsubscribe();
-    };
-  }, []);
-
-  useIsomorphicLayoutEffect(() => {
-    const el = root.current;
-    if (!el || prefersReducedMotion()) return;
-
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        "[data-hero-item]",
-        { opacity: 0, y: 18 },
-        { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", stagger: 0.08 },
-      );
-    }, el);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
-    <section
-      ref={root}
-      id="top"
-      data-hero
-      className="relative mx-auto flex min-h-[88svh] max-w-5xl flex-col justify-center px-6 py-20"
-    >
-      {meshEnabled && (
-        <HeroMeshBoundary>
-          <HeroMesh className="pointer-events-none absolute inset-0 -z-10" />
-        </HeroMeshBoundary>
-      )}
-
-      <p
-        data-hero-item
-        className="mb-6 font-[family-name:var(--font-mono)] text-sm text-[var(--fg-muted)]"
-      >
-        <span className="text-[var(--ok)]">~/gabryel</span>{" "}
-        <span className="text-[var(--accent-text)]">$</span> whoami
-      </p>
-
-      <h1
-        data-hero-item
-        className="font-[family-name:var(--font-display)] text-5xl font-bold leading-[1.05] tracking-tight sm:text-7xl"
-      >
-        Software engineer who ships{" "}
-        <span className="bg-gradient-to-r from-[var(--accent)] to-[var(--highlight)] bg-clip-text text-transparent">
-          reliable systems
-        </span>
-        .
-      </h1>
-
-      <p
-        data-hero-item
-        className="mt-6 max-w-2xl text-lg leading-relaxed text-[var(--fg-muted)]"
-      >
-        Building production-grade APIs in Python (FastAPI) and Java (Spring Boot) —
-        payments, ledgers, async services, and reliable delivery — plus fullstack tools
-        with React and TypeScript.
-      </p>
-
-      <div data-hero-item className="mt-10 flex flex-wrap gap-3">
-        <a
-          href="#projects"
-          className="rounded-lg bg-[var(--accent)] px-6 py-3 font-semibold text-[var(--accent-contrast)] transition-colors hover:opacity-90"
-        >
-          View projects
-        </a>
-        <a
-          href="/cv.pdf"
-          className="rounded-lg border border-[var(--border-strong)] px-6 py-3 font-semibold transition-colors hover:bg-[var(--surface)]"
-        >
-          Download CV
-        </a>
+    <section className="hero" aria-labelledby="hero-title">
+      <div className="wrap">
+        <h1 id="hero-title">
+          <span data-in style={step(0)}>
+            {SITE_NAME}
+          </span>{" "}
+          <span className="role" data-in style={step(1)}>
+            {ROLE}
+          </span>
+        </h1>
+        <p className="lede" data-in style={step(2)}>
+          I build reliable systems for fintech: payments, ledgers and the services around them, in
+          Python, Java and TypeScript. Every project here is tested, deployed and open to read.
+        </p>
+        <p className="avail mono" data-in style={step(3)}>
+          <b>{AVAILABILITY.roles}</b> · {AVAILABILITY.place} · {AVAILABILITY.when}
+        </p>
+        <div className="actions" data-in style={step(4)}>
+          <a className="btn btn-solid" href="#work">
+            Selected work
+          </a>
+          <a className="btn btn-line" href={LINKS.cv}>
+            Download CV
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+              <path d="M8 2.5v8M4.5 7 8 10.5 11.5 7M3 13.5h10" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </a>
+        </div>
       </div>
-
-      <dl
-        data-hero-item
-        className="mt-14 flex flex-wrap gap-x-10 gap-y-4 border-t border-[var(--border)] pt-8"
-      >
-        {metrics.map((m) => (
-          <div key={m.label}>
-            <dt className="tnum font-[family-name:var(--font-mono)] text-3xl font-bold text-[var(--accent-text)]">
-              {m.value}
-            </dt>
-            <dd className="mt-1 text-sm text-[var(--fg-muted)]">{m.label}</dd>
-          </div>
-        ))}
-      </dl>
     </section>
   );
 }

@@ -1,28 +1,24 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
-import { BackgroundFX } from "@/components/BackgroundFX";
+import { Inter, JetBrains_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
-const display = Space_Grotesk({
-  variable: "--font-display",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["500", "600", "700"],
-});
-
 const sans = Inter({
-  variable: "--font-sans",
+  variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
+  axes: ["opsz"],
 });
 
 const mono = JetBrains_Mono({
-  variable: "--font-mono",
+  variable: "--font-jetbrains",
   subsets: ["latin"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Gabryel Veríssimo — Software Engineer",
   description: "Software engineer focused on fintech and reliable systems. Building with Python, FastAPI, PostgreSQL, TypeScript, React, and modern cloud infrastructure.",
 };
@@ -36,7 +32,8 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${display.variable} ${sans.variable} ${mono.variable} h-full antialiased`}
+      data-scroll-behavior="smooth"
+      className={`${sans.variable} ${mono.variable}`}
     >
       <head>
         <script
@@ -46,9 +43,9 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="flex min-h-full flex-col font-[family-name:var(--font-sans)]">
-        <BackgroundFX />
+      <body>
         {children}
+        <Analytics />
       </body>
     </html>
   );

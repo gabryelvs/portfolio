@@ -1,13 +1,16 @@
 # Gabryel Veríssimo — Portfolio
 
-A bold, dark-mode personal portfolio showcasing fintech services and fullstack software engineering work, built with **Next.js**, **React**, **TypeScript**, **Tailwind CSS**, and **GSAP** for scroll-driven animation and a WebGL hero.
+A dark-mode personal portfolio for software engineering work, built with **Next.js**,
+**React**, **TypeScript**, **Tailwind CSS** and **MDX**. Motion is CSS only — no GSAP, no
+three.js, no canvas.
 
 ## Tech Stack
 
 - **Framework**: Next.js 16 (App Router)
 - **UI**: React 19 + TypeScript
 - **Styling**: Tailwind CSS 4
-- **Animations**: GSAP (ScrollTrigger) + three.js (WebGL hero)
+- **Content**: MDX (`@next/mdx`) for the case-study write-ups in `content/work/`
+- **Motion**: CSS only, honouring `prefers-reduced-motion` — no GSAP, no three.js, no canvas
 - **Testing**: Vitest + React Testing Library
 - **Deployment**: Vercel (zero-config)
 
@@ -21,6 +24,24 @@ The portfolio automatically fetches and displays projects from your GitHub profi
 4. **Daily Refresh**: Next.js ISR (Incremental Static Regeneration) with `revalidate: 86400` automatically refreshes the page once daily.
 5. **Fallback**: If the GitHub API is unavailable or returns an error, the app gracefully falls back to `data/projects.fallback.json`, ensuring the site stays live.
 6. **Rate Limit**: Set the optional `GITHUB_TOKEN` environment variable to raise the GitHub API rate limit from 60 to 5000 requests/hour.
+
+## Case Studies
+
+Three of the showcased repositories — PayLedger, Webhook Inspector, Taskboard API — get a
+full write-up instead of just a GitHub card:
+
+- **Body**: `content/work/<slug>.mdx`, one file per project.
+- **Metadata**: `lib/work.ts` is the registry — title, stack, test count, repo/live URLs, and
+  the commit SHA the page is pinned to.
+- **`<Claim>` / `<Evidence>`**: hard-problem prose sits inside `<Claim>`; each one can carry an
+  `<Evidence path="…" lines="…">` note that links straight to those lines on GitHub, so a claim
+  about the code points at the code.
+- **Pinned commits**: every GitHub code link on a case-study page is built from the registry's
+  `commit`, not the branch head. When a project changes enough to update its write-up, bump
+  `commit` in `lib/work.ts` and re-check every `<Evidence>` line range against that commit.
+- **Enforcement**: `tests/caseStudyContent.test.ts` checks the fixed section outline, that every
+  code link is pinned to the registry's own full-length commit SHA, that `<Evidence>` uses a
+  repo path rather than a raw URL, and that each expanded case study runs 800–1,300 words.
 
 ## Getting Started
 
@@ -71,7 +92,7 @@ To include projects in your portfolio:
 
 This portfolio currently showcases:
 
-- **[payledger](https://github.com/gabryelvs/payledger)** — Double-entry payments & ledger API (FastAPI, PostgreSQL)
+- **[payledger](https://github.com/gabryelvs/payledger)** — Double-entry payments & ledger API, live at [payledger-gv.vercel.app/docs](https://payledger-gv.vercel.app/docs) (FastAPI, PostgreSQL)
 - **[fx-service](https://github.com/gabryelvs/fx-service)** — Async currency-exchange API with stale-fallback (FastAPI, Redis)
 - **[webhook-dispatcher](https://github.com/gabryelvs/webhook-dispatcher)** — Reliable webhook delivery with queue, retries, and dead-letter handling (FastAPI, Redis)
 - **[webhook-inspector](https://github.com/gabryelvs/webhook-inspector)** — Fullstack webhook debugging tool: disposable URLs, live request viewer (FastAPI, React, TypeScript)
@@ -99,10 +120,11 @@ This site is treated as a small production deployment and hardened accordingly:
   `Referrer-Policy: strict-origin-when-cross-origin`, and a restrictive
   `Permissions-Policy`.
   - *Trade-off:* `script-src`/`style-src` allow `'unsafe-inline'`. The Next.js
-    App Router emits inline bootstrap/streaming scripts (and Framer Motion sets
-    inline style attributes) with no stable hash across ISR revalidations, and a
-    nonce-based CSP would force dynamic rendering, defeating the static/ISR
-    caching this site relies on. Everything else is constrained to `'self'`.
+    App Router emits inline bootstrap/streaming scripts (and React sets inline
+    style attributes, e.g. the hero's animation-delay custom properties) with no
+    stable hash across ISR revalidations, and a nonce-based CSP would force
+    dynamic rendering, defeating the static/ISR caching this site relies on.
+    Everything else is constrained to `'self'`.
 - **CodeQL** static analysis (`security-and-quality` suite) on every push and on
   a weekly schedule — see `.github/workflows/codeql.yml`.
 - **Dependabot** for npm and GitHub Actions updates — see `.github/dependabot.yml`.
