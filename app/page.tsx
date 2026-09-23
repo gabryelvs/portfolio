@@ -1,8 +1,8 @@
 import { About } from "@/components/About";
 import { Contact } from "@/components/Contact";
 import { Hero } from "@/components/Hero";
+import { MoreWork } from "@/components/MoreWork";
 import { Nav } from "@/components/Nav";
-import { Projects } from "@/components/Projects";
 import { getShowcaseProjects } from "@/lib/github";
 
 export const revalidate = 86400;
@@ -14,7 +14,7 @@ export default async function Home() {
       <Nav />
       <main>
         <Hero />
-        <Projects projects={projects} />
+        <MoreWork projects={projects} />
         <About />
         <Contact />
       </main>
