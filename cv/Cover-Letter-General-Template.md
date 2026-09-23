@@ -12,7 +12,7 @@
 **Gabryel Verissimo**
 [CONTACT LINE — paste the `contact` value from `cv-contact.json`, the gitignored file
 beside this one: address · phone · email]
-GitHub: github.com/gabryelvs · LinkedIn: linkedin.com/in/gabryel-verissimo-b1b931261
+GitHub: github.com/gabryelvs · LinkedIn: linkedin.com/in/gabryel-verissimo
 
 [Date]
 
