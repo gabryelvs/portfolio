@@ -1,0 +1,21 @@
+/* hero */
+.hero { position: relative; padding: 96px 0 72px; isolation: isolate; }
+.hero::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 56px 56px; background-position: center top;
+  mask-image: linear-gradient(to bottom, #000 0%, #000 45%, transparent 100%);
+}
+.hero h1 { margin: 0; font-weight: 600; font-size: clamp(2.5rem, 1.3rem + 4.4vw, 4.25rem); line-height: 1.02; letter-spacing: -0.038em; text-wrap: balance; }
+.hero h1 > span { display: block; }
+.hero h1 .role { color: var(--muted); }
+.hero .lede { margin: 28px 0 0; max-width: 58ch; font-size: 18px; line-height: 1.6; color: var(--fg-2); text-wrap: pretty; }
+.hero .avail { margin: 20px 0 0; font-size: 13px; color: var(--muted); }
+.hero .avail b { color: var(--fg-2); font-weight: 500; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 36px; }
+@media (prefers-reduced-motion: no-preference) {
+  .hero [data-in] { animation: rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--i, 0) * 60ms); }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+}
+.status { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); font-weight: 400; letter-spacing: 0; }
+.status i { width: 6px; height: 6px; border-radius: 50%; background: var(--live); box-shadow: 0 0 0 3px color-mix(in srgb, var(--live) 18%, transparent); }
