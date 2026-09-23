@@ -4,7 +4,7 @@
 > line, which is kept out of this public repo (see `cv-contact.json` next to this file). The bits to *always*
 > change are the company name, the role title, and the one "why this company" sentence —
 > recruiters spot a generic letter instantly, so that one tailored sentence matters most.
-> Keep it to one page. Tuned for junior / placement **backend / software developer** roles;
+> Keep it to one page. Tuned for graduate and junior **software engineer** roles;
 > for IT-support roles use the separate West Ham-style version.
 
 ---
@@ -18,9 +18,9 @@ GitHub: github.com/gabryelvs · LinkedIn: linkedin.com/in/gabryel-veríssimo
 
 Dear [Hiring Manager / Hiring Team / specific name if known],
 
-I am writing to apply for the **[Role title]** position at **[Company]**. I am a final-year
-Computer Science student at the University of Greenwich, based in London, focused on building a
-career as a backend software engineer — and [one tailored sentence on why THIS company/role:
+I am writing to apply for the **[Role title]** position at **[Company]**. I am a software
+engineer based in London, completing a BSc in Computer Science at the University of Greenwich
+in July 2027 — and [one tailored sentence on why THIS company/role:
 e.g. "I was drawn to [Company] because of your work in fintech payments" / "your focus on
 building reliable, large-scale systems is exactly the kind of work I want to grow in"].
 

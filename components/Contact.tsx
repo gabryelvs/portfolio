@@ -15,7 +15,8 @@ export function Contact() {
         Get in touch
       </h2>
       <p className="mb-8 text-[var(--fg-muted)]">
-        Open to junior / placement software engineering roles in London. Let&apos;s talk.
+        Open to graduate and junior software engineer roles in London from summer 2027.
+        Let&apos;s talk.
       </p>
       <div className="flex flex-wrap justify-center gap-4">
         {links.map((l) => (
