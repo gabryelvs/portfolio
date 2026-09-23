@@ -35,7 +35,8 @@ A card move touches up to two columns: close the gap in the source, open one in 
 ```java
 // serialize concurrent moves per project: lock source and target column rows
 // in deterministic id order to avoid deadlock
-Set<UUID> lockedColumnIds = java.util.stream.Stream.of(card.getColumn().getId(), target.getId())
+Set<UUID> lockedColumnIds = java.util.stream.Stream.of(card.getColumn().getId(),
+        target.getId())
         .distinct().sorted()
         .peek(colId -> columns.lockById(colId))
         .collect(java.util.stream.Collectors.toSet());
@@ -64,19 +65,44 @@ A test rotates a token, replays the old one, and checks that the new one no long
 ### Not found, not forbidden
 
 <Claim>
-A 403 tells an outsider "this exists, you just can't see it". So every access goes through one lookup: find this user's membership in this project. A missing project and a project you're not in produce the same 404. The owner-only check can only return 403 after membership is confirmed, to someone who already knows the project exists. Tests check the 404 on projects, columns, cards, comments, filters, and on moving a card into another project's column.
+A 403 tells an outsider "this exists, you just can't see it". So every access goes through one lookup: find this user's membership in this project. A missing project and a project you're not in produce the same 404. The owner-only check can only return 403 after membership is confirmed, to someone who already knows the project exists.
 
 <Evidence path="src/main/java/com/gabryel/taskboard/common/ProjectAccessService.java" lines="19-31">one membership lookup; 404 whether missing or not a member</Evidence>
 </Claim>
 
+<Claim>
+Tests check the 404 on projects, columns, cards, comments, filters, and on moving a card into another project's column.
+
+<Evidence path="src/test/java/com/gabryel/taskboard/project/ProjectTest.java" lines="45-52">nonMemberGets404NotForbidden</Evidence>
+</Claim>
+
 ### What the final review caught
 
-A last review before launch found four real problems, and each was fixed with a test:
+A last review before launch found four real problems. Each fix came with a test.
 
-- **The secret.** The app would have started in production with the development JWT secret if the real one was missing. It now refuses to start.
-- **The revocation.** A reused refresh token was rejected, but the user's other sessions stayed alive.
-- **The create race.** Creating a card counted the column's cards without a lock, so two concurrent creates could get the same position. Creating now takes the same column lock as moving.
-- **The delete race.** A card deleted in the middle of someone else's move caused a 500. It now maps to a 404, and a constraint violation maps to a 409.
+<Claim>
+**The secret.** The app would have started in production with the development JWT secret if the real one was missing. It now refuses to start.
+
+<Evidence path="src/test/java/com/gabryel/taskboard/auth/JwtServiceTest.java" lines="11-19">devDefaultSecretUnderProdProfileFailsFast</Evidence>
+</Claim>
+
+<Claim>
+**The revocation.** A reused refresh token was rejected, but the user's other sessions stayed alive.
+
+<Evidence path="src/test/java/com/gabryel/taskboard/auth/RefreshTest.java" lines="41-51">reusedRefreshTokenRevokesWholeFamily</Evidence>
+</Claim>
+
+<Claim>
+**The create race.** Creating a card counted the column's cards without a lock, so two concurrent creates could get the same position. Creating now takes the same column lock as moving.
+
+<Evidence path="src/test/java/com/gabryel/taskboard/card/CardTest.java" lines="87-115">concurrentCreatesKeepPositionsDense</Evidence>
+</Claim>
+
+<Claim>
+**The delete race.** A card deleted in the middle of someone else's move caused a 500. It now maps to a 404, and a constraint violation maps to a 409. The test covers that mapping; no test races a real delete against a move.
+
+<Evidence path="src/test/java/com/gabryel/taskboard/common/ApiExceptionHandlerTest.java" lines="72-86">entityNotFoundProduces404 and dataIntegrityViolationProduces409</Evidence>
+</Claim>
 
 ## How it's tested
 

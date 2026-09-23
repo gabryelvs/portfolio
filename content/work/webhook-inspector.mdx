@@ -73,9 +73,15 @@ Tests cover truncation, pruning and expiry. What they don't prove is that memory
 ### Bugs only production found
 
 <Claim>
-Two bugs appeared only after the first deploy. On a cold start the app booted faster than the database woke up, table creation failed, and the app crash-looped. Startup now retries ten times, three seconds apart, with tests for both the recovery and the give-up path. Even then, the first visitor after an idle period waited for both the machine and the database, and got a 503. That fix was configuration, not code: keep one machine warm.
+Two bugs appeared only after the first deploy. On a cold start the app booted faster than the database woke up, table creation failed, and the app crash-looped. Startup now retries ten times, three seconds apart. Even then, the first visitor after an idle period waited for both the machine and the database, and got a 503. That fix was configuration, not code: keep one machine warm.
 
 <Evidence path="backend/app/db.py" lines="30-41">startup waits for the database instead of crashing</Evidence>
+</Claim>
+
+<Claim>
+Tests cover both the recovery and the give-up path.
+
+<Evidence path="backend/tests/test_db.py" lines="7-26">test_init_db_retries_until_db_ready and test_init_db_raises_after_exhausted_retries</Evidence>
 </Claim>
 
 <Claim>
