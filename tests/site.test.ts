@@ -32,7 +32,7 @@ describe("site constants", () => {
   });
 
   it("links to real destinations", () => {
-    expect(LINKS.email).toBe("mailto:gabryelverissimo12@gmail.com");
+    expect(LINKS.email).toBe("mailto:hello@gabryelverissimo.dev");
     expect(LINKS.github).toBe("https://github.com/gabryelvs");
     expect(LINKS.linkedin).toMatch(/^https:\/\/www\.linkedin\.com\/in\//);
     expect(LINKS.cv).toBe("/cv.pdf");
