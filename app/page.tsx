@@ -1,8 +1,11 @@
 import { About } from "@/components/About";
 import { Contact } from "@/components/Contact";
+import { Experience } from "@/components/Experience";
+import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/Hero";
 import { MoreWork } from "@/components/MoreWork";
 import { Nav } from "@/components/Nav";
+import { SelectedWork } from "@/components/SelectedWork";
 import { getShowcaseProjects } from "@/lib/github";
 
 export const revalidate = 86400;
@@ -12,15 +15,15 @@ export default async function Home() {
   return (
     <>
       <Nav />
-      <main>
+      <main id="main">
         <Hero />
+        <SelectedWork />
+        <Experience />
         <MoreWork projects={projects} />
         <About />
         <Contact />
       </main>
-      <footer className="border-t border-[var(--border)] py-8 text-center font-[family-name:var(--font-mono)] text-sm text-[var(--fg-muted)]">
-        © {new Date().getFullYear()} Gabryel Veríssimo · built with Next.js
-      </footer>
+      <Footer />
     </>
   );
 }

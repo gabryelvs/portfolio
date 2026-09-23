@@ -46,14 +46,14 @@ describe("identity copy", () => {
 
   it("keeps the Backend skills group", () => {
     render(<About />);
-    expect(screen.getByRole("heading", { name: "Backend" })).toBeInTheDocument();
+    expect(screen.getByText("Backend", { selector: "dt" })).toBeInTheDocument();
   });
 
   it("offers graduate and junior roles from summer 2027 in contact", () => {
-    render(<Contact />);
-    expect(
-      screen.getByText(/graduate and junior software engineer roles in London from summer 2027/i),
-    ).toBeInTheDocument();
+    const { container } = render(<Contact />);
+    expect(container).toHaveTextContent(
+      /graduate and junior software engineer roles in London from summer 2027/i,
+    );
   });
 
   it("titles the page metadata as Software Engineer", () => {

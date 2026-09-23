@@ -1,40 +1,38 @@
 import { SectionHeading } from "@/components/SectionHeading";
 
-const skills = {
-  Languages: ["Python", "Java", "TypeScript", "C#", "SQL", "JavaScript"],
-  Backend: ["FastAPI", "Spring Boot", "PostgreSQL", "Redis", "REST APIs"],
-  "Front-end": ["React", "Next.js", "Vite", "Tailwind CSS"],
-  Tools: ["Docker", "Git", "GitHub Actions", "pytest", "Vitest", "Testcontainers"],
-};
+const skills: [string, string][] = [
+  ["Languages", "Python, Java, TypeScript, SQL, C#, JavaScript"],
+  ["Backend", "FastAPI, Spring Boot, PostgreSQL, Redis, REST APIs"],
+  ["Front-end", "React, Next.js, Vite, Tailwind CSS"],
+  ["Tools", "Docker, Git, GitHub Actions, pytest, Vitest, Testcontainers"],
+];
 
 export function About() {
   return (
-    <section id="about" aria-labelledby="about-title" className="mx-auto max-w-4xl px-6 py-24">
-      <SectionHeading index="02" title="About" id="about-title" />
-      <p className="mb-12 max-w-3xl text-lg leading-relaxed text-[var(--fg-muted)]">
-        I&apos;m a software engineer in London. I build small, production-shaped services —
-        tested, containerised, and deployed — and I care about correctness, resilience, and clean
-        design. I graduate from the University of Greenwich with a BSc in Computer Science in
-        July 2027.
-      </p>
-      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-        {Object.entries(skills).map(([group, items]) => (
-          <div key={group}>
-            <h3 className="mb-3 font-[family-name:var(--font-mono)] text-xs uppercase tracking-wider text-[var(--accent-text)]">
-              {group}
-            </h3>
-            <ul className="flex flex-wrap gap-2">
-              {items.map((s) => (
-                <li
-                  key={s}
-                  className="rounded-md bg-[var(--surface)] px-2.5 py-1 text-sm text-[var(--fg)]"
-                >
-                  {s}
-                </li>
-              ))}
-            </ul>
+    <section className="block" id="about" aria-labelledby="about-title">
+      <div className="wrap">
+        <SectionHeading index="04" id="about-title" title="About" />
+        <div className="about-grid">
+          <div>
+            <p>
+              I&apos;m a software engineer in London. I build small, production-shaped services,
+              tested, containerised and deployed, and I care most about the parts that fail quietly:
+              concurrency, retries, and what happens when a dependency is down.
+            </p>
+            <p>
+              I work with AI-assisted development and treat it like any other tool: I set the design,
+              review every change, and don&apos;t ship what I can&apos;t explain or test.
+            </p>
           </div>
-        ))}
+          <dl className="skills">
+            {skills.map(([k, v]) => (
+              <div key={k} className="skill">
+                <dt className="mono">{k}</dt>
+                <dd>{v}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
       </div>
     </section>
   );
