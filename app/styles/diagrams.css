@@ -1,0 +1,24 @@
+svg.dgm { display: block; width: 100%; height: auto; overflow: visible; }
+.dgm text { font-family: var(--font-mono); fill: var(--fg-2); }
+.dgm .t-muted { fill: var(--muted); }
+.dgm .node { fill: var(--surface-2); stroke: var(--line-strong); stroke-width: 1; }
+.dgm .node-strong { fill: var(--surface-3); stroke: var(--muted); stroke-width: 1; }
+.dgm .link { stroke: var(--line-strong); stroke-width: 1; fill: none; }
+.dgm .dot { fill: var(--muted); }
+.dgm .hot { stroke: var(--fg-2); stroke-width: 1.5; fill: none; }
+.dgm .hot-dot { fill: var(--fg-2); }
+.dgm .hot-draw { stroke: var(--accent); stroke-width: 1.5; fill: none; stroke-dasharray: 1; stroke-dashoffset: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .dgm .hot-draw { transition: stroke-dashoffset 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
+}
+.work:hover .dgm .hot-draw, .work:focus-within .dgm .hot-draw { stroke-dashoffset: 0; }
+.work:hover .dgm .hot-dot, .work:focus-within .dgm .hot-dot { fill: var(--accent); transition: fill 0.3s ease-out 0.25s; }
+
+.hero-dgm { margin: 48px 0 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-1); padding: 28px 28px 20px; }
+.hero-dgm figcaption { font-size: 12px; color: var(--muted); margin-top: 14px; }
+svg.dgm.dgm-narrow { display: none; }
+@media (max-width: 700px) {
+  svg.dgm.dgm-wide { display: none; }
+  svg.dgm.dgm-narrow { display: block; }
+  .hero-dgm { padding: 20px 14px 14px; }
+}
