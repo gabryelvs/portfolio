@@ -8,15 +8,14 @@ web
 
 ## Users
 
-Primary: hiring managers and technical recruiters evaluating Gabryel Veríssimo for
-backend software engineering roles in London. They arrive from an application, CV,
-or message, usually with a CV already in hand, and skim briefly to decide whether
-the candidate is worth a conversation.
+Primary: hiring managers and engineers evaluating Gabryel Veríssimo for a graduate
+or junior software engineering role in London (roles from summer 2027). They arrive
+from an application, CV, or message, usually with a CV already in hand, and skim
+briefly to decide whether the candidate is worth a conversation.
 
-Secondary (present but not optimized for): prospective freelance clients looking at
-the site as evidence of frontend craft. The README currently advertises "fintech
-services" alongside engineering work; that second audience is acknowledged, not
-designed for.
+Freelance clients are no longer a target audience for this site. Client work (Auto
+Boutique London) appears only as factual experience — in the CV and the Experience
+section — not as a service pitch.
 
 ## Product Purpose
 
@@ -45,18 +44,18 @@ instead of it.
 
 ## Capabilities and Constraints
 
-- Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4.
-- GSAP (ScrollTrigger) for scroll-driven animation; three.js WebGL hero.
+- Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4, MDX.
+- Motion is CSS only; no GSAP, no three.js, no WebGL.
 - Vitest + React Testing Library. Deployed on Vercel.
 - Projects come from the GitHub API filtered to the `showcase` topic; the topic is
   stripped from display. `GITHUB_TOKEN` is optional and only raises the rate limit.
 - `data/projects.fallback.json` backs the list when the API errors or is rate
   limited. The interface must stay correct when the API returns nothing, returns
   fewer projects than expected, or returns a repo with no description.
-- Sections: Hero, About, Projects, Contact, plus Nav and a theme toggle.
-
-Undecided: whether the freelance/fintech offer stays on this site or moves
-elsewhere. The README asserts both; only the hiring audience is confirmed as primary.
+- Three of the showcased repos (PayLedger, Webhook Inspector, Taskboard API) also
+  get a full case-study page instead of just a GitHub card.
+- Sections: Hero, Selected work (3 case studies), Experience, More work (GitHub
+  showcase), About, Contact, plus Nav and a theme toggle.
 
 ## Brand Commitments
 
@@ -66,14 +65,14 @@ implemented.
 ## Evidence on Hand
 
 - Real, deployed projects surfaced from GitHub via the `showcase` topic.
-- Hero counters for shipped projects, automated tests, and live deployments, drawn
-  from actual work.
+- Three full case studies at `/work/<slug>` (PayLedger, Webhook Inspector, Taskboard
+  API), each pinned to a commit SHA, with `<Evidence>` links straight to the lines
+  of code a claim describes.
 - A CV lives in the repo (`cv/`).
 
 Must not be fabricated: testimonials, client names, employers, user counts,
 benchmarks, revenue, or any metric not traceable to a real repository or
-deployment. The hero's numbers are real and must stay real — if a number cannot be
-substantiated, remove it rather than estimate it.
+deployment.
 
 ## Product Principles
 
@@ -83,10 +82,10 @@ substantiated, remove it rather than estimate it.
    number maps to something countable. No invented proof.
 3. **Degrade honestly.** The GitHub API is a runtime dependency outside our
    control. Empty, partial, and error states are core states, not edge cases.
-4. **Evidence outranks decoration.** Animation and the WebGL hero earn attention;
-   they never stand between the visitor and proof of work.
+4. **Evidence outranks decoration**: motion never stands between the visitor and
+   proof of work.
 
 ## Accessibility & Inclusion
 
-No product-specific standard was established. Noted from the implementation, not as
-a confirmed commitment: the hero already honours `prefers-reduced-motion`.
+WCAG 2.2 AA is the target. Reduced motion is honoured throughout, and focus states
+are keyboard-first.

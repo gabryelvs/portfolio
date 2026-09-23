@@ -39,10 +39,11 @@ production-shaped projects; the two most relevant to this role:
 >
 > - **Taskboard API** *(use for Java / Spring Boot ads — most London backend roles screen for
 >   this)* — a Trello-like task manager API (Java 21, Spring Boot, PostgreSQL). JWT authentication
->   with refresh-token rotation and family revocation, so a stolen token invalidates the whole
->   chain rather than granting quiet access; role-based membership that returns 404 rather than
->   403 so an unauthorised user cannot confirm a resource exists; and transactional card ordering
->   under pessimistic locking, proven by 62 Testcontainers integration tests against a real
+>   with refresh-token rotation: reusing a rotated refresh token revokes every session for that
+>   user, so a stolen refresh token is useless once the real client has rotated it, and every
+>   session is signed out; role-based membership that returns 404 rather than 403 so an
+>   unauthorised user cannot confirm a resource exists; and transactional card ordering under
+>   pessimistic locking, proven by 62 Testcontainers integration tests against a real
 >   database. *(github.com/gabryelvs/taskboard-api — live demo available)*
 >
 > - **SECTOR—9** *(use for fullstack or front-end-leaning ads)* — an animated demo storefront

@@ -23,7 +23,7 @@ I build small, production-shaped backend services in Python and FastAPI — each
 Recent projects:
 
 • PayLedger — a double-entry payments and ledger API. Money is stored as integer minor units (no floating-point errors), transfers write balanced append-only entries, concurrent transfers are race-safe under row locking, and writes are idempotent.
-Code: https://github.com/gabryelvs/payledger  |  Live demo: https://payledger-gv.fly.dev/docs
+Code: https://github.com/gabryelvs/payledger  |  Live demo: https://payledger-gv.vercel.app/docs
 
 • FX-Service — an async currency-exchange API. It caches European Central Bank rates in Redis, refreshes them on a background schedule, and keeps serving last-known rates when the upstream is down.
 Code: https://github.com/gabryelvs/fx-service  |  Live demo: https://fx-service-gv.fly.dev/docs
@@ -31,7 +31,7 @@ Code: https://github.com/gabryelvs/fx-service  |  Live demo: https://fx-service-
 • Webhook-Dispatcher — reliable webhook delivery via a Redis queue and a separate worker. Requests are signed (HMAC-SHA256), failures retry with exponential backoff, and exhausted deliveries are dead-lettered and replayable.
 Code: https://github.com/gabryelvs/webhook-dispatcher
 
-• Taskboard API — a Trello-like task manager API in Java and Spring Boot. JWT auth with refresh-token rotation and family revocation on reuse, 404-no-leak authorization, and transactional card ordering under pessimistic locking — 62 Testcontainers tests.
+• Taskboard API — a Trello-like task manager API in Java and Spring Boot. JWT auth with refresh-token rotation (reuse revokes every session for that user), 404-no-leak authorization, and transactional card ordering under pessimistic locking — 62 Testcontainers tests.
 Code: https://github.com/gabryelvs/taskboard-api  |  Live demo: https://taskboard-gv.fly.dev/swagger-ui.html
 
 • OWASP Security Lab — an intentionally-vulnerable FastAPI app covering six OWASP Top 10 issues, each with a working exploit, a hardened fix, and tests proving both — a hands-on study in secure coding.
@@ -61,7 +61,7 @@ LinkedIn → your profile → Featured → "+" → Add a link. Add these (lead w
 - Title: `PayLedger — Double-entry payments API (Python/FastAPI/PostgreSQL)`
 
 **Link 3**
-- URL: `https://payledger-gv.fly.dev/docs`
+- URL: `https://payledger-gv.vercel.app/docs`
 - Title: `PayLedger — Live API demo (Swagger)`
 
 **Link 4**
@@ -94,7 +94,7 @@ LinkedIn → your profile → Featured → "+" → Add a link. Add these (lead w
 
 **Link 11**
 - URL: `https://github.com/gabryelvs/webhook-inspector`
-- Title: `Webhook Inspector — Disposable URLs, live request viewer, 32 tests across the stack`
+- Title: `Webhook Inspector — Disposable URLs, live request viewer, 34 tests across the stack`
 
 **Link 12**
 - URL: `https://taskboard-gv.fly.dev/swagger-ui.html`
@@ -117,7 +117,7 @@ LinkedIn → Add profile section → Recommended → Add projects.
 - Name: `PayLedger — Double-entry payments & ledger API`
 - Description:
 ```
-A backend payments API built on an immutable double-entry ledger. Money is stored as integer minor units to avoid floating-point errors; every transfer writes balanced, append-only ledger entries; concurrent transfers are serialised with database row locking (verified by a test that fires 20 parallel transfers); and write endpoints are idempotent to prevent double-charges. Test-driven (31 tests), GitHub Actions CI, Dockerised, and deployed on Fly.io.
+A backend payments API built on an immutable double-entry ledger. Money is stored as integer minor units to avoid floating-point errors; every transfer writes balanced, append-only ledger entries; concurrent transfers are serialised with database row locking (verified by a test that fires 20 parallel transfers); and write endpoints are idempotent to prevent double-charges. Only a wallet's owner can move or read its money. Test-driven (67 tests against real PostgreSQL, incl. concurrency tests), GitHub Actions CI, Dockerised, and deployed on Vercel.
 Stack: Python, FastAPI, PostgreSQL, SQLAlchemy, Alembic, Docker.
 ```
 - Link: `https://github.com/gabryelvs/payledger`
@@ -153,7 +153,7 @@ Stack: TypeScript, Next.js 16, React 19, Tailwind 4, GSAP, Docker, Vitest.
 - Name: `Webhook Inspector — Fullstack webhook debugging tool`
 - Description:
 ```
-A fullstack tool for debugging webhooks: you create a disposable URL, point any provider at it, and watch requests arrive live in a React interface showing headers, pretty-printed body, and query parameters. Hardened for public deployment — per-IP rate limiting, request bodies streamed and capped at 1 MB so a large payload cannot exhaust memory, per-bin retention limits, and a capture endpoint that always answers 200 so a database fault never breaks the sender's webhook. Test-driven across the stack (25 backend pytest + 7 frontend Vitest tests), single-container Docker build serving the API and the compiled React app, deployed on Fly.io with PostgreSQL.
+A fullstack tool for debugging webhooks: you create a disposable URL, point any provider at it, and watch requests arrive live in a React interface showing headers, pretty-printed body, and query parameters. Hardened for public deployment — per-client rate limiting keyed on the real client IP behind the proxy, request bodies streamed and capped at 1 MB so a large payload cannot exhaust memory, per-bin retention limits, and a capture endpoint that always answers 200 so a database fault never breaks the sender's webhook. Test-driven across the stack (27 backend pytest + 7 frontend Vitest tests), single-container Docker build serving the API and the compiled React app, deployed on Fly.io with PostgreSQL.
 Stack: Python, FastAPI, PostgreSQL, React, TypeScript, Tailwind, Docker.
 ```
 - Link: `https://webhook-inspector-gv.fly.dev`
@@ -162,7 +162,7 @@ Stack: Python, FastAPI, PostgreSQL, React, TypeScript, Tailwind, Docker.
 - Name: `Taskboard API — Trello-like task manager API`
 - Description:
 ```
-A Trello-like task manager REST API in Java and Spring Boot. Authentication uses JWT with refresh-token rotation and family revocation on reuse detection, so a stolen refresh token invalidates the whole chain rather than granting quiet access. Project membership is role-based (OWNER/MEMBER) with 404-no-leak authorization, so an unauthorised user cannot even confirm a resource exists. Drag-and-drop card ordering is transactional with pessimistic column locking in a deterministic lock order, proven under concurrent-move integration tests; errors are RFC 7807 problem+json. Test-driven with 62 Testcontainers integration tests against a real PostgreSQL, OpenAPI/Swagger docs, GitHub Actions CI, deployed on Fly.io.
+A Trello-like task manager REST API in Java and Spring Boot. Authentication uses JWT with refresh-token rotation: reusing a rotated refresh token revokes every session for that user, so a stolen refresh token is useless once the real client has rotated it, and every session is signed out. Project membership is role-based (OWNER/MEMBER) with 404-no-leak authorization, so an unauthorised user cannot even confirm a resource exists. Drag-and-drop card ordering is transactional with pessimistic column locking in a deterministic lock order, proven under concurrent-move integration tests; errors are RFC 7807 problem+json. Test-driven with 62 Testcontainers integration tests against a real PostgreSQL, OpenAPI/Swagger docs, GitHub Actions CI, deployed on Fly.io.
 Stack: Java 21, Spring Boot, Spring Security, PostgreSQL, Testcontainers, Docker.
 ```
 - Link: `https://taskboard-gv.fly.dev/swagger-ui.html`

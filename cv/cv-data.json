@@ -38,19 +38,19 @@
   "projects": [
     {
       "name": "PayLedger — Double-Entry Payments API",
-      "tech": "Python · FastAPI · PostgreSQL · Redis · Docker",
+      "tech": "Python · FastAPI · PostgreSQL · Alembic · Docker",
       "github": {
         "label": "github.com/gabryelvs/payledger",
         "url": "https://github.com/gabryelvs/payledger"
       },
       "live": {
-        "label": "payledger-gv.fly.dev/docs",
-        "url": "https://payledger-gv.fly.dev/docs"
+        "label": "payledger-gv.vercel.app/docs",
+        "url": "https://payledger-gv.vercel.app/docs"
       },
       "bullets": [
-        "Backend payment platform built around an immutable double-entry ledger: users hold multi-currency balances and transfer money, with every movement recorded as balanced, append-only ledger entries.",
-        "Made transfers race-safe with row-level database locking (no lost updates under concurrent load) and idempotent via idempotency keys; money stored as integer minor units to avoid floating-point errors.",
-        "Test-driven (31 tests incl. a concurrency proof), with Docker Compose, GitHub Actions CI, and Alembic migrations."
+        "Double-entry payments API: users hold multi-currency wallets and transfer money, with every movement recorded as balanced, append-only ledger entries; only the owner can move or read a wallet's money.",
+        "Transfers are race-safe (row-level locks in ascending id order, balance checked under the lock) and idempotent (retry key claimed in the same transaction, scoped per user, so retries can't double-charge).",
+        "Test-driven (67 pytest tests against real PostgreSQL, incl. concurrency tests), with Docker Compose, GitHub Actions CI, and Alembic migrations."
       ]
     },
     {
@@ -66,8 +66,8 @@
       },
       "bullets": [
         "Fullstack tool for debugging webhooks: users create a disposable URL, point any provider at it, and watch requests arrive live in a React interface showing headers, pretty-printed body, and query parameters.",
-        "Hardened for public deployment: per-IP rate limiting, streamed request bodies capped at 1 MB so a large payload cannot exhaust memory, per-bin retention limits, and a capture endpoint that always answers 200 so a database fault never breaks the sender's webhook.",
-        "Test-driven across the stack (25 backend pytest + 7 frontend Vitest tests), single-container Docker build serving the API and compiled React app, deployed on Fly.io with PostgreSQL."
+        "Hardened for public deployment: per-client rate limiting keyed on the real client IP behind the proxy, streamed request bodies capped at 1 MB so a large payload cannot exhaust memory, per-bin retention limits, and a capture endpoint that always answers 200 so a database fault never breaks the sender's webhook.",
+        "Test-driven across the stack (27 backend pytest + 7 frontend Vitest tests), single-container Docker build serving the API and compiled React app, deployed on Fly.io with PostgreSQL."
       ]
     },
     {
@@ -113,7 +113,7 @@
         "url": "https://taskboard-gv.fly.dev/swagger-ui.html"
       },
       "bullets": [
-        "Trello-like task manager REST API with JWT authentication using refresh-token rotation and family revocation on reuse detection, and role-based project membership (OWNER/MEMBER) with 404-no-leak authorization.",
+        "Trello-like task manager REST API with JWT authentication using refresh-token rotation (reuse revokes every session for that user), and role-based project membership (OWNER/MEMBER) with 404-no-leak authorization.",
         "Transactional drag-and-drop card ordering with pessimistic column locking (deterministic lock order) proven under concurrent-move integration tests; RFC 7807 problem+json error responses.",
         "Test-driven (62 Testcontainers integration tests against real PostgreSQL), OpenAPI/Swagger docs, GitHub Actions CI, and deployed on Fly.io."
       ]

@@ -13,7 +13,7 @@
     "name": "payledger",
     "description": "Double-entry payments & ledger API (FastAPI, PostgreSQL).",
     "url": "https://github.com/gabryelvs/payledger",
-    "homepage": "https://payledger-gv.fly.dev/docs",
+    "homepage": "https://payledger-gv.vercel.app/docs",
     "language": "Python",
     "topics": ["fastapi", "fintech", "ledger", "postgresql"],
     "stars": 0,
