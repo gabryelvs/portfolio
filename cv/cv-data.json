@@ -109,13 +109,13 @@
         "url": "https://github.com/gabryelvs/taskboard-api"
       },
       "live": {
-        "label": "taskboard-gv.fly.dev/swagger-ui.html",
-        "url": "https://taskboard-gv.fly.dev/swagger-ui.html"
+        "label": "taskboard-api-h3yu.onrender.com/swagger-ui.html",
+        "url": "https://taskboard-api-h3yu.onrender.com/swagger-ui.html"
       },
       "bullets": [
         "Trello-like task manager REST API with JWT authentication using refresh-token rotation (reuse revokes every session for that user), and role-based project membership (OWNER/MEMBER) with 404-no-leak authorization.",
         "Transactional drag-and-drop card ordering with pessimistic column locking (deterministic lock order) proven under concurrent-move integration tests; RFC 7807 problem+json error responses.",
-        "Test-driven (62 tests: 59 Testcontainers integration tests against real PostgreSQL, 3 unit), OpenAPI/Swagger docs, GitHub Actions CI, and deployed on Fly.io."
+        "Test-driven (72 tests: 59 Testcontainers integration tests against real PostgreSQL, 13 unit), OpenAPI/Swagger docs, GitHub Actions CI, and deployed on Render with Neon PostgreSQL."
       ]
     },
     {

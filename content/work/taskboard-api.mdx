@@ -11,13 +11,13 @@ A Trello-style REST API: projects with invite-only membership, ordered columns, 
 - **Errors are machine-readable.** Every error is an RFC 7807 problem+json response.
 - **The schema belongs to migrations.** Flyway creates it, and Hibernate only validates that the code matches.
 
-<Evidence path="src/main/resources/application.yml" lines="13-17">token lifetimes</Evidence>
+<Evidence path="src/main/resources/application.yml" lines="26-30">token lifetimes</Evidence>
 </Claim>
 
 ## Architecture
 
 <Claim>
-Spring Boot 3 on Java 21. A stateless Spring Security filter chain verifies the JWT on every request. Behind it, one service per aggregate (projects, members, columns, cards, comments) owns the business rules, and every service goes through a single access check before touching data. Spring Data repositories sit over PostgreSQL. There are 28 endpoints, documented with OpenAPI and browsable in Swagger UI. At the commit this page describes, it runs on Fly.io.
+Spring Boot 3 on Java 21. A stateless Spring Security filter chain verifies the JWT on every request. Behind it, one service per aggregate (projects, members, columns, cards, comments) owns the business rules, and every service goes through a single access check before touching data. Spring Data repositories sit over PostgreSQL. There are 28 endpoints, documented with OpenAPI and browsable in Swagger UI. It started on Fly.io and now runs on a Render free instance with Neon's serverless PostgreSQL. That instance sleeps after 15 idle minutes, so the first request after a quiet spell waits a minute or more while Java starts.
 
 <Evidence path="src/main/resources/db/migration/V1__init.sql">the schema, owned by Flyway</Evidence>
 </Claim>
@@ -107,7 +107,7 @@ A last review before launch found four real problems. Each fix came with a test.
 ## How it's tested
 
 <Claim>
-62 tests. 59 are integration tests that run the real application against a real PostgreSQL, started once per test run with Testcontainers and exercised through Spring's MockMvc. Nothing about locking or transactions is mocked. The other 3 are unit tests for the JWT service. The suite grew from 55 to 62 during the final review: seven tests across the four fixes. GitHub Actions runs it on every push to main and every pull request.
+72 tests. 59 are integration tests that run the real application against a real PostgreSQL, started once per test run with Testcontainers and exercised through Spring's MockMvc. Nothing about locking or transactions is mocked. The other 13 are unit tests: the JWT service, and the parser that turns Neon's connection string into Spring's settings. The suite grew from 55 to 62 during the final review, seven tests across the four fixes, and to 72 with the move to Neon. GitHub Actions runs it on every push to main and every pull request.
 
 <Evidence path="src/test/java/com/gabryel/taskboard/IntegrationTest.java" lines="12-32">one shared PostgreSQL container for every integration test</Evidence>
 </Claim>
@@ -121,6 +121,6 @@ A last review before launch found four real problems. Each fix came with a test.
 
 ## Links
 
-- [Source at the commit this page describes](https://github.com/gabryelvs/taskboard-api/tree/d5d852447f437738e815d2fa66cbaf287f652640)
-- [The concurrent-move test](https://github.com/gabryelvs/taskboard-api/blob/d5d852447f437738e815d2fa66cbaf287f652640/src/test/java/com/gabryel/taskboard/card/CardMoveTest.java#L90-L121)
-- [Live API docs](https://taskboard-gv.fly.dev/swagger-ui.html)
+- [Source at the commit this page describes](https://github.com/gabryelvs/taskboard-api/tree/c8a378693763e984e2b5e3689e026b6b1177f30d)
+- [The concurrent-move test](https://github.com/gabryelvs/taskboard-api/blob/c8a378693763e984e2b5e3689e026b6b1177f30d/src/test/java/com/gabryel/taskboard/card/CardMoveTest.java#L90-L121)
+- [Live API docs](https://taskboard-api-h3yu.onrender.com/swagger-ui.html)
