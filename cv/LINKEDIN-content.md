@@ -139,10 +139,10 @@ Set up push-to-deploy from GitHub Actions to SiteGround over SSH, archived the o
 *Add further clients here only once their site is live and they have agreed to be named;
 mark unpaid work "(pro bono)".*
 
-**Runner** · The Ivy Market Grill, Covent Garden · London · Jun 2026 – Present
+**Runner** · The Ivy Market Grill, Covent Garden · London · Jun 2026 – Sep 2026 (left 4 Sep)
 ```
-Front-of-house runner in a restaurant serving 400–600 covers a day: running food to section, handling allergen and dietary requirements, and keeping pace and accuracy through peak service.
-Train new starters on section layout, allergen handling and service flow.
+Front-of-house runner in a restaurant serving 400–600 covers a day: ran food to section, handled allergen and dietary requirements, and kept pace and accuracy through peak service.
+Trained new starters on section layout, allergen handling and service flow.
 ```
 
 **Youth Leader (Volunteer)** · Cathedral International, West Norwood · Jun 2023 – Present
