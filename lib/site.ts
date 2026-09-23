@@ -2,7 +2,7 @@
 
 export const SITE_URL = "https://gabryelverissimo.dev";
 
-export const SITE_NAME = "Gabryel Veríssimo";
+export const SITE_NAME = "Gabryel Verissimo";
 export const ROLE = "Software Engineer";
 
 export const AVAILABILITY = {

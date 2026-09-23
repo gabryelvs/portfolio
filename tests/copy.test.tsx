@@ -57,7 +57,7 @@ describe("identity copy", () => {
   });
 
   it("titles the page metadata as Software Engineer", () => {
-    expect(layoutSource).toContain('title: "Gabryel Veríssimo — Software Engineer"');
+    expect(layoutSource).toContain('title: "Gabryel Verissimo — Software Engineer"');
     expect(layoutSource).not.toMatch(/backend/i);
   });
 

@@ -28,7 +28,7 @@ describe("/work/[slug]", () => {
 
   it("builds metadata from the registry", async () => {
     const meta = await generateMetadata(params("payledger"));
-    expect(meta.title).toBe("PayLedger — case study · Gabryel Veríssimo");
+    expect(meta.title).toBe("PayLedger — case study · Gabryel Verissimo");
     expect(meta.description).toMatch(/double-entry payments API/);
     expect(meta.alternates?.canonical).toBe("/work/payledger");
   });

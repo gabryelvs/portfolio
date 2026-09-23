@@ -1,5 +1,5 @@
 ---
-name: Gabryel Veríssimo — Portfolio
+name: Gabryel Verissimo — Portfolio
 description: Evidence-first engineering portfolio; monochrome, hairline-built, dark by default.
 colors:
   bg: "#08090a"
@@ -159,7 +159,7 @@ components:
     width: "220px"
 ---
 
-# Design System: Gabryel Veríssimo — Portfolio
+# Design System: Gabryel Verissimo — Portfolio
 
 ## Overview
 

@@ -19,7 +19,7 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Gabryel Veríssimo — Software Engineer",
+  title: "Gabryel Verissimo — Software Engineer",
   description: "Software engineer focused on fintech and reliable systems. Building with Python, FastAPI, PostgreSQL, TypeScript, React, and modern cloud infrastructure.",
 };
 

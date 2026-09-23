@@ -5,7 +5,7 @@ import { Nav } from "@/components/Nav";
 describe("Nav", () => {
   it("links the name home and offers a skip link", () => {
     render(<Nav />);
-    expect(screen.getByRole("link", { name: "Gabryel Veríssimo" })).toHaveAttribute("href", "/");
+    expect(screen.getByRole("link", { name: "Gabryel Verissimo" })).toHaveAttribute("href", "/");
     expect(screen.getByRole("link", { name: "Skip to content" })).toHaveAttribute("href", "#main");
   });
 
