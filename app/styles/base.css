@@ -77,7 +77,7 @@ section.block { padding: 72px 0; border-top: 1px solid var(--line); scroll-margi
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .reveal { animation: reveal linear both; animation-timeline: view(); animation-range: entry 0% entry 40%; }
-    @keyframes reveal { from { opacity: 0; transform: translateY(12px); } }
+    @keyframes reveal { from { transform: translateY(12px); } }
   }
 }
 

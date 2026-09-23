@@ -5,13 +5,26 @@ const TOP = 60;
 const ROW = 34;
 const NARROW_ROW = 52;
 
+/**
+ * Splits a sequence step label at its first two-space separator.
+ * The part before the separator is the short main label; the rest,
+ * trimmed, is an optional detail line. Labels without the separator
+ * have no detail.
+ */
+export function splitLabel(label: string): { main: string; detail: string | null } {
+  const i = label.indexOf("  ");
+  if (i === -1) return { main: label, detail: null };
+  const main = label.slice(0, i);
+  const detail = label.slice(i + 2).trim();
+  return { main, detail: detail.length > 0 ? detail : null };
+}
+
 export function SequenceDiagram({ seq }: { seq: Sequence }) {
   const n = seq.lanes.length;
   const laneX = (id: string) => {
     const i = seq.lanes.findIndex((l) => l.id === id);
     return 90 + (i * (WIDE_W - 180)) / Math.max(n - 1, 1);
   };
-  const laneLabel = (id: string) => seq.lanes.find((l) => l.id === id)?.label ?? id;
   const wideH = TOP + seq.steps.length * ROW;
   const narrowH = 40 + seq.steps.length * NARROW_ROW;
 
@@ -69,16 +82,18 @@ export function SequenceDiagram({ seq }: { seq: Sequence }) {
           {seq.steps.map((s, i) => {
             const y = 30 + i * NARROW_ROW;
             const hot = s.kind === "msg" && s.hot;
-            const sub = s.kind === "msg" ? `${laneLabel(s.from)} → ${laneLabel(s.to)}` : laneLabel(s.at);
+            const { main, detail } = splitLabel(s.label);
             return (
               <g key={i}>
                 <circle className={hot ? "hot-dot" : "dot"} cx={20} cy={y} r={hot ? 3.5 : 3} />
                 <text x={36} y={y + 4} className={hot ? undefined : "t-muted"}>
-                  {s.label}
+                  {main}
                 </text>
-                <text x={36} y={y + 22} className="t-muted" fontSize="11">
-                  {sub}
-                </text>
+                {detail !== null && (
+                  <text x={36} y={y + 22} className="t-muted" fontSize="11">
+                    {detail}
+                  </text>
+                )}
               </g>
             );
           })}

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { SequenceDiagram } from "@/components/diagrams/SequenceDiagram";
+import { SequenceDiagram, splitLabel } from "@/components/diagrams/SequenceDiagram";
 import { WorkThumb } from "@/components/diagrams/WorkThumb";
 import { sequences } from "@/lib/sequences";
 import { caseStudies } from "@/lib/work";
@@ -62,4 +62,68 @@ describe("SequenceDiagram", () => {
       }
     }
   });
+
+  it("narrow variant renders each step's short main label and no lane-to-lane line", () => {
+    const { container } = render(<SequenceDiagram seq={seq} />);
+    const narrow = container.querySelector("svg.dgm-narrow")!;
+    expect(narrow.textContent).not.toMatch(/→/);
+    for (const step of seq.steps) {
+      const { main } = splitLabel(step.label);
+      expect(narrow.textContent).toContain(main);
+    }
+  });
+
+  it("narrow variant renders a detail line only when the label has one", () => {
+    const withDetail = {
+      ...seq,
+      steps: [
+        { kind: "msg" as const, from: "a", to: "b", label: "POST /thing  Idempotency-Key", hot: true },
+        { kind: "msg" as const, from: "b", to: "a", label: "no detail here" },
+      ],
+    };
+    const { container } = render(<SequenceDiagram seq={withDetail} />);
+    const narrow = container.querySelector("svg.dgm-narrow")!;
+    const texts = Array.from(narrow.querySelectorAll("text")).map((t) => t.textContent);
+    expect(texts).toContain("POST /thing");
+    expect(texts).toContain("Idempotency-Key");
+    expect(texts).toContain("no detail here");
+    // exactly one detail line (11px t-muted) was rendered, for the one step that has a detail
+    const detailTexts = Array.from(narrow.querySelectorAll("text.t-muted")).filter(
+      (t) => t.getAttribute("font-size") === "11",
+    );
+    expect(detailTexts).toHaveLength(1);
+    expect(detailTexts[0].textContent).toBe("Idempotency-Key");
+  });
+});
+
+describe("splitLabel", () => {
+  it("splits on the first two-space separator", () => {
+    expect(splitLabel("main label  the detail")).toEqual({ main: "main label", detail: "the detail" });
+  });
+
+  it("returns a null detail when there is no two-space separator", () => {
+    expect(splitLabel("just one line, no split")).toEqual({ main: "just one line, no split", detail: null });
+  });
+
+  it("splits only on the first occurrence of the two-space separator", () => {
+    expect(splitLabel("a  b  c")).toEqual({ main: "a", detail: "b  c" });
+  });
+
+  it("trims the detail", () => {
+    expect(splitLabel("main   detail  ")).toEqual({ main: "main", detail: "detail" });
+  });
+});
+
+describe("narrow sequence diagram labels fit the phone frame", () => {
+  for (const [slug, s] of Object.entries(sequences)) {
+    it(`${slug}: every step's narrow main is ≤34 chars and detail is ≤40 chars`, () => {
+      for (const step of s.steps) {
+        const { main, detail } = splitLabel(step.label);
+        expect(main.length).toBeLessThanOrEqual(34);
+        if (detail !== null) {
+          expect(detail.length).toBeLessThanOrEqual(40);
+        }
+      }
+    });
+  }
 });
