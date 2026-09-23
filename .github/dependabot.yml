@@ -14,6 +14,10 @@ updates:
       # supports ESLint 10.
       - dependency-name: "eslint"
         update-types: ["version-update:semver-major"]
+      # TypeScript 7 fails lint: typescript-eslint (pulled in by eslint-config-next)
+      # does not support it yet. Remove once it does.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
