@@ -56,10 +56,13 @@ Email: hello@gabryelverissimo.dev
 Four links, the same evidence the site leads with. More than this and the case studies
 get lost.
 
-1. `https://gabryelverissimo.dev` — Title: `Portfolio: case studies, live demos and CV`
-2. `https://gabryelverissimo.dev/work/payledger` — Title: `PayLedger: a payments API that stays correct under races and retries`
-3. `https://gabryelverissimo.dev/work/webhook-inspector` — Title: `Webhook Inspector: capture any webhook and watch it arrive live`
-4. `https://gabryelverissimo.dev/work/taskboard-api` — Title: `Taskboard API: concurrent card moves and refresh-token reuse in Spring Boot`
+LinkedIn shows the newest link first, so add them in reverse (4 → 1). Each description is
+the case study's one-line summary.
+
+1. `https://gabryelverissimo.dev` — Title: `Portfolio: case studies, live demos and CV` — Description: `Three case studies written up like design docs, with links to the exact code and tests, plus live demos and my CV.`
+2. `https://gabryelverissimo.dev/work/payledger` — Title: `PayLedger: a payments API that stays correct under races and retries` — Description: the PayLedger line from the About, plus `Python, FastAPI, PostgreSQL; 67 tests.`
+3. `https://gabryelverissimo.dev/work/webhook-inspector` — Title: `Webhook Inspector: capture any webhook and watch it arrive live` — Description: the Webhook Inspector line, plus `FastAPI, PostgreSQL, React, TypeScript; 54 tests.`
+4. `https://gabryelverissimo.dev/work/taskboard-api` — Title: `Taskboard API: concurrent card moves and refresh-token reuse in Spring Boot` — Description: the Taskboard line, plus `Java 21, Spring Boot, PostgreSQL; 72 tests.`
 
 ---
 
@@ -175,11 +178,12 @@ A BTEC is a vocational qualification, not a degree: never use LinkedIn's
 
 ## 7. Skills
 
-**Add:** Java · Spring Boot · Spring Security · TypeScript · React.js · Next.js · pytest · JSON Web Token (JWT) · Application Security · OWASP · GitHub Actions
+**Add:** Java · Spring Boot · Spring Security · TypeScript · React.js · Next.js · pytest · JSON Web Token (JWT) · Application Security · OWASP
+(LinkedIn has no "GitHub Actions" skill; GitHub and CI/CD cover it.)
 
 **Keep:** Python · FastAPI · PostgreSQL · Redis · SQLAlchemy · REST APIs · Docker · Git · GitHub · CI/CD · Test-Driven Development · Back-End Development · SQL · Asynchronous Programming
 
-**Remove** (they dilute a software profile): Editing · Continuous Improvement · Security System Design · Information and Communications Technology (ICT) · Information Technology · Front-End Design
+**Remove** (they dilute a software profile): Editing · Continuous Improvement · Security System Design · Information and Communications Technology (ICT) · Information Technology · Front-End Design · Computer Literacy
 
 ---
 
@@ -207,15 +211,23 @@ A BTEC is a vocational qualification, not a degree: never use LinkedIn's
 Web Development · Custom Software Development · Application Development
 (no "Computer Repair": it pulls the profile away from software engineering).
 
+Services description (max 500):
+```
+I design, build and deploy websites and web applications for small businesses: fast, accessible sites with a working enquiry flow, and backend services in Python or Java when a site needs more than pages. Recent work: the production website for Auto Boutique London (Astro, deployed through GitHub Actions). Portfolio: https://gabryelverissimo.dev
+```
+
 ---
 
-## 11. Contact info
+## 11. Contact info and intro
 
 - Website: `https://gabryelverissimo.dev` — type: Portfolio
+- Industry (Edit intro, not shown on the profile but used by recruiter search): `Software Development`
 
 ---
 
 ## 12. Background image
 
-`linkedin-banner.png` (1584×396), generated with the GitHub profile banner script so the
-two match. The left third stays empty because the profile photo covers it.
+`linkedin-banner.png` (1584×396), from `assets/linkedin-banner.svg` in the gabryelvs repo,
+which `scripts/make_banner.py` generates alongside the GitHub banner so the two match.
+Screenshot the SVG at 1584×396 to get the PNG. The left third stays empty because the
+profile photo covers it.
