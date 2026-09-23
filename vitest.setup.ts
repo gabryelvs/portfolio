@@ -37,7 +37,13 @@ if (!global.matchMedia) {
 }
 
 global.IntersectionObserver = class IntersectionObserver {
-  constructor() {}
+  // Same signature as the real constructor, so callers passing a callback and options type-check against it.
+  readonly callback: IntersectionObserverCallback;
+  readonly options?: IntersectionObserverInit;
+  constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
+    this.callback = callback;
+    this.options = options;
+  }
   disconnect() {}
   observe() {}
   takeRecords() {

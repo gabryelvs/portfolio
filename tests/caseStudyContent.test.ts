@@ -10,12 +10,21 @@ const source = (slug: string) =>
 // Each one is held to the 800–1,200-word target (1,300 allows for editing).
 const FULL_LENGTH: string[] = ["webhook-inspector", "payledger", "taskboard-api"];
 
+/** Removes every match of `pattern`, repeating until none is left, so removals can't combine into a new match. */
+function removeAll(text: string, pattern: RegExp): string {
+  let previous: string;
+  do {
+    previous = text;
+    text = text.replace(pattern, " ");
+  } while (text !== previous);
+  return text;
+}
+
 /** Prose words only: fenced code, JSX tags and link targets are not counted. */
 function proseWords(mdx: string): number {
-  const text = mdx
-    .replace(/```[\s\S]*?```/g, "")
-    .replace(/<[^>]+>/g, "")
-    .replace(/\]\([^)]*\)/g, "]");
+  const withoutCode = removeAll(mdx, /```[\s\S]*?```/g);
+  const withoutTags = removeAll(withoutCode, /<[^<>]*>/g);
+  const text = withoutTags.replace(/\]\([^)]*\)/g, "]");
   return (text.match(/[A-Za-z0-9][\w'’.-]*/g) ?? []).length;
 }
 

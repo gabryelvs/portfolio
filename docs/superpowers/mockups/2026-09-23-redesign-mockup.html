@@ -727,7 +727,6 @@ src, dst = locked[from_wallet_id], locked[to_wallet_id]
   var q = new URLSearchParams(location.search).get('theme'); if (q) setTheme(q);
 
   var pages = { home: document.getElementById('home-page'), payledger: document.getElementById('payledger-page') };
-  var homeAnchors = ['home', 'work', 'experience', 'more', 'about', 'contact'];
   function route() {
     var h = (location.hash || '#home').slice(1);
     var page = h === 'payledger' || ['problem','constraints','architecture','hard','testing','change','links'].indexOf(h) >= 0 ? 'payledger' : 'home';
