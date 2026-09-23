@@ -168,8 +168,12 @@ Expected: PASS (5 tests).
 - [ ] **Step 5: Write `app/styles/tokens.css`**
 
 ```css
-/* Colour tokens. Light on :root, dark on .dark (dark is the default via the inline script in layout). */
+/* Colour and font tokens. Light on :root, dark on .dark (dark is the default via the inline script in layout). */
 :root {
+  /* Unlayered, so these override Tailwind's theme-layer defaults for both our CSS and the font-sans/font-mono utilities.
+     --font-inter / --font-jetbrains come from next/font classes on <html>. */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
   --bg: #fafafa;
   --surface-1: #ffffff;
   --surface-2: #f3f3f4;
@@ -317,11 +321,6 @@ The file imports style files that Tasks 2, 4 and 8 create. Until then, create ea
 @import "./styles/case-study.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
-
-@theme inline {
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
-}
 ```
 
 - [ ] **Step 8: Update `app/layout.tsx`**
@@ -2348,7 +2347,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 `tests/caseStudyRoute.test.tsx`:
 ```tsx
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/content", () => ({
@@ -2390,7 +2389,9 @@ describe("/work/[slug]", () => {
     expect(screen.getByRole("navigation", { name: "On this page" }).querySelectorAll("a")).toHaveLength(7);
     expect(screen.getByRole("link", { name: /Next case study/ })).toHaveAttribute("href", "/work/webhook-inspector");
     expect(screen.getAllByRole("img", { name: "Sequence of a PayLedger transfer" })).toHaveLength(2);
-    expect(screen.getByRole("link", { name: "Work" })).toHaveAttribute("aria-current", "page");
+    const primary = screen.getByRole("navigation", { name: "Primary" });
+    expect(within(primary).getByRole("link", { name: "Work" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("navigation", { name: "Breadcrumb" })).toHaveTextContent("Work/PayLedger");
   });
 
   it("404s an unknown slug", async () => {
