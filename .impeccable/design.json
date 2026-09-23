@@ -1,0 +1,628 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-23T15:00:00Z",
+  "title": "Design System: Gabryel Verissimo — Portfolio",
+  "extensions": {
+    "colorMeta": {
+      "bg": {
+        "role": "neutral",
+        "displayName": "Canvas (dark)",
+        "tonalRamp": [
+          "#08090a",
+          "#0e0f11",
+          "#141518",
+          "#1b1c20",
+          "#202226",
+          "#2f3137",
+          "#8a8f98",
+          "#b6bac1"
+        ]
+      },
+      "bg-light": {
+        "role": "neutral",
+        "displayName": "Canvas (light)",
+        "tonalRamp": [
+          "#171717",
+          "#404047",
+          "#6b6b70",
+          "#d6d6d8",
+          "#e8e8e8",
+          "#ececee",
+          "#f3f3f4",
+          "#fafafa"
+        ]
+      },
+      "surface-1": {
+        "role": "neutral",
+        "displayName": "Surface 1 (dark)",
+        "tonalRamp": [
+          "#08090a",
+          "#0e0f11",
+          "#141518",
+          "#1b1c20",
+          "#202226",
+          "#2f3137",
+          "#8a8f98",
+          "#b6bac1"
+        ]
+      },
+      "surface-1-light": {
+        "role": "neutral",
+        "displayName": "Surface 1 (light)",
+        "tonalRamp": [
+          "#171717",
+          "#404047",
+          "#6b6b70",
+          "#d6d6d8",
+          "#e8e8e8",
+          "#ececee",
+          "#f3f3f4",
+          "#fafafa"
+        ]
+      },
+      "surface-2": {
+        "role": "neutral",
+        "displayName": "Surface 2 (dark)",
+        "tonalRamp": [
+          "#08090a",
+          "#0e0f11",
+          "#141518",
+          "#1b1c20",
+          "#202226",
+          "#2f3137",
+          "#8a8f98",
+          "#b6bac1"
+        ]
+      },
+      "surface-2-light": {
+        "role": "neutral",
+        "displayName": "Surface 2 (light)",
+        "tonalRamp": [
+          "#171717",
+          "#404047",
+          "#6b6b70",
+          "#d6d6d8",
+          "#e8e8e8",
+          "#ececee",
+          "#f3f3f4",
+          "#fafafa"
+        ]
+      },
+      "surface-3": {
+        "role": "neutral",
+        "displayName": "Surface 3 (dark)",
+        "tonalRamp": [
+          "#08090a",
+          "#0e0f11",
+          "#141518",
+          "#1b1c20",
+          "#202226",
+          "#2f3137",
+          "#8a8f98",
+          "#b6bac1"
+        ]
+      },
+      "surface-3-light": {
+        "role": "neutral",
+        "displayName": "Surface 3 (light)",
+        "tonalRamp": [
+          "#171717",
+          "#404047",
+          "#6b6b70",
+          "#d6d6d8",
+          "#e8e8e8",
+          "#ececee",
+          "#f3f3f4",
+          "#fafafa"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Hairline (dark)",
+        "tonalRamp": [
+          "#08090a",
+          "#0e0f11",
+          "#141518",
+          "#1b1c20",
+          "#202226",
+          "#2f3137",
+          "#8a8f98",
+          "#b6bac1"
+        ]
+      },
+      "line-light": {
+        "role": "neutral",
+        "displayName": "Hairline (light)",
+        "tonalRamp": [
+          "#171717",
+          "#404047",
+          "#6b6b70",
+          "#d6d6d8",
+          "#e8e8e8",
+          "#ececee",
+          "#f3f3f4",
+          "#fafafa"
+        ]
+      },
+      "line-strong": {
+        "role": "neutral",
+        "displayName": "Strong Hairline (dark)",
+        "tonalRamp": [
+          "#08090a",
+          "#0e0f11",
+          "#141518",
+          "#1b1c20",
+          "#202226",
+          "#2f3137",
+          "#8a8f98",
+          "#b6bac1"
+        ]
+      },
+      "line-strong-light": {
+        "role": "neutral",
+        "displayName": "Strong Hairline (light)",
+        "tonalRamp": [
+          "#171717",
+          "#404047",
+          "#6b6b70",
+          "#d6d6d8",
+          "#e8e8e8",
+          "#ececee",
+          "#f3f3f4",
+          "#fafafa"
+        ]
+      },
+      "fg": {
+        "role": "neutral",
+        "displayName": "Ink (dark)",
+        "tonalRamp": [
+          "#08090a",
+          "#0e0f11",
+          "#141518",
+          "#1b1c20",
+          "#202226",
+          "#2f3137",
+          "#8a8f98",
+          "#b6bac1"
+        ]
+      },
+      "fg-light": {
+        "role": "neutral",
+        "displayName": "Ink (light)",
+        "tonalRamp": [
+          "#171717",
+          "#404047",
+          "#6b6b70",
+          "#d6d6d8",
+          "#e8e8e8",
+          "#ececee",
+          "#f3f3f4",
+          "#fafafa"
+        ]
+      },
+      "fg-2": {
+        "role": "neutral",
+        "displayName": "Body Grey (dark)",
+        "tonalRamp": [
+          "#08090a",
+          "#0e0f11",
+          "#141518",
+          "#1b1c20",
+          "#202226",
+          "#2f3137",
+          "#8a8f98",
+          "#b6bac1"
+        ]
+      },
+      "fg-2-light": {
+        "role": "neutral",
+        "displayName": "Body Grey (light)",
+        "tonalRamp": [
+          "#171717",
+          "#404047",
+          "#6b6b70",
+          "#d6d6d8",
+          "#e8e8e8",
+          "#ececee",
+          "#f3f3f4",
+          "#fafafa"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted Grey (dark)",
+        "tonalRamp": [
+          "#08090a",
+          "#0e0f11",
+          "#141518",
+          "#1b1c20",
+          "#202226",
+          "#2f3137",
+          "#8a8f98",
+          "#b6bac1"
+        ]
+      },
+      "muted-light": {
+        "role": "neutral",
+        "displayName": "Muted Grey (light)",
+        "tonalRamp": [
+          "#171717",
+          "#404047",
+          "#6b6b70",
+          "#d6d6d8",
+          "#e8e8e8",
+          "#ececee",
+          "#f3f3f4",
+          "#fafafa"
+        ]
+      },
+      "grid": {
+        "role": "neutral",
+        "displayName": "Grid Line (dark)",
+        "tonalRamp": [
+          "#08090a",
+          "#0e0f11",
+          "#141518",
+          "#1b1c20",
+          "#202226",
+          "#2f3137",
+          "#8a8f98",
+          "#b6bac1"
+        ]
+      },
+      "grid-light": {
+        "role": "neutral",
+        "displayName": "Grid Line (light)",
+        "tonalRamp": [
+          "#171717",
+          "#404047",
+          "#6b6b70",
+          "#d6d6d8",
+          "#e8e8e8",
+          "#ececee",
+          "#f3f3f4",
+          "#fafafa"
+        ]
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "Signal Indigo (dark)",
+        "canonical": "oklch(71.3% 0.146 280.3)",
+        "tonalRamp": [
+          "oklch(15% 0.146 280.3)",
+          "oklch(25% 0.146 280.3)",
+          "oklch(35% 0.146 280.3)",
+          "oklch(48% 0.146 280.3)",
+          "oklch(60% 0.146 280.3)",
+          "oklch(72% 0.146 280.3)",
+          "oklch(84% 0.146 280.3)",
+          "oklch(95% 0.146 280.3)"
+        ]
+      },
+      "accent-light": {
+        "role": "primary",
+        "displayName": "Signal Indigo (light)",
+        "canonical": "oklch(51.1% 0.230 277.0)",
+        "tonalRamp": [
+          "oklch(15% 0.18 277.0)",
+          "oklch(25% 0.18 277.0)",
+          "oklch(35% 0.18 277.0)",
+          "oklch(48% 0.18 277.0)",
+          "oklch(60% 0.18 277.0)",
+          "oklch(72% 0.18 277.0)",
+          "oklch(84% 0.18 277.0)",
+          "oklch(95% 0.18 277.0)"
+        ]
+      },
+      "live": {
+        "role": "tertiary",
+        "displayName": "Live Green (dark)",
+        "canonical": "oklch(76.2% 0.154 159.4)",
+        "tonalRamp": [
+          "oklch(15% 0.14 159.4)",
+          "oklch(25% 0.14 159.4)",
+          "oklch(35% 0.14 159.4)",
+          "oklch(48% 0.14 159.4)",
+          "oklch(60% 0.14 159.4)",
+          "oklch(72% 0.14 159.4)",
+          "oklch(84% 0.14 159.4)",
+          "oklch(95% 0.14 159.4)"
+        ]
+      },
+      "live-light": {
+        "role": "tertiary",
+        "displayName": "Live Green (light)",
+        "canonical": "oklch(52.7% 0.137 150.1)",
+        "tonalRamp": [
+          "oklch(15% 0.13 150.1)",
+          "oklch(25% 0.13 150.1)",
+          "oklch(35% 0.13 150.1)",
+          "oklch(48% 0.13 150.1)",
+          "oklch(60% 0.13 150.1)",
+          "oklch(72% 0.13 150.1)",
+          "oklch(84% 0.13 150.1)",
+          "oklch(95% 0.13 150.1)"
+        ]
+      },
+      "selection": {
+        "role": "primary",
+        "displayName": "Selection Tint (dark)",
+        "tonalRamp": [
+          "oklch(15% 0.146 280.3)",
+          "oklch(25% 0.146 280.3)",
+          "oklch(35% 0.146 280.3)",
+          "oklch(48% 0.146 280.3)",
+          "oklch(60% 0.146 280.3)",
+          "oklch(72% 0.146 280.3)",
+          "oklch(84% 0.146 280.3)",
+          "oklch(95% 0.146 280.3)"
+        ]
+      },
+      "selection-light": {
+        "role": "primary",
+        "displayName": "Selection Tint (light)",
+        "tonalRamp": [
+          "oklch(15% 0.18 277.0)",
+          "oklch(25% 0.18 277.0)",
+          "oklch(35% 0.18 277.0)",
+          "oklch(48% 0.18 277.0)",
+          "oklch(60% 0.18 277.0)",
+          "oklch(72% 0.18 277.0)",
+          "oklch(84% 0.18 277.0)",
+          "oklch(95% 0.18 277.0)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Home hero h1 only; name in ink, role line muted."
+      },
+      "page-title": {
+        "displayName": "Page title",
+        "purpose": "/work and case-study h1."
+      },
+      "statement": {
+        "displayName": "Statement",
+        "purpose": "Contact line; trailing clause muted."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section h2, work-entry titles, case-study h2 (mono counter prefix)."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Case-study h3, previous/next titles."
+      },
+      "lede": {
+        "displayName": "Lede",
+        "purpose": "Hero lede, max 58ch."
+      },
+      "prose": {
+        "displayName": "Prose",
+        "purpose": "Case-study body, max 68ch; 17px below 900px."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Problem statements, About paragraphs."
+      },
+      "ui": {
+        "displayName": "UI",
+        "purpose": "Buttons, nav links, 'Read the case study'."
+      },
+      "label": {
+        "displayName": "Label (mono)",
+        "purpose": "Indices, dates, metadata terms, captions, evidence notes; never paragraphs."
+      },
+      "code": {
+        "displayName": "Code (mono)",
+        "purpose": "Code blocks; ligatures and calt off."
+      }
+    },
+    "shadows": [
+      {
+        "name": "live-halo",
+        "value": "0 0 0 3px color-mix(in srgb, var(--live) 18%, transparent)",
+        "purpose": "Deployed-status dot only; the system is otherwise shadowless."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Hero entrance, arrow nudge, hot-path draw."
+      },
+      {
+        "name": "hover",
+        "value": "150ms ease-out",
+        "purpose": "Colour, background and border transitions on links, buttons, nav, outline."
+      },
+      {
+        "name": "arrow-nudge",
+        "value": "transform 200ms cubic-bezier(0.16, 1, 0.3, 1), translateX(3px)",
+        "purpose": "'Read the case study' arrow on entry hover."
+      },
+      {
+        "name": "hero-rise",
+        "value": "500ms cubic-bezier(0.16, 1, 0.3, 1), opacity 0 + translateY(8px), 60ms stagger",
+        "purpose": "Hero lines on load; reduced-motion gated."
+      },
+      {
+        "name": "scroll-reveal",
+        "value": "translateY(12px), animation-timeline: view(), range entry 0% to entry 40%",
+        "purpose": "Transform-only reveal of work entries and rows; gated by @supports and prefers-reduced-motion."
+      },
+      {
+        "name": "hot-path-draw",
+        "value": "stroke-dashoffset 900ms cubic-bezier(0.16, 1, 0.3, 1); hot dots fill 300ms ease-out, 250ms delay",
+        "purpose": "Accent draw along a work thumbnail's hot path on hover/focus-within."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "thumb-hidden",
+        "value": "560px"
+      },
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "diagram-vertical",
+        "value": "700px"
+      },
+      {
+        "name": "nav-compact",
+        "value": "720px"
+      },
+      {
+        "name": "table-stack",
+        "value": "820px"
+      },
+      {
+        "name": "about-stack",
+        "value": "860px"
+      },
+      {
+        "name": "md",
+        "value": "900px"
+      },
+      {
+        "name": "toc-hidden",
+        "value": "1180px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Solid Button",
+      "kind": "button",
+      "refersTo": "button-solid",
+      "description": "Primary action, once per view; solid ink, never indigo.",
+      "html": "<a class=\"ds-btn ds-btn-solid\" href=\"#\">Selected work</a>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;font-family:var(--font-sans);font-size:14px;font-weight:500;border-radius:6px;border:1px solid transparent;text-decoration:none;transition:background-color .15s ease-out,border-color .15s ease-out,color .15s ease-out}.ds-btn-solid{background:var(--btn-bg);color:var(--btn-fg)}.ds-btn-solid:hover{background:color-mix(in srgb,var(--btn-bg) 86%,var(--bg))}.ds-btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}"
+    },
+    {
+      "name": "Line Button",
+      "kind": "button",
+      "refersTo": "button-line",
+      "description": "Secondary actions: Download CV, GitHub, LinkedIn.",
+      "html": "<a class=\"ds-btn-line\" href=\"#\">Download CV <svg viewBox=\"0 0 16 16\" width=\"14\" height=\"14\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"M8 2.5v8M4.5 7 8 10.5 11.5 7M3 13.5h10\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></a>",
+      "css": ".ds-btn-line{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;font-family:var(--font-sans);font-size:14px;font-weight:500;border-radius:6px;border:1px solid var(--line-strong);color:var(--fg);background:transparent;text-decoration:none;transition:background-color .15s ease-out,border-color .15s ease-out}.ds-btn-line:hover{border-color:var(--muted);background:var(--surface-2)}.ds-btn-line:focus-visible{outline:2px solid var(--accent);outline-offset:3px}"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Sticky 56px bar; muted links, accent for the current item, icon-button theme toggle.",
+      "html": "<header class=\"ds-nav\"><a class=\"ds-nav-name\" href=\"#\">Gabryel Verissimo</a><ul><li><a href=\"#\" aria-current=\"page\">Work</a></li><li><a href=\"#\">Experience</a></li><li><a href=\"#\">Contact</a></li><li><button class=\"ds-icon-btn\" aria-label=\"Switch to light theme\"><svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\"><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41\"/></svg></button></li></ul></header>",
+      "css": ".ds-nav{display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 24px;gap:16px;background:color-mix(in srgb,var(--bg) 92%,transparent);border-bottom:1px solid var(--line);font-family:var(--font-sans)}.ds-nav-name{font-weight:600;font-size:15px;letter-spacing:-.01em;color:var(--fg);text-decoration:none}.ds-nav ul{display:flex;gap:4px;list-style:none;margin:0;padding:0;align-items:center}.ds-nav ul a{display:block;padding:6px 10px;font-size:14px;color:var(--muted);border-radius:6px;text-decoration:none;transition:color .15s ease-out}.ds-nav ul a:hover{color:var(--fg)}.ds-nav ul a[aria-current]{color:var(--accent)}.ds-nav a:focus-visible,.ds-icon-btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.ds-icon-btn{display:grid;place-items:center;width:32px;height:32px;margin-left:6px;border:1px solid var(--line-strong);border-radius:6px;background:transparent;color:var(--fg-2);cursor:pointer;transition:border-color .15s ease-out,color .15s ease-out}.ds-icon-btn:hover{color:var(--fg);border-color:var(--muted)}"
+    },
+    {
+      "name": "Live Status",
+      "kind": "chip",
+      "refersTo": "live",
+      "description": "Deployed-status dot plus mono label; the only use of green.",
+      "html": "<span class=\"ds-status\"><i aria-hidden=\"true\"></i>Live demo</span>",
+      "css": ".ds-status{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-mono);font-feature-settings:\"calt\" 0;font-size:12px;color:var(--muted)}.ds-status i{width:6px;height:6px;border-radius:50%;background:var(--live);box-shadow:0 0 0 3px color-mix(in srgb,var(--live) 18%,transparent)}"
+    },
+    {
+      "name": "Work Entry",
+      "kind": "card",
+      "refersTo": "diagram-frame",
+      "description": "Ruled work row: title, problem, mono facts, accent link, framed diagram thumbnail whose hot path draws in accent on hover/focus.",
+      "html": "<article class=\"ds-work\"><div><h3 class=\"ds-work-title\"><a href=\"#\">PayLedger</a></h3><p class=\"ds-work-problem\">A payments API where concurrent transfers and retries can never double-spend.</p><dl class=\"ds-facts\"><dt>Tests</dt><dd>31 · pytest</dd><dt>Stack</dt><dd>FastAPI · PostgreSQL</dd></dl><a class=\"ds-more\" href=\"#\">Read the case study</a></div><figure class=\"ds-fig\"><svg viewBox=\"0 0 240 60\" width=\"100%\"><path d=\"M20 30 H220\" stroke=\"var(--fg-2)\" stroke-width=\"1.5\" fill=\"none\"/><path class=\"ds-draw\" pathLength=\"1\" d=\"M20 30 H220\"/><rect x=\"80\" y=\"16\" width=\"80\" height=\"28\" rx=\"4\" fill=\"var(--surface-2)\" stroke=\"var(--line-strong)\"/><text x=\"120\" y=\"34\" text-anchor=\"middle\" font-size=\"11\" font-family=\"var(--font-mono)\" fill=\"var(--fg-2)\">COMMIT</text></svg><figcaption>transfer path</figcaption></figure></article>",
+      "css": ".ds-work{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:32px;padding:32px 0;border-top:1px solid var(--line);font-family:var(--font-sans);color:var(--fg)}.ds-work-title{margin:0;font-size:24px;line-height:32px;font-weight:600;letter-spacing:-.02em}.ds-work-title a{color:inherit;text-decoration:none}.ds-work-title a:hover{color:var(--accent)}.ds-work-problem{margin:10px 0 22px;color:var(--fg-2);font-size:16px;line-height:1.6}.ds-facts{display:grid;grid-template-columns:104px 1fr;gap:7px 16px;margin:0 0 26px;font-family:var(--font-mono);font-size:12px}.ds-facts dt{color:var(--muted)}.ds-facts dd{margin:0;color:var(--fg-2)}.ds-more{font-size:14px;font-weight:500;color:var(--accent);text-decoration:none}.ds-more:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.ds-fig{margin:0;border:1px solid var(--line);border-radius:8px;background:var(--surface-1);padding:18px 16px 14px}.ds-fig figcaption{margin-top:10px;font-family:var(--font-mono);font-size:12px;color:var(--muted)}.ds-draw{stroke:var(--accent);stroke-width:1.5;fill:none;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .9s cubic-bezier(.16,1,.3,1)}.ds-work:hover .ds-draw,.ds-work:focus-within .ds-draw{stroke-dashoffset:0}"
+    },
+    {
+      "name": "Evidence Note",
+      "kind": "custom",
+      "refersTo": "evidence-note",
+      "description": "Margin note beside a claim: file name, then an accent link to the exact lines at a pinned commit.",
+      "html": "<div class=\"ds-pair\"><p>Every transaction balances: its ledger entries sum to zero per currency, checked before anything is written.</p><aside class=\"ds-note\"><span class=\"k\">ledger.py</span><a href=\"#\">assert_balanced() rejects entries that don't sum to zero</a></aside></div>",
+      "css": ".ds-pair{display:grid;grid-template-columns:minmax(0,1fr) 220px;column-gap:40px;align-items:start;font-family:var(--font-sans)}.ds-pair p{margin:0;font-size:18px;line-height:1.65;color:var(--fg-2)}.ds-note{font-family:var(--font-mono);font-feature-settings:\"calt\" 0;font-size:12px;line-height:1.55;color:var(--muted);border-left:1px solid var(--line-strong);padding:2px 0 2px 12px;margin-top:6px}.ds-note .k{display:block;color:var(--fg-2);margin-bottom:4px}.ds-note a{color:var(--accent);overflow-wrap:break-word;text-decoration:none}.ds-note a:hover{text-decoration:underline;text-underline-offset:3px}.ds-note a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}"
+    },
+    {
+      "name": "Code Block",
+      "kind": "custom",
+      "refersTo": "code-block",
+      "description": "Surface-1 code with hairline border; ligatures off.",
+      "html": "<pre class=\"ds-pre\"><code>if key.body_hash != body_hash:\n    raise Conflict()</code></pre>",
+      "css": ".ds-pre{margin:0;padding:18px 20px;background:var(--code-bg);border:1px solid var(--line);border-radius:8px;overflow-x:auto;font-family:var(--font-mono);font-size:13px;line-height:20px;color:var(--fg-2);tab-size:4;font-variant-ligatures:none;font-feature-settings:\"calt\" 0}"
+    },
+    {
+      "name": "Section Heading",
+      "kind": "custom",
+      "refersTo": "headline",
+      "description": "Mono index on the baseline beside the h2, optional muted subtitle.",
+      "html": "<div class=\"ds-sec\"><span class=\"num\">01</span><h2>Selected work</h2></div><p class=\"ds-sec-sub\">Three projects written up like design docs.</p>",
+      "css": ".ds-sec{display:flex;align-items:baseline;gap:14px;margin:0 0 8px;font-family:var(--font-sans)}.ds-sec h2{margin:0;font-size:24px;line-height:32px;font-weight:600;letter-spacing:-.02em;color:var(--fg)}.ds-sec .num{font-family:var(--font-mono);font-feature-settings:\"calt\" 0;font-size:13px;color:var(--muted)}.ds-sec-sub{margin:0 0 40px;color:var(--muted);font-size:15px;max-width:60ch;font-family:var(--font-sans)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Annotated Design Doc",
+    "overview": "The site reads like an engineer's design document: every project is written up with its problem, its hard parts and its proof, and the proof sits in the margin as a pinned link to the exact lines of code. The visual system is monochrome and built from hairlines instead of fills or shadows. Inter carries every sentence. JetBrains Mono appears only where a machine would write: section indices, metadata, dates, captions, code and diagram labels. The single indigo accent marks what you can act on or where you are, and nothing else.\n\nDensity is calm and document-like. The home page is one column of numbered sections separated by 1px rules. The case-study page is a three-column reading layout (outline, 680px text column, margin notes). The only decorative material is a faint 56px grid under the hero, the engineering notebook's paper, which fades out before the work begins. Motion is CSS only, short, and never gates content. Dark is the default theme and light is a first-class toggle; both themes share one set of token names.",
+    "keyCharacteristics": [
+      "Dark-first, with Linear-style stepped surfaces (bg, then three surface steps); light theme mirrors every token.",
+      "Hairline construction: 1px `line` / `line-strong` rules divide sections, rows, metadata and figures.",
+      "One accent, rationed to links, focus, current location and the interactive hot path.",
+      "Mono for labels, metadata, code and diagrams; never for paragraphs.",
+      "Hand-authored SVG diagrams in a fixed grammar of hairline links, small nodes and mono labels.",
+      "Claims carry margin evidence notes that link to code at a pinned commit."
+    ],
+    "rules": [
+      {
+        "name": "The Accent Means Act-or-Here Rule",
+        "body": "Indigo appears only on links, focus rings, the current nav/outline item, the caret and selection, and the interactive hot-path draw. Buttons are never indigo; the primary button is solid ink.",
+        "section": "colors"
+      },
+      {
+        "name": "The Green Means Deployed Rule",
+        "body": "`live` is used for the deployed-status dot and for nothing else: no success states, no highlights.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two-Theme Parity Rule",
+        "body": "Every colour is a token defined in both `:root` and `.dark`. Components never hard-code a hex; they reference the variable so both themes stay correct.",
+        "section": "colors"
+      },
+      {
+        "name": "The Mono Is Data Rule",
+        "body": "JetBrains Mono sets indices, dates, metadata keys, facts, captions, evidence notes, code and diagram text. It never sets a paragraph.",
+        "section": "typography"
+      },
+      {
+        "name": "The Literal Glyphs Rule",
+        "body": "Code and diagram text render the characters as written: mono carries `font-feature-settings: \"calt\" 0`, and code, inline code and diagram labels also set `font-variant-ligatures: none`, so `->`, `!=` and `>=` never collapse into ligatures.",
+        "section": "typography"
+      },
+      {
+        "name": "The 600 Ceiling Rule",
+        "body": "No weight above 600. Hierarchy comes from size, tracking and the ink / body-grey / muted ladder.",
+        "section": "typography"
+      },
+      {
+        "name": "The Rules Not Shadows Rule",
+        "body": "Separation is a 1px `line` rule or a one-step surface change. If a new element seems to need a shadow, give it a hairline border and the next surface step instead.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** reference colours only through the theme variables (`var(--fg)`, `var(--line)`, …) so both themes stay correct.",
+      "**Do** keep the accent to links, focus rings, the current nav/outline item, caret/selection and the interactive hot-path draw.",
+      "**Do** separate content with 1px `line` rules and surface steps, not cards with shadows.",
+      "**Do** set section indices, dates, metadata, captions, evidence and code in JetBrains Mono with `calt` off, and paragraphs in Inter.",
+      "**Do** attach at most one evidence note per claim, linking to the exact lines at a pinned commit.",
+      "**Do** draw new diagrams in the established grammar (hairline links, 4px nodes on surface 2/3, mono labels, greyscale hot path at rest) and give them a vertical variant if they can't stay legible at 375px.",
+      "**Do** gate every scroll animation behind `@supports` and `prefers-reduced-motion: no-preference`, and keep scroll reveals transform-only."
+    ],
+    "donts": [
+      "**Don't** colour a button, badge, heading or background indigo; the primary button is solid ink.",
+      "**Don't** use `live` green for anything except the deployed-status dot.",
+      "**Don't** set paragraphs in mono or use weights above 600.",
+      "**Don't** add drop shadows or elevation layers; the only shadow is the live halo.",
+      "**Don't** extend the background grid beyond the hero or remove its fade-out mask.",
+      "**Don't** hide content until JavaScript runs, or add a fade to scroll reveals."
+    ]
+  }
+}

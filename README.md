@@ -1,13 +1,16 @@
-# Gabryel Veríssimo — Portfolio
+# Gabryel Verissimo — Portfolio
 
-A bold, dark-mode personal portfolio showcasing fintech backend projects, built with **Next.js**, **React**, **TypeScript**, **Tailwind CSS**, and **Framer Motion** for smooth animations and modern design.
+A dark-mode personal portfolio for software engineering work, built with **Next.js**,
+**React**, **TypeScript**, **Tailwind CSS** and **MDX**. Motion is CSS only — no GSAP, no
+three.js, no canvas.
 
 ## Tech Stack
 
 - **Framework**: Next.js 16 (App Router)
 - **UI**: React 19 + TypeScript
 - **Styling**: Tailwind CSS 4
-- **Animations**: Framer Motion
+- **Content**: MDX (`@next/mdx`) for the case-study write-ups in `content/work/`
+- **Motion**: CSS only, honouring `prefers-reduced-motion` — no GSAP, no three.js, no canvas
 - **Testing**: Vitest + React Testing Library
 - **Deployment**: Vercel (zero-config)
 
@@ -21,6 +24,24 @@ The portfolio automatically fetches and displays projects from your GitHub profi
 4. **Daily Refresh**: Next.js ISR (Incremental Static Regeneration) with `revalidate: 86400` automatically refreshes the page once daily.
 5. **Fallback**: If the GitHub API is unavailable or returns an error, the app gracefully falls back to `data/projects.fallback.json`, ensuring the site stays live.
 6. **Rate Limit**: Set the optional `GITHUB_TOKEN` environment variable to raise the GitHub API rate limit from 60 to 5000 requests/hour.
+
+## Case Studies
+
+Three of the showcased repositories — PayLedger, Webhook Inspector, Taskboard API — get a
+full write-up instead of just a GitHub card:
+
+- **Body**: `content/work/<slug>.mdx`, one file per project.
+- **Metadata**: `lib/work.ts` is the registry — title, stack, test count, repo/live URLs, and
+  the commit SHA the page is pinned to.
+- **`<Claim>` / `<Evidence>`**: hard-problem prose sits inside `<Claim>`; each one can carry an
+  `<Evidence path="…" lines="…">` note that links straight to those lines on GitHub, so a claim
+  about the code points at the code.
+- **Pinned commits**: every GitHub code link on a case-study page is built from the registry's
+  `commit`, not the branch head. When a project changes enough to update its write-up, bump
+  `commit` in `lib/work.ts` and re-check every `<Evidence>` line range against that commit.
+- **Enforcement**: `tests/caseStudyContent.test.ts` checks the fixed section outline, that every
+  code link is pinned to the registry's own full-length commit SHA, that `<Evidence>` uses a
+  repo path rather than a raw URL, and that each expanded case study runs 800–1,300 words.
 
 ## Getting Started
 
@@ -57,7 +78,7 @@ npm start
    - Add it to your Vercel project's **Environment Variables** as `GITHUB_TOKEN`.
 4. **Deploy**: Your site is live. Vercel automatically redeploys on every push to the main branch.
 
-**Live URL**: https://portfolio-liard-six-82.vercel.app/
+**Live URL**: https://gabryelverissimo.dev (the old portfolio-gabryelverissimo.vercel.app address redirects here)
 
 ## Curating Your Showcase
 
@@ -71,9 +92,22 @@ To include projects in your portfolio:
 
 This portfolio currently showcases:
 
-- **[payledger](https://github.com/gabryelvs/payledger)** — Double-entry payments & ledger API (FastAPI, PostgreSQL)
+- **[payledger](https://github.com/gabryelvs/payledger)** — Double-entry payments & ledger API, live at [payledger-gv.vercel.app/docs](https://payledger-gv.vercel.app/docs) (FastAPI, PostgreSQL)
 - **[fx-service](https://github.com/gabryelvs/fx-service)** — Async currency-exchange API with stale-fallback (FastAPI, Redis)
 - **[webhook-dispatcher](https://github.com/gabryelvs/webhook-dispatcher)** — Reliable webhook delivery with queue, retries, and dead-letter handling (FastAPI, Redis)
+- **[webhook-inspector](https://github.com/gabryelvs/webhook-inspector)** — Fullstack webhook debugging tool: disposable URLs, live request viewer (FastAPI, React, TypeScript)
+- **[taskboard-api](https://github.com/gabryelvs/taskboard-api)** — Trello-like task manager API with JWT auth and role-based membership (Java, Spring Boot, PostgreSQL)
+- **[store-demo](https://github.com/gabryelvs/store-demo)** — SECTOR—9, an animated demo storefront with an accessible, tested cart (Next.js, TypeScript, GSAP)
+- **[owasp-security-lab](https://github.com/gabryelvs/owasp-security-lab)** — Six OWASP Top 10 issues, each with a working exploit, a fix, and tests proving both (FastAPI)
+
+The site orders these itself — by stars, then by most recently updated — so the
+running order on the page will not always match this list. This list is only
+accurate as long as it matches the repos actually tagged `showcase`:
+
+```bash
+gh api "users/gabryelvs/repos?per_page=100" \
+  --jq '.[] | select(.topics | index("showcase")) | .name'
+```
 
 ## Security
 
@@ -86,10 +120,11 @@ This site is treated as a small production deployment and hardened accordingly:
   `Referrer-Policy: strict-origin-when-cross-origin`, and a restrictive
   `Permissions-Policy`.
   - *Trade-off:* `script-src`/`style-src` allow `'unsafe-inline'`. The Next.js
-    App Router emits inline bootstrap/streaming scripts (and Framer Motion sets
-    inline style attributes) with no stable hash across ISR revalidations, and a
-    nonce-based CSP would force dynamic rendering, defeating the static/ISR
-    caching this site relies on. Everything else is constrained to `'self'`.
+    App Router emits inline bootstrap/streaming scripts (and React sets inline
+    style attributes, e.g. the hero's animation-delay custom properties) with no
+    stable hash across ISR revalidations, and a nonce-based CSP would force
+    dynamic rendering, defeating the static/ISR caching this site relies on.
+    Everything else is constrained to `'self'`.
 - **CodeQL** static analysis (`security-and-quality` suite) on every push and on
   a weekly schedule — see `.github/workflows/codeql.yml`.
 - **Dependabot** for npm and GitHub Actions updates — see `.github/dependabot.yml`.
@@ -99,12 +134,12 @@ This site is treated as a small production deployment and hardened accordingly:
 Verify the headers live:
 
 ```bash
-curl -sI https://portfolio-gabryelverissimo.vercel.app/ | grep -i \
+curl -sI https://gabryelverissimo.dev/ | grep -i \
   -e content-security-policy -e strict-transport -e x-frame -e x-content-type \
   -e referrer-policy -e permissions-policy
 ```
 
-Or scan at [securityheaders.com](https://securityheaders.com/?q=https://portfolio-gabryelverissimo.vercel.app/).
+Or scan at [securityheaders.com](https://securityheaders.com/?q=https://gabryelverissimo.dev/).
 
 ## License
 

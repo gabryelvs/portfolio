@@ -3,17 +3,21 @@ import { describe, expect, it } from "vitest";
 import { Contact } from "@/components/Contact";
 
 describe("Contact", () => {
-  it("renders email, github, linkedin, and CV links", () => {
+  it("states availability", () => {
+    const { container } = render(<Contact />);
+    expect(container).toHaveTextContent(
+      "Open to graduate and junior software engineer roles in London from summer 2027.",
+    );
+  });
+
+  it("links email, GitHub, LinkedIn and the CV", () => {
     render(<Contact />);
-    expect(screen.getByRole("link", { name: /email/i })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "hello@gabryelverissimo.dev" })).toHaveAttribute(
       "href",
-      "mailto:gabryelverissimo12@gmail.com",
+      "mailto:hello@gabryelverissimo.dev",
     );
-    expect(screen.getByRole("link", { name: /github/i })).toHaveAttribute(
-      "href",
-      "https://github.com/gabryelvs",
-    );
-    expect(screen.getByRole("link", { name: /linkedin/i })).toHaveAttribute("href", expect.stringContaining("linkedin.com"));
-    expect(screen.getByRole("link", { name: /cv/i })).toHaveAttribute("href", "/cv.pdf");
+    expect(screen.getByRole("link", { name: "GitHub" })).toHaveAttribute("href", "https://github.com/gabryelvs");
+    expect(screen.getByRole("link", { name: "LinkedIn" })).toHaveAttribute("href", expect.stringContaining("linkedin.com"));
+    expect(screen.getByRole("link", { name: "Download CV" })).toHaveAttribute("href", "/cv.pdf");
   });
 });

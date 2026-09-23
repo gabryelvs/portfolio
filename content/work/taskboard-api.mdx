@@ -1,0 +1,126 @@
+## The problem
+
+A Trello-style REST API: projects with invite-only membership, ordered columns, and cards with priorities, deadlines, assignees and comments that you drag between columns. Most of it is ordinary CRUD. Two parts aren't. Two people can drag cards in the same column at the same moment, and card positions have to stay correct. And a refresh token that has been stolen has to stop working, even though the whole point of JWTs is that the server doesn't track sessions. It's also the only project here written in Java, to show the same ideas in a different stack.
+
+## Constraints
+
+<Claim>
+- **Positions stay dense.** The cards in a column are numbered 0 to n−1: no gaps, no duplicates, whatever order the moves arrive in.
+- **No existence leaks.** Someone who isn't a member of a project can't tell whether that project, its columns or its cards exist.
+- **Short-lived access, rotating refresh.** Access tokens last 15 minutes. Refresh tokens last 7 days, are single-use, and are stored only as hashes.
+- **Errors are machine-readable.** Every error is an RFC 7807 problem+json response.
+- **The schema belongs to migrations.** Flyway creates it, and Hibernate only validates that the code matches.
+
+<Evidence path="src/main/resources/application.yml" lines="26-30">token lifetimes</Evidence>
+</Claim>
+
+## Architecture
+
+<Claim>
+Spring Boot 3 on Java 21. A stateless Spring Security filter chain verifies the JWT on every request. Behind it, one service per aggregate (projects, members, columns, cards, comments) owns the business rules, and every service goes through a single access check before touching data. Spring Data repositories sit over PostgreSQL. There are 28 endpoints, documented with OpenAPI and browsable in Swagger UI. It started on Fly.io and now runs on a Render free instance with Neon's serverless PostgreSQL. That instance sleeps after 15 idle minutes, so the first request after a quiet spell waits a minute or more while Java starts.
+
+<Evidence path="src/main/resources/db/migration/V1__init.sql">the schema, owned by Flyway</Evidence>
+</Claim>
+
+## Hard problems
+
+### Two people, one column
+
+<Claim>
+A card move touches up to two columns: close the gap in the source, open one in the target. If two moves run at once, both can read the same positions and write duplicates. So a move first locks the source and target column rows, always in sorted UUID order so two moves can never wait on each other. Then it re-reads the card. Another request may have moved the same card after this one loaded it; if the card has left the locked columns, the move answers 409 rather than corrupting positions. Only then does it park the card at −1, close the gap, clamp the target position and open the new gap.
+
+<Evidence path="src/main/java/com/gabryel/taskboard/card/CardService.java" lines="122-140">sorted column locks, then a re-read of the card</Evidence>
+</Claim>
+
+```java
+// serialize concurrent moves per project: lock source and target column rows
+// in deterministic id order to avoid deadlock
+Set<UUID> lockedColumnIds = java.util.stream.Stream.of(card.getColumn().getId(),
+        target.getId())
+        .distinct().sorted()
+        .peek(colId -> columns.lockById(colId))
+        .collect(java.util.stream.Collectors.toSet());
+```
+
+<Claim>
+The first version read the card before taking the locks, and had an off-by-one when moving a card to the end of its own column. Both were fixed with tests. The concurrency tests fire five threads moving cards at once, and four threads moving the same card at once. They assert the positions stay dense and every response is either a success or a clean 409.
+
+<Evidence path="src/test/java/com/gabryel/taskboard/card/CardMoveTest.java" lines="90-121">concurrentMovesKeepPositionsDense</Evidence>
+</Claim>
+
+### A refresh token used twice
+
+<Claim>
+Every refresh revokes the token it used and issues a new pair. A refresh token that is presented again after it was revoked means two parties hold it, and one of them shouldn't. So the service revokes every refresh token that user has, signing them out everywhere. The request still fails with 401, and normally a failing request rolls back its transaction, which would undo the revocation too. The method is annotated to commit on that particular error, so the revocation survives.
+
+<Evidence path="src/main/java/com/gabryel/taskboard/auth/AuthService.java" lines="63-77">token reuse revokes every session</Evidence>
+</Claim>
+
+<Claim>
+A test rotates a token, replays the old one, and checks that the new one no longer works either.
+
+<Evidence path="src/test/java/com/gabryel/taskboard/auth/RefreshTest.java" lines="41-51">reusedRefreshTokenRevokesWholeFamily</Evidence>
+</Claim>
+
+### Not found, not forbidden
+
+<Claim>
+A 403 tells an outsider "this exists, you just can't see it". So every access goes through one lookup: find this user's membership in this project. A missing project and a project you're not in produce the same 404. The owner-only check can only return 403 after membership is confirmed, to someone who already knows the project exists.
+
+<Evidence path="src/main/java/com/gabryel/taskboard/common/ProjectAccessService.java" lines="19-31">one membership lookup; 404 whether missing or not a member</Evidence>
+</Claim>
+
+<Claim>
+Tests check the 404 on projects, columns, cards, comments, filters, and on moving a card into another project's column.
+
+<Evidence path="src/test/java/com/gabryel/taskboard/project/ProjectTest.java" lines="45-52">nonMemberGets404NotForbidden</Evidence>
+</Claim>
+
+### What the final review caught
+
+A last review before launch found four real problems. Each fix came with a test.
+
+<Claim>
+**The secret.** The app would have started in production with the development JWT secret if the real one was missing. It now refuses to start.
+
+<Evidence path="src/test/java/com/gabryel/taskboard/auth/JwtServiceTest.java" lines="11-19">devDefaultSecretUnderProdProfileFailsFast</Evidence>
+</Claim>
+
+<Claim>
+**The revocation.** A reused refresh token was rejected, but the user's other sessions stayed alive.
+
+<Evidence path="src/test/java/com/gabryel/taskboard/auth/RefreshTest.java" lines="41-51">reusedRefreshTokenRevokesWholeFamily</Evidence>
+</Claim>
+
+<Claim>
+**The create race.** Creating a card counted the column's cards without a lock, so two concurrent creates could get the same position. Creating now takes the same column lock as moving.
+
+<Evidence path="src/test/java/com/gabryel/taskboard/card/CardTest.java" lines="87-115">concurrentCreatesKeepPositionsDense</Evidence>
+</Claim>
+
+<Claim>
+**The delete race.** A card deleted in the middle of someone else's move caused a 500. It now maps to a 404, and a constraint violation maps to a 409. The test covers that mapping; no test races a real delete against a move.
+
+<Evidence path="src/test/java/com/gabryel/taskboard/common/ApiExceptionHandlerTest.java" lines="72-86">entityNotFoundProduces404 and dataIntegrityViolationProduces409</Evidence>
+</Claim>
+
+## How it's tested
+
+<Claim>
+72 tests. 59 are integration tests that run the real application against a real PostgreSQL, started once per test run with Testcontainers and exercised through Spring's MockMvc. Nothing about locking or transactions is mocked. The other 13 are unit tests: the JWT service, and the parser that turns Neon's connection string into Spring's settings. The suite grew from 55 to 62 during the final review, seven tests across the four fixes, and to 72 with the move to Neon. GitHub Actions runs it on every push to main and every pull request.
+
+<Evidence path="src/test/java/com/gabryel/taskboard/IntegrationTest.java" lines="12-32">one shared PostgreSQL container for every integration test</Evidence>
+</Claim>
+
+## What I'd change
+
+- **Protect positions in the database.** Positions are dense only because the application takes locks. A unique constraint on column and position would make a duplicate impossible, not just prevented.
+- **Lock column operations too.** Card moves and creates lock their columns. Deleting a card and reordering columns don't, so concurrent edits there could still leave a gap.
+- **Revoke only the stolen chain.** Reuse revokes every session for the user, which is safe but blunt. A token-family id would revoke only the chain that was compromised. Two refreshes of the same token at the same instant can also both succeed, because the token row isn't locked.
+- **Close the smaller gaps.** Access tokens can't be revoked before they expire, the login endpoint has no rate limit, and expired refresh tokens are never cleaned up.
+
+## Links
+
+- [Source at the commit this page describes](https://github.com/gabryelvs/taskboard-api/tree/c8a378693763e984e2b5e3689e026b6b1177f30d)
+- [The concurrent-move test](https://github.com/gabryelvs/taskboard-api/blob/c8a378693763e984e2b5e3689e026b6b1177f30d/src/test/java/com/gabryel/taskboard/card/CardMoveTest.java#L90-L121)
+- [Live API docs](https://taskboard-api-h3yu.onrender.com/swagger-ui.html)

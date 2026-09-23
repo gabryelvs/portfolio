@@ -13,6 +13,12 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  // cv/ holds standalone CommonJS build scripts run by node, not app source.
+  // require() is correct there, so the TypeScript module rule does not apply.
+  {
+    files: ["cv/**/*.js"],
+    rules: { "@typescript-eslint/no-require-imports": "off" },
+  },
 ]);
 
 export default eslintConfig;

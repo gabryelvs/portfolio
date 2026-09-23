@@ -22,8 +22,28 @@ if (!global.localStorage) {
   } as Storage;
 }
 
+// jsdom lacks matchMedia; some components may query it.
+if (!global.matchMedia) {
+  global.matchMedia = ((query: string) => ({
+    matches: false,
+    media: query,
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    addListener: () => {},
+    removeListener: () => {},
+    dispatchEvent: () => false,
+    onchange: null,
+  })) as unknown as typeof window.matchMedia;
+}
+
 global.IntersectionObserver = class IntersectionObserver {
-  constructor() {}
+  // Same signature as the real constructor, so callers passing a callback and options type-check against it.
+  readonly callback: IntersectionObserverCallback;
+  readonly options?: IntersectionObserverInit;
+  constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
+    this.callback = callback;
+    this.options = options;
+  }
   disconnect() {}
   observe() {}
   takeRecords() {

@@ -5,7 +5,7 @@
 If you discover a security issue in this project, please report it privately
 rather than opening a public issue.
 
-- **Email:** gabryelverissimo12@gmail.com
+- **Email:** hello@gabryelverissimo.dev
 - Please include steps to reproduce, affected URL/route, and impact.
 - I aim to acknowledge reports within **5 working days** and to provide a
   remediation timeline after triage.
@@ -17,7 +17,7 @@ allow a reasonable window to fix an issue before any public disclosure.
 ## Supported versions
 
 This is a continuously deployed site; only the latest version on the `main`
-branch (live at <https://portfolio-gabryelverissimo.vercel.app/>) is supported.
+branch (live at <https://gabryelverissimo.dev/>) is supported.
 
 ## Hardening in place
 

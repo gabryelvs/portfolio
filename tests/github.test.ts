@@ -26,6 +26,15 @@ describe("mapRepo", () => {
   it("treats empty homepage as null", () => {
     expect(mapRepo(raw({ homepage: "" })).homepage).toBeNull();
   });
+  it("accepts http(s) homepage URLs", () => {
+    expect(mapRepo(raw({ homepage: "https://demo.dev" })).homepage).toBe("https://demo.dev");
+    expect(mapRepo(raw({ homepage: "http://demo.dev" })).homepage).toBe("http://demo.dev");
+  });
+  it("rejects non-http(s) homepage schemes (javascript:, data:)", () => {
+    expect(mapRepo(raw({ homepage: "javascript:alert(1)" })).homepage).toBeNull();
+    expect(mapRepo(raw({ homepage: "data:text/html,<script>1</script>" })).homepage).toBeNull();
+    expect(mapRepo(raw({ homepage: "not-a-url" })).homepage).toBeNull();
+  });
 });
 
 describe("selectShowcase", () => {

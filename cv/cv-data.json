@@ -1,0 +1,215 @@
+{
+  "_comment": "Single source of truth for the CV. build_cv.js renders it to Gabryel_Verissimo_CV.docx; build_cv_pdf.py renders it to portfolio/public/cv.pdf. Edit here only — the two builders exist because docx and PDF need different libraries, not because the content differs. They drifted for two months before this file existed and the published PDF sat three projects behind.",
+  "name": "GABRYEL VERISSIMO",
+  "headline": "Software Engineer  ·  Fintech & reliable systems",
+  "links": [
+    {
+      "label": "github.com/gabryelvs",
+      "url": "https://github.com/gabryelvs"
+    },
+    {
+      "label": "linkedin.com/in/gabryel-verissimo",
+      "url": "https://www.linkedin.com/in/gabryel-verissimo"
+    },
+    {
+      "label": "gabryelverissimo.dev",
+      "url": "https://gabryelverissimo.dev"
+    }
+  ],
+  "profile": "Software engineer building production-grade services in Python (FastAPI) and Java (Spring Boot), with a focus on fintech APIs — payments, ledgers, idempotent transfers, and secure authentication — and shipping fullstack tools with React and TypeScript. Comfortable with PostgreSQL, REST design, Docker, and test-driven development. Seeking graduate and junior software engineering roles in London from summer 2027.",
+  "skills": [
+    {
+      "label": "Languages",
+      "value": "Python, Java, C#, SQL, JavaScript, C++, HTML/CSS"
+    },
+    {
+      "label": "Backend",
+      "value": "FastAPI, Spring Boot, Spring Security, REST APIs, PostgreSQL, Redis, SQLAlchemy, Alembic, JWT authentication"
+    },
+    {
+      "label": "Frontend",
+      "value": "React, Next.js, TypeScript, Vite, Tailwind CSS, REST API integration"
+    },
+    {
+      "label": "Tools & Practices",
+      "value": "Docker, Git, GitHub Actions (CI), pytest, Vitest, test-driven development, background workers & queues, Linux, AI-assisted development (Claude, GitHub Copilot)"
+    }
+  ],
+  "projects": [
+    {
+      "name": "PayLedger — Double-Entry Payments API",
+      "tech": "Python · FastAPI · PostgreSQL · Alembic · Docker",
+      "github": {
+        "label": "github.com/gabryelvs/payledger",
+        "url": "https://github.com/gabryelvs/payledger"
+      },
+      "live": {
+        "label": "payledger-gv.vercel.app/docs",
+        "url": "https://payledger-gv.vercel.app/docs"
+      },
+      "bullets": [
+        "Double-entry payments API: users hold multi-currency wallets and transfer money, with every movement recorded as balanced, append-only ledger entries; only the owner can move or read a wallet's money.",
+        "Transfers are race-safe (row-level locks in ascending id order, balance checked under the lock) and idempotent (retry key claimed in the same transaction, scoped per user, so retries can't double-charge).",
+        "Test-driven (67 pytest tests against real PostgreSQL, incl. concurrency tests), with Docker Compose, GitHub Actions CI, and Alembic migrations."
+      ]
+    },
+    {
+      "name": "Webhook Inspector — Fullstack Webhook Debugging Tool",
+      "tech": "Python · FastAPI · PostgreSQL · React · TypeScript · Tailwind · Docker",
+      "github": {
+        "label": "github.com/gabryelvs/webhook-inspector",
+        "url": "https://github.com/gabryelvs/webhook-inspector"
+      },
+      "live": {
+        "label": "webhook-inspector-gv.vercel.app",
+        "url": "https://webhook-inspector-gv.vercel.app"
+      },
+      "bullets": [
+        "Fullstack tool for debugging webhooks: users create a disposable URL, point any provider at it, and watch requests arrive live in a React interface showing headers, pretty-printed body, and query parameters.",
+        "Hardened for public deployment: per-client rate limiting keyed on the real client IP behind the proxy, streamed request bodies capped at 1 MB so a large payload cannot exhaust memory, per-bin retention limits, and a capture endpoint that always answers 200 so a database fault never breaks the sender's webhook.",
+        "Test-driven across the stack (47 backend pytest + 7 frontend Vitest tests), the React app built and served alongside the API, deployed on Vercel with Neon PostgreSQL."
+      ]
+    },
+    {
+      "name": "FX-Service — Async Currency Exchange API",
+      "tech": "Python · FastAPI · httpx · Redis",
+      "github": {
+        "label": "github.com/gabryelvs/fx-service",
+        "url": "https://github.com/gabryelvs/fx-service"
+      },
+      "live": {
+        "label": "fx-service-gv.fly.dev/docs",
+        "url": "https://fx-service-gv.fly.dev/docs"
+      },
+      "bullets": [
+        "Async microservice serving live currency rates and conversions, pulling ECB rates and caching them in Redis with an in-process scheduled refresh loop.",
+        "Resilient by design: continues serving last-known rates when the upstream provider is unavailable (stale fallback), proven by an automated outage test.",
+        "Test-driven (31 tests, 90% coverage) with Docker Compose and GitHub Actions CI."
+      ]
+    },
+    {
+      "name": "Webhook-Dispatcher — Reliable Webhook Delivery",
+      "tech": "Python · FastAPI · Redis",
+      "github": {
+        "label": "github.com/gabryelvs/webhook-dispatcher",
+        "url": "https://github.com/gabryelvs/webhook-dispatcher"
+      },
+      "live": null,
+      "bullets": [
+        "Service that reliably delivers webhooks via a Redis queue and a separate worker process, signing each request (HMAC-SHA256) so receivers can verify authenticity.",
+        "Retries failed deliveries with exponential backoff and jitter, dead-letters exhausted ones, and supports manual replay; at-least-once delivery with de-duplication headers.",
+        "Test-driven (28 tests, 92% coverage) with Docker Compose and GitHub Actions CI."
+      ]
+    },
+    {
+      "name": "Taskboard API — Trello-like Task Manager API",
+      "tech": "Java 21 · Spring Boot · PostgreSQL · Docker",
+      "github": {
+        "label": "github.com/gabryelvs/taskboard-api",
+        "url": "https://github.com/gabryelvs/taskboard-api"
+      },
+      "live": {
+        "label": "taskboard-api-h3yu.onrender.com/swagger-ui.html",
+        "url": "https://taskboard-api-h3yu.onrender.com/swagger-ui.html"
+      },
+      "bullets": [
+        "Trello-like task manager REST API with JWT authentication using refresh-token rotation (reuse revokes every session for that user), and role-based project membership (OWNER/MEMBER) with 404-no-leak authorization.",
+        "Transactional drag-and-drop card ordering with pessimistic column locking (deterministic lock order) proven under concurrent-move integration tests; RFC 7807 problem+json error responses.",
+        "Test-driven (72 tests: 59 Testcontainers integration tests against real PostgreSQL, 13 unit), OpenAPI/Swagger docs, GitHub Actions CI, and deployed on Render with Neon PostgreSQL."
+      ]
+    },
+    {
+      "name": "SECTOR—9 — Animated Demo Storefront",
+      "tech": "TypeScript · Next.js 16 · React 19 · Tailwind 4 · GSAP · Docker",
+      "github": {
+        "label": "github.com/gabryelvs/store-demo",
+        "url": "https://github.com/gabryelvs/store-demo"
+      },
+      "live": {
+        "label": "store-demo-gv.fly.dev",
+        "url": "https://store-demo-gv.fly.dev"
+      },
+      "bullets": [
+        "Storefront demo built as a client-facing sales asset: 20-product catalogue, hover-swap product grid, quick-view size selection and a persistent cart drawer, with the catalogue behind a single data seam so a real backend replaces it without touching the pages.",
+        "Scroll-driven GSAP reveals and a parallax band, with three overlays (quick-view, cart, mobile navigation) that each trap focus, mark background content inert for screen readers, restore focus to their opener, and stand down entirely under prefers-reduced-motion.",
+        "Cart is a pure reducer with derived totals in integer pence and validated localStorage rehydration (30 Vitest tests); 26 statically prerendered routes shipped as a standalone container on Fly.io, scoring 99–100 on Lighthouse performance, accessibility, best practices and SEO with zero layout shift."
+      ]
+    },
+    {
+      "name": "OWASP Security Lab — Break it & Fix it",
+      "tech": "Python · FastAPI · pytest · Docker",
+      "github": {
+        "label": "github.com/gabryelvs/owasp-security-lab",
+        "url": "https://github.com/gabryelvs/owasp-security-lab"
+      },
+      "live": null,
+      "bullets": [
+        "Intentionally-vulnerable FastAPI app demonstrating six OWASP Top 10 issues (SQL injection, broken access control, SSRF, JWT authentication flaws, sensitive-data exposure, and security misconfiguration), each with a working exploit, a hardened fix, and tests proving both.",
+        "Test-driven (14 exploit/fix tests) with GitHub Actions CI; documents the attack, root cause, and remediation per vulnerability — demonstrating secure-coding and defensive engineering."
+      ]
+    }
+  ],
+  "experience": [
+    {
+      "role": "Freelance Software Engineer",
+      "org": "Self-employed, London",
+      "period": "Sep 2026 – Present",
+      "bullets": [
+        "Auto Boutique London (pro bono): designed, built and deployed the production website for a Central London car-storage business, replacing its WordPress site with a static Astro build and a PHP enquiry endpoint that sends mail through Resend.",
+        "Set up push-to-deploy from GitHub Actions to SiteGround over SSH, archived the old WordPress install with verified backups, and completed a UK consumer-law pass: legal pages, consent-gated enquiry form, and no unverified reviews on the site."
+      ]
+    },
+    {
+      "role": "Runner",
+      "org": "The Ivy Market Grill, Covent Garden",
+      "period": "Jun 2026 – Present",
+      "bullets": [
+        "Front-of-house runner in a restaurant serving 400–600 covers a day: running food to section, handling allergen and dietary requirements, and keeping pace and accuracy through peak service.",
+        "Hold accuracy and composure through the busiest services; train new starters on section layout, allergen handling and service flow."
+      ]
+    },
+    {
+      "role": "Youth Leader (Volunteer)",
+      "org": "Cathedral International, West Norwood",
+      "period": "Jun 2023 – Present",
+      "bullets": [
+        "Lead a weekly session for 10–15 teenagers as part of the youth leadership team, covering mentoring, pastoral support, and planning session content.",
+        "Co-organised two youth events for 100–150 attendees, owning the technical side: live projection, visual design and art direction.",
+        "Serve on the church projection team (2024 – Present), operating live visuals across weekly services — cueing lyrics, media and slides in real time with no pre-built running order (ProPresenter)."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "BSc Computer Science — University of Greenwich",
+      "period": "2023 – expected Jul 2027",
+      "detail": "Final year, following a foundation year.",
+      "primary": true
+    },
+    {
+      "institution": "City of Westminster College",
+      "period": "2022 – 2023",
+      "detail": "BTEC Level 2 ICT · GCSE English"
+    },
+    {
+      "institution": "Lambeth College",
+      "period": "2021 – 2022",
+      "detail": "Level 1 Diploma in ICT · GCSE Maths · Functional Skills Maths & English"
+    },
+    {
+      "institution": "SESI-SENAI College",
+      "period": "2019 – 2020",
+      "detail": "Diploma in Microsoft Applications"
+    }
+  ],
+  "languages": [
+    {
+      "name": "Portuguese",
+      "level": "Native"
+    },
+    {
+      "name": "English",
+      "level": "Fluent (advanced — speaking, reading, and writing)"
+    }
+  ]
+}
