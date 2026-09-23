@@ -8,7 +8,7 @@ const source = (slug: string) =>
 
 // Case studies that have been expanded from first draft to full length.
 // Each one is held to the 800–1,200-word target (1,300 allows for editing).
-const FULL_LENGTH: string[] = ["webhook-inspector", "payledger"];
+const FULL_LENGTH: string[] = ["webhook-inspector", "payledger", "taskboard-api"];
 
 /** Prose words only: fenced code, JSX tags and link targets are not counted. */
 function proseWords(mdx: string): number {
