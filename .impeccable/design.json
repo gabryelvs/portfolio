@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "generatedAt": "2026-09-23T15:00:00Z",
-  "title": "Design System: Gabryel Veríssimo — Portfolio",
+  "title": "Design System: Gabryel Verissimo — Portfolio",
   "extensions": {
     "colorMeta": {
       "bg": {
@@ -515,7 +515,7 @@
       "kind": "nav",
       "refersTo": "nav-link",
       "description": "Sticky 56px bar; muted links, accent for the current item, icon-button theme toggle.",
-      "html": "<header class=\"ds-nav\"><a class=\"ds-nav-name\" href=\"#\">Gabryel Veríssimo</a><ul><li><a href=\"#\" aria-current=\"page\">Work</a></li><li><a href=\"#\">Experience</a></li><li><a href=\"#\">Contact</a></li><li><button class=\"ds-icon-btn\" aria-label=\"Switch to light theme\"><svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\"><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41\"/></svg></button></li></ul></header>",
+      "html": "<header class=\"ds-nav\"><a class=\"ds-nav-name\" href=\"#\">Gabryel Verissimo</a><ul><li><a href=\"#\" aria-current=\"page\">Work</a></li><li><a href=\"#\">Experience</a></li><li><a href=\"#\">Contact</a></li><li><button class=\"ds-icon-btn\" aria-label=\"Switch to light theme\"><svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\"><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41\"/></svg></button></li></ul></header>",
       "css": ".ds-nav{display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 24px;gap:16px;background:color-mix(in srgb,var(--bg) 92%,transparent);border-bottom:1px solid var(--line);font-family:var(--font-sans)}.ds-nav-name{font-weight:600;font-size:15px;letter-spacing:-.01em;color:var(--fg);text-decoration:none}.ds-nav ul{display:flex;gap:4px;list-style:none;margin:0;padding:0;align-items:center}.ds-nav ul a{display:block;padding:6px 10px;font-size:14px;color:var(--muted);border-radius:6px;text-decoration:none;transition:color .15s ease-out}.ds-nav ul a:hover{color:var(--fg)}.ds-nav ul a[aria-current]{color:var(--accent)}.ds-nav a:focus-visible,.ds-icon-btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.ds-icon-btn{display:grid;place-items:center;width:32px;height:32px;margin-left:6px;border:1px solid var(--line-strong);border-radius:6px;background:transparent;color:var(--fg-2);cursor:pointer;transition:border-color .15s ease-out,color .15s ease-out}.ds-icon-btn:hover{color:var(--fg);border-color:var(--muted)}"
     },
     {

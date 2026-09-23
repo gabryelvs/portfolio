@@ -9,7 +9,7 @@
 
 ---
 
-**Gabryel Veríssimo**
+**Gabryel Verissimo**
 [CONTACT LINE — paste the `contact` value from `cv-contact.json`, the gitignored file
 beside this one: address · phone · email]
 GitHub: github.com/gabryelvs · LinkedIn: linkedin.com/in/gabryel-veríssimo
@@ -69,7 +69,7 @@ your team. Thank you for considering my application; I would be happy to discuss
 how I can add value in this role.
 
 Yours sincerely,
-**Gabryel Veríssimo**
+**Gabryel Verissimo**
 
 ---
 

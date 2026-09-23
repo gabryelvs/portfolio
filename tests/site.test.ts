@@ -7,7 +7,7 @@ describe("site constants", () => {
   });
 
   it("names the person and the role", () => {
-    expect(SITE_NAME).toBe("Gabryel Veríssimo");
+    expect(SITE_NAME).toBe("Gabryel Verissimo");
     expect(ROLE).toBe("Software Engineer");
   });
 

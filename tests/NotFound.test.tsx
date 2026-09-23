@@ -22,7 +22,7 @@ describe("app/not-found", () => {
     expect(screen.getByRole("contentinfo")).toBeInTheDocument();
   });
 
-  it("titles the page 'Page not found · Gabryel Veríssimo'", () => {
-    expect(metadata.title).toBe("Page not found · Gabryel Veríssimo");
+  it("titles the page 'Page not found · Gabryel Verissimo'", () => {
+    expect(metadata.title).toBe("Page not found · Gabryel Verissimo");
   });
 });

@@ -8,7 +8,7 @@ web
 
 ## Users
 
-Primary: hiring managers and engineers evaluating Gabryel Veríssimo for a graduate
+Primary: hiring managers and engineers evaluating Gabryel Verissimo for a graduate
 or junior software engineering role in London (roles from summer 2027). They arrive
 from an application, CV, or message, usually with a CV already in hand, and skim
 briefly to decide whether the candidate is worth a conversation.
@@ -59,7 +59,7 @@ instead of it.
 
 ## Brand Commitments
 
-Name: Gabryel Veríssimo. The site is dark-mode-first with a theme toggle already
+Name: Gabryel Verissimo. The site is dark-mode-first with a theme toggle already
 implemented.
 
 ## Evidence on Hand

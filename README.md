@@ -1,4 +1,4 @@
-# Gabryel Veríssimo — Portfolio
+# Gabryel Verissimo — Portfolio
 
 A dark-mode personal portfolio for software engineering work, built with **Next.js**,
 **React**, **TypeScript**, **Tailwind CSS** and **MDX**. Motion is CSS only — no GSAP, no
