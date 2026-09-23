@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { AVAILABILITY, BUILT_WITH, CONTACT_LINE, LINKS, ROLE, SITE_NAME, SITE_URL } from "@/lib/site";
+import { AVAILABILITY, BUILT_WITH, CONTACT_LEAD, CONTACT_LINE, LINKS, ROLE, SITE_NAME, SITE_URL } from "@/lib/site";
 
 describe("site constants", () => {
   it("uses an https site URL without a trailing slash", () => {
@@ -20,6 +20,11 @@ describe("site constants", () => {
       place: "London",
       when: "from summer 2027",
     });
+  });
+
+  it("builds the contact line from the shared lead and availability window", () => {
+    expect(CONTACT_LINE).toBe(`${CONTACT_LEAD} ${AVAILABILITY.when}.`);
+    expect(CONTACT_LEAD).toBe("Open to graduate and junior software engineer roles in London");
   });
 
   it("discloses AI-assisted development", () => {

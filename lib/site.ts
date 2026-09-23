@@ -12,8 +12,9 @@ export const AVAILABILITY = {
   when: "from summer 2027",
 } as const;
 
-export const CONTACT_LINE =
-  "Open to graduate and junior software engineer roles in London from summer 2027.";
+export const CONTACT_LEAD = "Open to graduate and junior software engineer roles in London";
+
+export const CONTACT_LINE = `${CONTACT_LEAD} ${AVAILABILITY.when}.`;
 
 export const BUILT_WITH =
   "AI-assisted development (Claude Code). I set the design and direction, reviewed each change, and verified it with the tests below.";

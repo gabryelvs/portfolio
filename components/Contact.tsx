@@ -1,5 +1,5 @@
 import { SectionHeading } from "@/components/SectionHeading";
-import { LINKS } from "@/lib/site";
+import { AVAILABILITY, CONTACT_LEAD, LINKS } from "@/lib/site";
 
 export function Contact() {
   return (
@@ -7,8 +7,8 @@ export function Contact() {
       <div className="wrap">
         <SectionHeading index="05" id="contact-title" title="Contact" />
         <p className="contact-line">
-          Open to graduate and junior software engineer roles in London{" "}
-          <span className="soft">from summer 2027.</span>
+          {CONTACT_LEAD}{" "}
+          <span className="soft">{AVAILABILITY.when}.</span>
         </p>
         <a className="mail" href={LINKS.email}>
           {LINKS.emailLabel}
