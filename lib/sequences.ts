@@ -52,7 +52,7 @@ export const sequences: Record<Slug, Sequence> = {
       { kind: "msg", from: "sender", to: "proxy", label: "POST /in/{bin}", hot: true },
       { kind: "msg", from: "proxy", to: "app", label: "forward  client IP in x-real-ip" },
       { kind: "note", at: "app", label: "stream body, keep 1 MB" },
-      { kind: "msg", from: "app", to: "db", label: "INSERT request  platform headers dropped · prune to 500" },
+      { kind: "msg", from: "app", to: "db", label: "INSERT request  prune bin to 500" },
       { kind: "msg", from: "app", to: "sender", label: "200 OK, even if the insert failed", hot: true },
       { kind: "msg", from: "ui", to: "app", label: "GET requests every 2 s" },
     ],

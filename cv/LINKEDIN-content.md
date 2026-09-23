@@ -94,7 +94,7 @@ LinkedIn → your profile → Featured → "+" → Add a link. Add these (lead w
 
 **Link 11**
 - URL: `https://github.com/gabryelvs/webhook-inspector`
-- Title: `Webhook Inspector — Disposable URLs, live request viewer, 34 tests across the stack`
+- Title: `Webhook Inspector — Disposable URLs, live request viewer, 54 tests across the stack`
 
 **Link 12**
 - URL: `https://taskboard-gv.fly.dev/swagger-ui.html`
@@ -153,7 +153,7 @@ Stack: TypeScript, Next.js 16, React 19, Tailwind 4, GSAP, Docker, Vitest.
 - Name: `Webhook Inspector — Fullstack webhook debugging tool`
 - Description:
 ```
-A fullstack tool for debugging webhooks: you create a disposable URL, point any provider at it, and watch requests arrive live in a React interface showing headers, pretty-printed body, and query parameters. Hardened for public deployment — per-client rate limiting keyed on the real client IP behind the proxy, request bodies streamed and capped at 1 MB so a large payload cannot exhaust memory, per-bin retention limits, and a capture endpoint that always answers 200 so a database fault never breaks the sender's webhook. Test-driven across the stack (27 backend pytest + 7 frontend Vitest tests), the React app built and served alongside the API, deployed on Vercel with Neon PostgreSQL.
+A fullstack tool for debugging webhooks: you create a disposable URL, point any provider at it, and watch requests arrive live in a React interface showing headers, pretty-printed body, and query parameters. Hardened for public deployment — per-client rate limiting keyed on the real client IP behind the proxy, request bodies streamed and capped at 1 MB so a large payload cannot exhaust memory, per-bin retention limits, and a capture endpoint that always answers 200 so a database fault never breaks the sender's webhook. Test-driven across the stack (47 backend pytest + 7 frontend Vitest tests), the React app built and served alongside the API, deployed on Vercel with Neon PostgreSQL.
 Stack: Python, FastAPI, PostgreSQL, React, TypeScript, Tailwind, Docker.
 ```
 - Link: `https://webhook-inspector-gv.vercel.app`
