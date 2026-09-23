@@ -1,7 +1,12 @@
 # LinkedIn — ready-to-paste content
 
-Copy each block into the matching LinkedIn section. Links: paste them as-is (LinkedIn
-auto-links URLs).
+The source for every section of the LinkedIn profile, kept in step with the CV, the
+site and the GitHub README. Profile address: **https://www.linkedin.com/in/gabryel-verissimo**
+(claimed 2026-09-23; changing it breaks every link to the profile, so update
+`lib/site.ts`, `cv/cv-data.json`, the cover letter and the GitHub README in the same change).
+
+When adding or editing a position, education or project, turn **Notify network** off
+unless you mean to announce it.
 
 ---
 
@@ -18,100 +23,49 @@ Software Engineer | Python · Java · TypeScript | Fintech & reliable systems | 
 ```
 Software engineer in London, focused on fintech and reliable systems.
 
-I build small, production-shaped backend services in Python and FastAPI — each one tested, run in continuous integration, containerised with Docker, and deployed live with interactive documentation you can try in the browser. I'm especially drawn to fintech problems: handling money correctly, keeping systems consistent under load, and staying reliable when things go wrong.
+I build backend services in Python and Java, with TypeScript on the front end. Each one is tested, runs in CI, and is deployed live so you can try it in the browser. I'm drawn to the hard parts of fintech: handling money correctly, staying consistent when requests race, and failing safely when something goes wrong.
 
-Recent projects:
+Case studies, written up like design docs with links to the exact code and tests:
 
-• PayLedger — a double-entry payments and ledger API. Money is stored as integer minor units (no floating-point errors), transfers write balanced append-only entries, concurrent transfers are race-safe under row locking, and writes are idempotent.
-Code: https://github.com/gabryelvs/payledger  |  Live demo: https://payledger-gv.vercel.app/docs
+• PayLedger: a double-entry payments API that stays correct when transfers race, requests are retried, and callers try wallets that aren't theirs. Python, FastAPI, PostgreSQL; 67 tests.
+https://gabryelverissimo.dev/work/payledger
 
-• FX-Service — an async currency-exchange API. It caches European Central Bank rates in Redis, refreshes them on a background schedule, and keeps serving last-known rates when the upstream is down.
-Code: https://github.com/gabryelvs/fx-service  |  Live demo: https://fx-service-gv.fly.dev/docs
+• Webhook Inspector: a public endpoint that captures any webhook sent to it and shows it live, and never tells the sender that something went wrong on its side. FastAPI, PostgreSQL, React, TypeScript; 54 tests.
+https://gabryelverissimo.dev/work/webhook-inspector
 
-• Webhook-Dispatcher — reliable webhook delivery via a Redis queue and a separate worker. Requests are signed (HMAC-SHA256), failures retry with exponential backoff, and exhausted deliveries are dead-lettered and replayable.
-Code: https://github.com/gabryelvs/webhook-dispatcher
+• Taskboard API: a Trello-style API where two people can drag the same card at once, and a reused refresh token signs its owner out everywhere. Java 21, Spring Boot, PostgreSQL; 72 tests, 59 against a real database.
+https://gabryelverissimo.dev/work/taskboard-api
 
-• Taskboard API — a Trello-like task manager API in Java and Spring Boot. JWT auth with refresh-token rotation (reuse revokes every session for that user), 404-no-leak authorization, and transactional card ordering under pessimistic locking — 72 tests, 59 on real PostgreSQL.
-Code: https://github.com/gabryelvs/taskboard-api  |  Live demo: https://taskboard-api-h3yu.onrender.com/swagger-ui.html
+More: FX-Service (an async FX-rate API that keeps serving last-known rates when its upstream is down), Webhook-Dispatcher (queued webhook delivery with signing, backoff and replay), OWASP Security Lab (six OWASP Top 10 issues, each with an exploit, a fix and tests) and SECTOR—9 (an animated storefront demo).
 
-• OWASP Security Lab — an intentionally-vulnerable FastAPI app covering six OWASP Top 10 issues, each with a working exploit, a hardened fix, and tests proving both — a hands-on study in secure coding.
-Code: https://github.com/gabryelvs/owasp-security-lab
+I use AI-assisted development (Claude Code): I set the design, review every change, and don't ship what I can't explain or test.
 
-• SECTOR—9 — an animated demo storefront, built as a sales asset for freelance work: a reducer-driven cart with 30 tests, focus-trapping overlays that respect reduced-motion, and Lighthouse 99–100.
-Code: https://github.com/gabryelvs/store-demo  |  Live demo: https://store-demo-gv.fly.dev
-
-I'm looking for graduate and junior software engineer roles in London from summer 2027, where I can keep learning from experienced engineers and contribute to real systems.
+Open to graduate and junior software engineer roles in London from summer 2027.
 
 Portfolio: https://gabryelverissimo.dev
 GitHub: https://github.com/gabryelvs
+Email: hello@gabryelverissimo.dev
 ```
 
----
-
-## 3. Featured section (add each as a "Link")
-
-LinkedIn → your profile → Featured → "+" → Add a link. Add these (lead with the portfolio site):
-
-**Link 1 (feature this first)**
-- URL: `https://gabryelverissimo.dev`
-- Title: `Portfolio — software projects, live demos & CV`
-
-**Link 2**
-- URL: `https://github.com/gabryelvs/payledger`
-- Title: `PayLedger — Double-entry payments API (Python/FastAPI/PostgreSQL)`
-
-**Link 3**
-- URL: `https://payledger-gv.vercel.app/docs`
-- Title: `PayLedger — Live API demo (Swagger)`
-
-**Link 4**
-- URL: `https://github.com/gabryelvs/fx-service`
-- Title: `FX-Service — Async currency-exchange API (FastAPI/Redis)`
-
-**Link 5**
-- URL: `https://fx-service-gv.fly.dev/docs`
-- Title: `FX-Service — Live API demo (Swagger)`
-
-**Link 6**
-- URL: `https://github.com/gabryelvs/webhook-dispatcher`
-- Title: `Webhook-Dispatcher — Reliable webhook delivery (queue + worker, FastAPI/Redis)`
-
-**Link 7**
-- URL: `https://github.com/gabryelvs/owasp-security-lab`
-- Title: `OWASP Security Lab — 6 OWASP Top 10 vulns, each with exploit + fix + tests (FastAPI)`
-
-**Link 8**
-- URL: `https://store-demo-gv.fly.dev`
-- Title: `SECTOR—9 — Animated storefront demo, live (Next.js/TypeScript/GSAP)`
-
-**Link 9**
-- URL: `https://github.com/gabryelvs/store-demo`
-- Title: `SECTOR—9 — Storefront demo source: accessible overlays, tested cart, Lighthouse 99–100`
-
-**Link 10**
-- URL: `https://webhook-inspector-gv.vercel.app`
-- Title: `Webhook Inspector — Live fullstack tool (FastAPI + React/TypeScript)`
-
-**Link 11**
-- URL: `https://github.com/gabryelvs/webhook-inspector`
-- Title: `Webhook Inspector — Disposable URLs, live request viewer, 54 tests across the stack`
-
-**Link 12**
-- URL: `https://taskboard-api-h3yu.onrender.com/swagger-ui.html`
-- Title: `Taskboard API — Live API demo (Java 21 / Spring Boot, Swagger)`
-
-**Link 13**
-- URL: `https://github.com/gabryelvs/taskboard-api`
-- Title: `Taskboard API — JWT refresh-token rotation, transactional card ordering, 72 tests (59 on real PostgreSQL)`
-
-*If you only pin a handful: portfolio first, then Webhook Inspector (fullstack), Taskboard
-(Java/Spring — the one most London backend roles screen for), and PayLedger (fintech).*
+**Top skills** (the five shown under About): Python · Java · Spring Boot · FastAPI · PostgreSQL
 
 ---
 
-## 4. Projects section (optional, richer than Featured)
+## 3. Featured section (add each as a "Link", in this order)
 
-LinkedIn → Add profile section → Recommended → Add projects.
+Four links, the same evidence the site leads with. More than this and the case studies
+get lost.
+
+1. `https://gabryelverissimo.dev` — Title: `Portfolio: case studies, live demos and CV`
+2. `https://gabryelverissimo.dev/work/payledger` — Title: `PayLedger: a payments API that stays correct under races and retries`
+3. `https://gabryelverissimo.dev/work/webhook-inspector` — Title: `Webhook Inspector: capture any webhook and watch it arrive live`
+4. `https://gabryelverissimo.dev/work/taskboard-api` — Title: `Taskboard API: concurrent card moves and refresh-token reuse in Spring Boot`
+
+---
+
+## 4. Projects section
+
+Case studies first, each linked to its write-up (which links on to the code and the live demo).
 
 **Project 1**
 - Name: `PayLedger — Double-entry payments & ledger API`
@@ -120,9 +74,27 @@ LinkedIn → Add profile section → Recommended → Add projects.
 A backend payments API built on an immutable double-entry ledger. Money is stored as integer minor units to avoid floating-point errors; every transfer writes balanced, append-only ledger entries; concurrent transfers are serialised with database row locking (verified by a test that fires 20 parallel transfers); and write endpoints are idempotent to prevent double-charges. Only a wallet's owner can move or read its money. Test-driven (67 tests against real PostgreSQL, incl. concurrency tests), GitHub Actions CI, Dockerised, and deployed on Vercel.
 Stack: Python, FastAPI, PostgreSQL, SQLAlchemy, Alembic, Docker.
 ```
-- Link: `https://github.com/gabryelvs/payledger`
+- Link: `https://gabryelverissimo.dev/work/payledger`
 
 **Project 2**
+- Name: `Webhook Inspector — Fullstack webhook debugging tool`
+- Description:
+```
+A fullstack tool for debugging webhooks: you create a disposable URL, point any provider at it, and watch requests arrive live in a React interface showing headers, pretty-printed body, and query parameters. Hardened for public deployment — per-client rate limiting keyed on the real client IP behind the proxy, request bodies streamed and capped at 1 MB so a large payload cannot exhaust memory, per-bin retention limits, and a capture endpoint that always answers 200 so a database fault never breaks the sender's webhook. Test-driven across the stack (47 backend pytest + 7 frontend Vitest tests), the React app built and served alongside the API, deployed on Vercel with Neon PostgreSQL.
+Stack: Python, FastAPI, PostgreSQL, React, TypeScript, Tailwind, Docker.
+```
+- Link: `https://gabryelverissimo.dev/work/webhook-inspector`
+
+**Project 3**
+- Name: `Taskboard API — Trello-like task manager API`
+- Description:
+```
+A Trello-like task manager REST API in Java and Spring Boot. Authentication uses JWT with refresh-token rotation: reusing a rotated refresh token revokes every session for that user, so a stolen refresh token is useless once the real client has rotated it, and every session is signed out. Project membership is role-based (OWNER/MEMBER) with 404-no-leak authorization, so an unauthorised user cannot even confirm a resource exists. Drag-and-drop card ordering is transactional with pessimistic column locking in a deterministic lock order, proven under concurrent-move integration tests; errors are RFC 7807 problem+json. Test-driven with 72 tests, 59 of them Testcontainers integration tests against a real PostgreSQL, OpenAPI/Swagger docs, GitHub Actions CI, deployed on Render with Neon PostgreSQL.
+Stack: Java 21, Spring Boot, Spring Security, PostgreSQL, Testcontainers, Docker.
+```
+- Link: `https://gabryelverissimo.dev/work/taskboard-api`
+
+**Project 4**
 - Name: `FX-Service — Async currency-exchange API`
 - Description:
 ```
@@ -131,7 +103,7 @@ Stack: Python, FastAPI, httpx, Redis, Docker.
 ```
 - Link: `https://github.com/gabryelvs/fx-service`
 
-**Project 3**
+**Project 5**
 - Name: `Webhook-Dispatcher — Reliable webhook delivery`
 - Description:
 ```
@@ -140,7 +112,7 @@ Stack: Python, FastAPI, Redis, httpx, Docker.
 ```
 - Link: `https://github.com/gabryelvs/webhook-dispatcher`
 
-**Project 4**
+**Project 6**
 - Name: `SECTOR—9 — Animated demo storefront`
 - Description:
 ```
@@ -149,64 +121,101 @@ Stack: TypeScript, Next.js 16, React 19, Tailwind 4, GSAP, Docker, Vitest.
 ```
 - Link: `https://store-demo-gv.fly.dev`
 
-**Project 5**
-- Name: `Webhook Inspector — Fullstack webhook debugging tool`
-- Description:
-```
-A fullstack tool for debugging webhooks: you create a disposable URL, point any provider at it, and watch requests arrive live in a React interface showing headers, pretty-printed body, and query parameters. Hardened for public deployment — per-client rate limiting keyed on the real client IP behind the proxy, request bodies streamed and capped at 1 MB so a large payload cannot exhaust memory, per-bin retention limits, and a capture endpoint that always answers 200 so a database fault never breaks the sender's webhook. Test-driven across the stack (47 backend pytest + 7 frontend Vitest tests), the React app built and served alongside the API, deployed on Vercel with Neon PostgreSQL.
-Stack: Python, FastAPI, PostgreSQL, React, TypeScript, Tailwind, Docker.
-```
-- Link: `https://webhook-inspector-gv.vercel.app`
-
-**Project 6**
-- Name: `Taskboard API — Trello-like task manager API`
-- Description:
-```
-A Trello-like task manager REST API in Java and Spring Boot. Authentication uses JWT with refresh-token rotation: reusing a rotated refresh token revokes every session for that user, so a stolen refresh token is useless once the real client has rotated it, and every session is signed out. Project membership is role-based (OWNER/MEMBER) with 404-no-leak authorization, so an unauthorised user cannot even confirm a resource exists. Drag-and-drop card ordering is transactional with pessimistic column locking in a deterministic lock order, proven under concurrent-move integration tests; errors are RFC 7807 problem+json. Test-driven with 72 tests, 59 of them Testcontainers integration tests against a real PostgreSQL, OpenAPI/Swagger docs, GitHub Actions CI, deployed on Render with Neon PostgreSQL.
-Stack: Java 21, Spring Boot, Spring Security, PostgreSQL, Testcontainers, Docker.
-```
-- Link: `https://taskboard-api-h3yu.onrender.com/swagger-ui.html`
-
 ---
 
-## 5. Experience (add a position)
+## 5. Experience (newest first)
 
-LinkedIn → Add profile section → Core → Add position. List it above the restaurant and
-volunteer roles.
+Volunteering stays in Experience, marked "(Volunteer)", as on the CV. Leave employment
+type blank where the CV doesn't state one.
 
-- Title: `Freelance Software Engineer`
-- Employment type: `Self-employed`
-- Company name: `Self-employed`
-- Location: `London, England, United Kingdom`
-- Start date: `Sep 2026` · tick "I am currently working in this role"
-- Description:
+**Freelance Software Engineer** · Self-employed · London, England, United Kingdom · Sep 2026 – Present
 ```
 Auto Boutique London (pro bono): designed, built and deployed the production website for a Central London car-storage business, replacing its WordPress site with a static Astro build and a PHP enquiry endpoint that sends mail through Resend.
 Set up push-to-deploy from GitHub Actions to SiteGround over SSH, archived the old WordPress install with verified backups, and completed a UK consumer-law pass: legal pages, consent-gated enquiry form, and no unverified reviews on the site.
 ```
-
 *Add further clients here only once their site is live and they have agreed to be named;
 mark unpaid work "(pro bono)".*
 
+**Runner** · The Ivy Market Grill, Covent Garden · London · Jun 2026 – Present
+```
+Front-of-house runner in a restaurant serving 400–600 covers a day: running food to section, handling allergen and dietary requirements, and keeping pace and accuracy through peak service.
+Train new starters on section layout, allergen handling and service flow.
+```
+
+**Youth Leader (Volunteer)** · Cathedral International, West Norwood · Jun 2023 – Present
+```
+Lead a weekly session for 10–15 teenagers as part of the youth leadership team, covering mentoring, pastoral support, and planning session content.
+Co-organised two youth events for 100–150 attendees, owning the technical side: live projection, visual design and art direction.
+Serve on the projection team (2024 – Present), operating live visuals across weekly services — cueing lyrics, media and slides in real time with no pre-built running order (ProPresenter).
+```
+
+**Web Designer** · Impact Brixton · Jan 2021 (1 month)
+```
+One-month project with the team building the organisation's new website: assisted with page layout, visual content and user experience, and supported its social media with content creation.
+```
+
+**Hardware Technician** · Self-employed · London · Nov 2019 – Sep 2023
+```
+Built, repaired and upgraded desktop computers for private clients: custom builds to a budget, operating-system reinstalls and reformatting, and performance tuning.
+```
+
 ---
 
-## 6. Education (update the degree)
+## 6. Education (as on the CV)
 
-- School: `University of Greenwich`
-- Degree: `Bachelor of Science - BS` · Field of study: `Computer Science`
-- Start date: `2023` · End date (or expected): `Jul 2027`
+- **University of Greenwich** · Bachelor of Science - BS, Computer Science · 2023 – Jul 2027 (expected) · Description: `Following a foundation year.`
+- **City of Westminster College** · BTEC Level 2, Information and Communication Technology · 2022 – 2023 · Grade: `Double Distinction` · Description: `BTEC Level 2 ICT · GCSE English`
+- **Lambeth College** · Level 1 Diploma, Information and Communication Technology · 2021 – 2022 · Grade: `Double Distinction` · Description: `Level 1 Diploma in ICT · GCSE Maths · Functional Skills Maths & English`
+- **SESI-SENAI** · Diploma, Microsoft Applications · 2019 – 2020
 
----
-
-## 7. Skills to add
-
-LinkedIn → Skills → add these (and mark the top 3 as "pinned"):
-
-Python · FastAPI · PostgreSQL · Redis · SQLAlchemy · REST APIs · Docker · Git · GitHub Actions (CI/CD) · Test-Driven Development · Backend Development · SQL · Asynchronous Programming · Message Queues · Distributed Systems · Application Security · OWASP · Secure Coding · TypeScript · React · Next.js · Web Accessibility
+A BTEC is a vocational qualification, not a degree: never use LinkedIn's
+"Bachelor of Technology - BTech" option for it.
 
 ---
 
-*Tip: after adding the About and Featured links, set your profile to "Open to work" with the
-job titles Software Engineer, Graduate Software Engineer and Backend Developer, location London,
-so recruiters find you. "Backend Developer" belongs here, as a search term recruiters use, and
-not in the headline.*
+## 7. Skills
+
+**Add:** Java · Spring Boot · Spring Security · TypeScript · React.js · Next.js · pytest · JSON Web Token (JWT) · Application Security · OWASP · GitHub Actions
+
+**Keep:** Python · FastAPI · PostgreSQL · Redis · SQLAlchemy · REST APIs · Docker · Git · GitHub · CI/CD · Test-Driven Development · Back-End Development · SQL · Asynchronous Programming
+
+**Remove** (they dilute a software profile): Editing · Continuous Improvement · Security System Design · Information and Communications Technology (ICT) · Information Technology · Front-End Design
+
+---
+
+## 8. Open to work
+
+- Job titles: `Software Engineer` · `Graduate Software Engineer` · `Back End Developer`
+- Location types: On-site · Hybrid · Remote — Location: Greater London
+- Start date: Immediately, I am actively applying
+- Employment types: Full-time · Part-time
+- Visibility: Recruiters only
+
+"Back End Developer" belongs here, as a search term recruiters use, and not in the headline.
+
+---
+
+## 9. Languages
+
+- Portuguese — Native or bilingual proficiency
+- English — Full professional proficiency
+
+---
+
+## 10. Services
+
+Web Development · Custom Software Development · Application Development
+(no "Computer Repair": it pulls the profile away from software engineering).
+
+---
+
+## 11. Contact info
+
+- Website: `https://gabryelverissimo.dev` — type: Portfolio
+
+---
+
+## 12. Background image
+
+`linkedin-banner.png` (1584×396), generated with the GitHub profile banner script so the
+two match. The left third stays empty because the profile photo covers it.
