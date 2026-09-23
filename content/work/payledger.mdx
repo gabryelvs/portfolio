@@ -1,0 +1,55 @@
+## The problem
+
+Moving money between two wallets looks like one `UPDATE`. It isn't. Two transfers at the same moment can both spend the same balance, a client that retries after a timeout can pay twice, and an API that trusts the wallet id in a request lets anyone spend anyone else's money. PayLedger is a small payments API built to get those three things right. Users hold wallets in several currencies and move money between them, and every movement is written as balanced double-entry ledger lines.
+
+## Constraints
+
+- **Money is an integer.** Amounts are stored in minor units; floats never touch a balance.
+- **Every transaction balances.** Its entries sum to zero per currency, checked before anything is written.
+- **No overdraft**, even under concurrent load.
+- **Retries are safe.** The same key and body return the same result; the same key with a different body is a conflict.
+- **Only the owner moves money out of a wallet.**
+
+## Architecture
+
+A FastAPI app with thin routers over a service layer, backed by PostgreSQL and migrated with Alembic. A transfer is one database transaction: claim the idempotency key, check the caller owns the source wallet, lock both wallets, write the transaction and its two ledger entries, update the cached balances and commit. The diagram above is the whole path.
+
+## Hard problems
+
+### Two transfers, one balance
+
+<Claim>
+Both wallet rows are read with `SELECT … FOR UPDATE`, always in ascending id order so two opposite transfers can't deadlock, and the balance is checked only after the locks are held. A test fires 20 threads at a wallet holding exactly enough for ten transfers. Ten succeed, the source never goes below zero, and the total is conserved.
+
+<Evidence path="app/services/transfer_service.py" lines="142-150">sorted lock order; balance checked under the lock</Evidence>
+</Claim>
+
+### A retry that pays twice
+
+<Claim>
+The key is claimed first, inside the transfer's own transaction, with `INSERT … ON CONFLICT DO NOTHING`. A duplicate waits on the unique index. If the first request commits, the duplicate gets the stored response; if the first rolls back, the duplicate does the work itself. Ten parallel retries with one key now make exactly one transfer. Before the fix they made ten.
+
+<Evidence path="app/services/idempotency.py" lines="36-62">claim(): insert first, then read the winner's response</Evidence>
+</Claim>
+
+### A wallet that isn't yours
+
+<Claim>
+An audit before writing this page found that a transfer never checked who owned the source wallet. Every wallet, statement and transaction route now checks ownership and returns the same 404 as a missing id.
+
+<Evidence path="app/services/transfer_service.py" lines="137-140">the source wallet must belong to the caller</Evidence>
+</Claim>
+
+## How it's tested
+
+61 tests, every one against a real PostgreSQL, run with the linter in CI on every push. The concurrency and idempotency tests use real threads with separate database sessions, because the bugs that matter here only exist in a real database.
+
+## What I'd change
+
+- Enforce the balance rule in the database as well as in Python.
+- Reconcile the cached wallet balances against the ledger on a schedule.
+
+## Links
+
+- [Source at the commit this page describes](https://github.com/gabryelvs/payledger/tree/7e572e612dd1af6a03382b12a197e852bcc58d31)
+- [Live API docs](https://payledger-gv.fly.dev/docs)

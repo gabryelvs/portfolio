@@ -1,0 +1,46 @@
+## The problem
+
+Anyone debugging a webhook needs somewhere to point it. Webhook Inspector gives you a disposable URL. Every request sent to it is recorded (method, headers, query, body and the sender's IP) and shown live in the browser. It runs on a single 256 MB machine behind Fly's proxy.
+
+## Constraints
+
+- **The capture endpoint is public.** The bin id in the URL is the only secret.
+- **The sender never sees our failures.** Capture answers 200 even when storing the request fails.
+- **Payloads can be any size; memory can't.**
+- **Storage is bounded.** A bin keeps its last 500 requests, and bins expire after seven days.
+
+## Architecture
+
+A FastAPI backend using SQLAlchemy, on PostgreSQL in production, serving the compiled React front end from the same container. The browser polls a bin's requests every two seconds.
+
+## Hard problems
+
+### A public endpoint on 256 MB
+
+<Claim>
+The body is read as a stream. The first megabyte is kept (and flagged if there was more), and the rest is read and discarded, so one huge POST can't exhaust memory. Each capture then prunes its bin back to 500 requests.
+
+<Evidence path="backend/app/routers/capture.py" lines="14-40">streamed body, capped at 1 MB</Evidence>
+</Claim>
+
+### Bugs only production found
+
+<Claim>
+On a cold start the database was still waking up, table creation failed and the app crash-looped; startup now retries ten times, three seconds apart. And every request was recorded with the proxy's IP instead of the sender's, because behind Fly the socket peer is the proxy. Both fixes came with tests. The same mistake turned out to affect the bin-creation rate limit, which shared one budget across every visitor until it was keyed on the real client too.
+
+<Evidence path="backend/app/client_ip.py" lines="13-30">one client-IP rule for capture and the rate limiter</Evidence>
+</Claim>
+
+## How it's tested
+
+27 backend tests with pytest and 7 front-end tests with Vitest. CI runs both, plus a type-check and a production build, on every push. The backend tests run on SQLite, which is how one PostgreSQL-only bug slipped through to production.
+
+## What I'd change
+
+- Run the backend tests against PostgreSQL instead of SQLite.
+- Replace two-second polling with a WebSocket live tail.
+
+## Links
+
+- [Source at the commit this page describes](https://github.com/gabryelvs/webhook-inspector/tree/c98d29be55d412c5a8638f8d87769fd15caa513b)
+- [Live app](https://webhook-inspector-gv.fly.dev)

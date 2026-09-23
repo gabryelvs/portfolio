@@ -1,0 +1,45 @@
+## The problem
+
+A Trello-style REST API with projects, invite-only membership, and columns of cards you can drag around. Two things make it harder than CRUD: two people can move cards in the same column at the same moment, and a stolen refresh token has to stop working.
+
+## Constraints
+
+- **Positions stay dense.** Cards in a column are numbered 0 to n−1 with no gaps or duplicates, even under concurrent moves.
+- **No existence leaks.** Someone who isn't a member can't learn that a project exists.
+- **Short-lived access.** Access tokens last 15 minutes; refresh tokens rotate on every use.
+
+## Architecture
+
+Spring Boot 3 on Java 21. Spring Security's filter chain verifies a JWT on every request, a service per aggregate owns the rules, and Spring Data repositories sit over PostgreSQL, with the schema owned by Flyway migrations.
+
+## Hard problems
+
+### Two people, one column
+
+<Claim>
+A move locks the source and target column rows in sorted UUID order, so two concurrent moves queue instead of deadlocking. It then re-reads the card: if someone else has moved it out of the locked columns, it answers 409 rather than corrupting positions.
+
+<Evidence path="src/main/java/com/gabryel/taskboard/card/CardService.java" lines="122-140">sorted column locks, then a re-read of the card</Evidence>
+</Claim>
+
+### A refresh token used twice
+
+<Claim>
+Every refresh revokes the token it used and issues a new pair. If a revoked or expired token comes back, that suggests it was stolen, so every session for that user is revoked. That write survives even though the request then fails, because the transaction is told not to roll back on that error.
+
+<Evidence path="src/main/java/com/gabryel/taskboard/auth/AuthService.java" lines="63-77">token reuse revokes every session</Evidence>
+</Claim>
+
+## How it's tested
+
+62 tests: 59 integration tests against a real PostgreSQL started by Testcontainers, and 3 unit tests. CI runs them on every push and pull request. The concurrency tests fire several threads at the same column and check the positions stay dense.
+
+## What I'd change
+
+- Add a database constraint on card positions instead of relying only on the application's locks.
+- Revoke only the reused token's chain rather than every session.
+
+## Links
+
+- [Source at the commit this page describes](https://github.com/gabryelvs/taskboard-api/tree/d5d852447f437738e815d2fa66cbaf287f652640)
+- [Live API docs](https://taskboard-gv.fly.dev/swagger-ui.html)

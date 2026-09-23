@@ -17,8 +17,8 @@ export const sequences: Record<Slug, Sequence> = {
   payledger: {
     id: "seq-pl",
     title: "Sequence of a PayLedger transfer",
-    desc: "The client sends POST /transfers with an Idempotency-Key. The API looks the key up, locks both wallet rows in ascending id order, checks the balance, inserts one transaction and two ledger entries that sum to zero, updates both balances, records an event and commits once, then stores the key and answers 201.",
-    caption: "Every transfer is one database transaction. Bright lines are where correctness is decided.",
+    desc: "The client sends POST /transfers with an Idempotency-Key. Inside one database transaction the API claims the key, checks the caller owns the source wallet, locks both wallet rows in ascending id order, checks the balance, inserts one transaction and two ledger entries that sum to zero, updates both balances and saves the response on the key, then commits once and answers 201.",
+    caption: "Every transfer is one database transaction, key included. Bright lines are where correctness is decided.",
     lanes: [
       { id: "client", label: "client" },
       { id: "api", label: "api · transfer service" },
@@ -26,13 +26,13 @@ export const sequences: Record<Slug, Sequence> = {
     ],
     steps: [
       { kind: "msg", from: "client", to: "api", label: "POST /transfers  Idempotency-Key", hot: true },
-      { kind: "msg", from: "api", to: "db", label: "look up key in idempotency_keys" },
+      { kind: "msg", from: "api", to: "db", label: "claim key  INSERT … ON CONFLICT DO NOTHING", hot: true },
+      { kind: "msg", from: "api", to: "db", label: "source wallet owned by caller?  (404 if not)" },
       { kind: "msg", from: "api", to: "db", label: "SELECT … FOR UPDATE  both wallets, ascending id", hot: true },
       { kind: "note", at: "api", label: "balance ≥ amount" },
       { kind: "msg", from: "api", to: "db", label: "INSERT transaction + entries  −100 / +100  Σ = 0" },
-      { kind: "msg", from: "api", to: "db", label: "UPDATE balances · record event" },
-      { kind: "msg", from: "api", to: "db", label: "COMMIT  (all or nothing)", hot: true },
-      { kind: "msg", from: "api", to: "db", label: "store key  (separate commit)" },
+      { kind: "msg", from: "api", to: "db", label: "UPDATE balances · save response on the key" },
+      { kind: "msg", from: "api", to: "db", label: "COMMIT  (key and transfer together)", hot: true },
       { kind: "msg", from: "api", to: "client", label: "201 Created" },
     ],
   },
