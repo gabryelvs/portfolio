@@ -3,7 +3,7 @@
     "name": "store-demo",
     "description": "Animated demo storefront: product grid, quick-view, cart drawer (Next.js 16, TypeScript, Tailwind 4, GSAP).",
     "url": "https://github.com/gabryelvs/store-demo",
-    "homepage": "https://store-demo-gv.fly.dev",
+    "homepage": "https://demo.gabryelverissimo.dev",
     "language": "TypeScript",
     "topics": ["nextjs", "react", "typescript", "tailwindcss", "gsap"],
     "stars": 0,
