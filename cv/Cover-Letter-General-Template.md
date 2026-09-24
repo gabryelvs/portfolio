@@ -50,8 +50,8 @@ production-shaped projects; the two most relevant to this role:
 >   (Next.js, TypeScript, GSAP). The cart is a pure reducer with totals derived in integer pence
 >   and stored state validated on the way back in, so a stale basket cannot render a wrong total;
 >   every overlay traps focus, hides background content from screen readers, and stands down for
->   users who ask for reduced motion. It scores 99–100 on Lighthouse performance and accessibility.
->   *(github.com/gabryelvs/store-demo — live at store-demo-gv.fly.dev)*
+>   users who ask for reduced motion. It scores 100 on Lighthouse (desktop) for performance and accessibility.
+>   *(github.com/gabryelvs/store-demo — live at demo.gabryelverissimo.dev)*
 
 Both projects are test-driven, run in continuous integration (GitHub Actions), are containerised
 with Docker, and are deployed live. They reflect how I work: I set a demanding goal, teach myself

@@ -126,13 +126,13 @@
         "url": "https://github.com/gabryelvs/store-demo"
       },
       "live": {
-        "label": "store-demo-gv.fly.dev",
-        "url": "https://store-demo-gv.fly.dev"
+        "label": "demo.gabryelverissimo.dev",
+        "url": "https://demo.gabryelverissimo.dev"
       },
       "bullets": [
         "Storefront demo built as a client-facing sales asset: 20-product catalogue, hover-swap product grid, quick-view size selection and a persistent cart drawer, with the catalogue behind a single data seam so a real backend replaces it without touching the pages.",
         "Scroll-driven GSAP reveals and a parallax band, with three overlays (quick-view, cart, mobile navigation) that each trap focus, mark background content inert for screen readers, restore focus to their opener, and stand down entirely under prefers-reduced-motion.",
-        "Cart is a pure reducer with derived totals in integer pence and validated localStorage rehydration (30 Vitest tests); 26 statically prerendered routes shipped as a standalone container on Fly.io, scoring 99–100 on Lighthouse performance, accessibility, best practices and SEO with zero layout shift."
+        "Cart is a pure reducer with derived totals in integer pence and validated localStorage rehydration (30 Vitest tests); 26 statically prerendered routes served as plain files from Cloudflare Pages, scoring 100 on Lighthouse (desktop) for performance, accessibility, best practices and SEO, with zero layout shift."
       ]
     },
     {
