@@ -120,7 +120,7 @@
     },
     {
       "name": "SECTOR—9 — Animated Demo Storefront",
-      "tech": "TypeScript · Next.js 16 · React 19 · Tailwind 4 · GSAP · Docker",
+      "tech": "TypeScript · Next.js 16 · React 19 · Tailwind 4 · GSAP · Cloudflare Pages",
       "github": {
         "label": "github.com/gabryelvs/store-demo",
         "url": "https://github.com/gabryelvs/store-demo"

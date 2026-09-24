@@ -120,7 +120,7 @@ Stack: Python, FastAPI, Redis, httpx, Docker.
 - Description:
 ```
 A storefront demo built as a client-facing sales asset for freelance web work — the thing a prospect clicks through instead of reading a proposal. A 20-product catalogue sits behind a single data seam, so a real backend replaces the mock data without touching any page. The cart is a pure reducer with totals derived in integer pence and localStorage rehydration that validates what it reads, so a stale or hand-edited bag can never render a wrong total (30 Vitest tests). Scroll-driven GSAP reveals and a parallax band carry the motion; the quick-view, cart and mobile-nav overlays each trap focus, mark the background inert for screen readers, restore focus on close, and stand down entirely under prefers-reduced-motion. 26 statically prerendered routes served as plain files from Cloudflare Pages, scoring 100 on Lighthouse (desktop) for performance, accessibility, best practices and SEO, with zero layout shift.
-Stack: TypeScript, Next.js 16, React 19, Tailwind 4, GSAP, Docker, Vitest.
+Stack: TypeScript, Next.js 16, React 19, Tailwind 4, GSAP, Vitest.
 ```
 - Link: `https://demo.gabryelverissimo.dev`
 
