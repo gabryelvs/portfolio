@@ -190,7 +190,7 @@ A BTEC is a vocational qualification, not a degree: never use LinkedIn's
 
 **Keep:** Python · FastAPI · PostgreSQL · Redis · SQLAlchemy · REST APIs · Docker · Git · GitHub · CI/CD · Test-Driven Development · Back-End Development · SQL · Asynchronous Programming
 
-**Remove** (they dilute a software profile): Editing · Continuous Improvement · Security System Design · Information and Communications Technology (ICT) · Information Technology · Front-End Design · Computer Literacy · Construction · Microsoft Project · Microsoft Office · Visual Design
+**Remove** (they dilute a software profile): Editing · Continuous Improvement · Security System Design · Information and Communications Technology (ICT) · Information Technology · Front-End Design · Computer Literacy · Construction · Microsoft Project · Microsoft Office · Visual Design · PC Games · Game Development · Mobile Game Development · Desire2Learn
 
 ---
 
