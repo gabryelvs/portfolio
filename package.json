@@ -14,9 +14,9 @@
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
-    "@next/mdx": "^16.3.5",
+    "@next/mdx": "^16.3.8",
     "@vercel/analytics": "^2.0.1",
-    "next": "16.3.5",
+    "next": "16.3.8",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
@@ -31,12 +31,12 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6.1.1",
-    "docx": "^9.7.1",
+    "docx": "^9.8.1",
     "eslint": "^9",
-    "eslint-config-next": "16.3.5",
-    "jsdom": "^30.1.0",
+    "eslint-config-next": "16.3.8",
+    "jsdom": "^30.1.1",
     "tailwindcss": "^4",
     "typescript": "^6",
-    "vitest": "^5.0.1"
+    "vitest": "^5.0.3"
   }
 }
