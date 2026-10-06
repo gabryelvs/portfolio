@@ -16,6 +16,18 @@ describe("Experience", () => {
     expect(container).not.toHaveTextContent(/– now|Freelance|pro bono/i);
   });
 
+  it("lists the Greenwich Consultancy Sprint first, in the present tense", () => {
+    const { container } = render(<Experience />);
+    const headings = screen.getAllByRole("heading", { level: 3 });
+    expect(headings[0]).toHaveTextContent(
+      "Greenwich Internship – Consultancy Sprint · University of Greenwich",
+    );
+    expect(container).toHaveTextContent(/Oct 2026 – Nov 2026/);
+    expect(container).toHaveTextContent(
+      "Working in a six-person team on a live brief from an external organisation assigned by the University",
+    );
+  });
+
   it("shows the degree with its expected graduation", () => {
     const { container } = render(<Experience />);
     expect(screen.getByRole("heading", { level: 3, name: /BSc Computer Science/ })).toBeInTheDocument();
