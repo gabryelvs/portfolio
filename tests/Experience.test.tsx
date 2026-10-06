@@ -3,14 +3,17 @@ import { describe, expect, it } from "vitest";
 import { Experience } from "@/components/Experience";
 
 describe("Experience", () => {
-  it("shows the freelance role with Auto Boutique marked pro bono", () => {
+  it("shows the finished AP Homes internship with the Auto Boutique build", () => {
     const { container } = render(<Experience />);
-    expect(screen.getByRole("heading", { level: 3, name: /Freelance Software Engineer/ })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 3, name: /Software Engineering Intern · AP Homes Ltd/ }),
+    ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Auto Boutique London" })).toHaveAttribute(
       "href",
       "https://autoboutiquelondon.co.uk",
     );
-    expect(container).toHaveTextContent(/\(pro bono\)/);
+    expect(container).toHaveTextContent(/Sep 2026 – Oct 2026/);
+    expect(container).not.toHaveTextContent(/– now|Freelance|pro bono/i);
   });
 
   it("shows the degree with its expected graduation", () => {
