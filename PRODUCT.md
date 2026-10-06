@@ -13,9 +13,10 @@ or junior software engineering role in London (roles from summer 2027). They arr
 from an application, CV, or message, usually with a CV already in hand, and skim
 briefly to decide whether the candidate is worth a conversation.
 
-Freelance clients are no longer a target audience for this site. Client work (Auto
-Boutique London) appears only as factual experience — in the CV and the Experience
-section — not as a service pitch.
+Freelance clients are no longer a target audience for this site. Work done for
+others (the Auto Boutique London site, built during an internship at AP Homes Ltd)
+appears only as factual experience — in the CV and the Experience section — not as
+a service pitch.
 
 ## Product Purpose
 
