@@ -125,7 +125,7 @@ Stack: Python, FastAPI, Redis, httpx, Docker.
 - Name: `SECTOR—9 — Animated demo storefront`
 - Description:
 ```
-A storefront demo built as a client-facing sales asset for freelance web work — the thing a prospect clicks through instead of reading a proposal. A 20-product catalogue sits behind a single data seam, so a real backend replaces the mock data without touching any page. The cart is a pure reducer with totals derived in integer pence and localStorage rehydration that validates what it reads, so a stale or hand-edited bag can never render a wrong total (30 Vitest tests). Scroll-driven GSAP reveals and a parallax band carry the motion; the quick-view, cart and mobile-nav overlays each trap focus, mark the background inert for screen readers, restore focus on close, and stand down entirely under prefers-reduced-motion. 26 statically prerendered routes served as plain files from Cloudflare Pages, scoring 100 on Lighthouse (desktop) for performance, accessibility, best practices and SEO, with zero layout shift.
+A storefront demo built as a client-facing sales asset for small-business web work — the thing a prospect clicks through instead of reading a proposal. A 20-product catalogue sits behind a single data seam, so a real backend replaces the mock data without touching any page. The cart is a pure reducer with totals derived in integer pence and localStorage rehydration that validates what it reads, so a stale or hand-edited bag can never render a wrong total (30 Vitest tests). Scroll-driven GSAP reveals and a parallax band carry the motion; the quick-view, cart and mobile-nav overlays each trap focus, mark the background inert for screen readers, restore focus on close, and stand down entirely under prefers-reduced-motion. 26 statically prerendered routes served as plain files from Cloudflare Pages, scoring 100 on Lighthouse (desktop) for performance, accessibility, best practices and SEO, with zero layout shift.
 Stack: TypeScript, Next.js 16, React 19, Tailwind 4, GSAP, Vitest.
 Live: https://demo.gabryelverissimo.dev
 ```
@@ -221,7 +221,7 @@ Web Development · Custom Software Development · Application Development
 
 Services description (max 500):
 ```
-I design, build and deploy websites and web applications for small businesses: fast, accessible sites with a working enquiry flow, and backend services in Python or Java when a site needs more than pages. Recent work: the production website for Auto Boutique London (Astro, deployed through GitHub Actions). Portfolio: https://gabryelverissimo.dev
+I design, build and deploy websites and web applications for small businesses: fast, accessible sites with a working enquiry flow, and backend services in Python or Java when a site needs more than pages. Recent work: the production website for Auto Boutique London, built during my internship at AP Homes (Astro, deployed through GitHub Actions). Portfolio: https://gabryelverissimo.dev
 ```
 
 ---
