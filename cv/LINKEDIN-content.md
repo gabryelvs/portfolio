@@ -138,13 +138,14 @@ Live: https://demo.gabryelverissimo.dev
 Volunteering stays in Experience, marked "(Volunteer)", as on the CV. Leave employment
 type blank where the CV doesn't state one.
 
-**Freelance Software Engineer** · Self-employed · London, England, United Kingdom · Sep 2026 – Present
+**Software Engineering Intern** · AP Homes Ltd · London, England, United Kingdom · Internship · Sep 2026 – Oct 2026
 ```
-Auto Boutique London (pro bono): designed, built and deployed the production website for a Central London car-storage business, replacing its WordPress site with a static Astro build and a PHP enquiry endpoint that sends mail through Resend.
+Auto Boutique London: designed, built and deployed the production website for a Central London car-storage business, replacing its WordPress site with a static Astro build and a PHP enquiry endpoint that sends mail through Resend.
 Set up push-to-deploy from GitHub Actions to SiteGround over SSH, archived the old WordPress install with verified backups, and completed a UK consumer-law pass: legal pages, consent-gated enquiry form, and no unverified reviews on the site.
 ```
-*Add further clients here only once their site is live and they have agreed to be named;
-mark unpaid work "(pro bono)".*
+*Type "AP Homes Ltd" as plain text, without linking a company page unless Gabryel confirms
+it's the right one. Untick "I am currently working in this role". The Auto Boutique site was
+built during this internship, so the freelance title (Sep 2026 – Present) is no longer used.*
 
 **Runner** · The Ivy Market Grill, Covent Garden · London · Jun 2026 – Sep 2026 (left 4 Sep)
 ```
