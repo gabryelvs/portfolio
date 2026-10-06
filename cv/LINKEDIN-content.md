@@ -125,7 +125,7 @@ Stack: Python, FastAPI, Redis, httpx, Docker.
 - Name: `SECTOR—9 — Animated demo storefront`
 - Description:
 ```
-A storefront demo built as a client-facing sales asset for freelance web work — the thing a prospect clicks through instead of reading a proposal. A 20-product catalogue sits behind a single data seam, so a real backend replaces the mock data without touching any page. The cart is a pure reducer with totals derived in integer pence and localStorage rehydration that validates what it reads, so a stale or hand-edited bag can never render a wrong total (30 Vitest tests). Scroll-driven GSAP reveals and a parallax band carry the motion; the quick-view, cart and mobile-nav overlays each trap focus, mark the background inert for screen readers, restore focus on close, and stand down entirely under prefers-reduced-motion. 26 statically prerendered routes served as plain files from Cloudflare Pages, scoring 100 on Lighthouse (desktop) for performance, accessibility, best practices and SEO, with zero layout shift.
+A storefront demo built as a client-facing sales asset for small-business web work — the thing a prospect clicks through instead of reading a proposal. A 20-product catalogue sits behind a single data seam, so a real backend replaces the mock data without touching any page. The cart is a pure reducer with totals derived in integer pence and localStorage rehydration that validates what it reads, so a stale or hand-edited bag can never render a wrong total (30 Vitest tests). Scroll-driven GSAP reveals and a parallax band carry the motion; the quick-view, cart and mobile-nav overlays each trap focus, mark the background inert for screen readers, restore focus on close, and stand down entirely under prefers-reduced-motion. 26 statically prerendered routes served as plain files from Cloudflare Pages, scoring 100 on Lighthouse (desktop) for performance, accessibility, best practices and SEO, with zero layout shift.
 Stack: TypeScript, Next.js 16, React 19, Tailwind 4, GSAP, Vitest.
 Live: https://demo.gabryelverissimo.dev
 ```
@@ -138,13 +138,14 @@ Live: https://demo.gabryelverissimo.dev
 Volunteering stays in Experience, marked "(Volunteer)", as on the CV. Leave employment
 type blank where the CV doesn't state one.
 
-**Freelance Software Engineer** · Self-employed · London, England, United Kingdom · Sep 2026 – Present
+**Software Engineering Intern** · AP Homes Ltd · London, England, United Kingdom · Internship · Sep 2026 – Oct 2026
 ```
-Auto Boutique London (pro bono): designed, built and deployed the production website for a Central London car-storage business, replacing its WordPress site with a static Astro build and a PHP enquiry endpoint that sends mail through Resend.
+Auto Boutique London: designed, built and deployed the production website for a Central London car-storage business, replacing its WordPress site with a static Astro build and a PHP enquiry endpoint that sends mail through Resend.
 Set up push-to-deploy from GitHub Actions to SiteGround over SSH, archived the old WordPress install with verified backups, and completed a UK consumer-law pass: legal pages, consent-gated enquiry form, and no unverified reviews on the site.
 ```
-*Add further clients here only once their site is live and they have agreed to be named;
-mark unpaid work "(pro bono)".*
+*Type "AP Homes Ltd" as plain text, without linking a company page unless Gabryel confirms
+it's the right one. Untick "I am currently working in this role". The Auto Boutique site was
+built during this internship, so the freelance title (Sep 2026 – Present) is no longer used.*
 
 **Runner** · The Ivy Market Grill, Covent Garden · London · Jun 2026 – Sep 2026 (left 4 Sep)
 ```
@@ -220,7 +221,7 @@ Web Development · Custom Software Development · Application Development
 
 Services description (max 500):
 ```
-I design, build and deploy websites and web applications for small businesses: fast, accessible sites with a working enquiry flow, and backend services in Python or Java when a site needs more than pages. Recent work: the production website for Auto Boutique London (Astro, deployed through GitHub Actions). Portfolio: https://gabryelverissimo.dev
+I design, build and deploy websites and web applications for small businesses: fast, accessible sites with a working enquiry flow, and backend services in Python or Java when a site needs more than pages. Recent work: the production website for Auto Boutique London, built during my internship at AP Homes (Astro, deployed through GitHub Actions). Portfolio: https://gabryelverissimo.dev
 ```
 
 ---
