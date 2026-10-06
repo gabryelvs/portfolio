@@ -151,11 +151,11 @@
   ],
   "experience": [
     {
-      "role": "Freelance Software Engineer",
-      "org": "Self-employed, London",
-      "period": "Sep 2026 – Present",
+      "role": "Software Engineering Intern",
+      "org": "AP Homes Ltd",
+      "period": "Sep 2026 – Oct 2026",
       "bullets": [
-        "Auto Boutique London (pro bono): designed, built and deployed the production website for a Central London car-storage business, replacing its WordPress site with a static Astro build and a PHP enquiry endpoint that sends mail through Resend.",
+        "Designed, built and deployed the production website for Auto Boutique London, a Central London car-storage business, replacing its WordPress site with a static Astro build and a PHP enquiry endpoint that sends mail through Resend.",
         "Set up push-to-deploy from GitHub Actions to SiteGround over SSH, archived the old WordPress install with verified backups, and completed a UK consumer-law pass: legal pages, consent-gated enquiry form, and no unverified reviews on the site."
       ]
     },
