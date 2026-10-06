@@ -143,9 +143,10 @@ type blank where the CV doesn't state one.
 Auto Boutique London: designed, built and deployed the production website for a Central London car-storage business, replacing its WordPress site with a static Astro build and a PHP enquiry endpoint that sends mail through Resend.
 Set up push-to-deploy from GitHub Actions to SiteGround over SSH, archived the old WordPress install with verified backups, and completed a UK consumer-law pass: legal pages, consent-gated enquiry form, and no unverified reviews on the site.
 ```
-*Type "AP Homes Ltd" as plain text, without linking a company page unless Gabryel confirms
-it's the right one. Untick "I am currently working in this role". The Auto Boutique site was
-built during this internship, so the freelance title (Sep 2026 – Present) is no longer used.*
+*Organization is linked to the company page https://www.linkedin.com/company/ap-homes-ltd
+(shown as "AP Homes Ltd.", with its logo), which Gabryel confirmed is his. Untick "I am currently
+working in this role". The Auto Boutique site was built during this internship, so the freelance
+title (Sep 2026 – Present) is no longer used.*
 
 **Runner** · The Ivy Market Grill, Covent Garden · London · Jun 2026 – Sep 2026 (left 4 Sep)
 ```
