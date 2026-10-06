@@ -98,16 +98,21 @@ describe("no student framing", () => {
   });
 });
 
-describe("freelance experience", () => {
-  const freelance = cv.experience[0];
+describe("AP Homes internship", () => {
+  const internship = cv.experience[0];
 
-  it("leads the CV experience with the freelance role", () => {
-    expect(freelance.role).toBe("Freelance Software Engineer");
+  it("leads the CV experience with the finished AP Homes internship", () => {
+    expect(internship.role).toBe("Software Engineering Intern");
+    expect(internship.org).toBe("AP Homes Ltd");
+    expect(internship.period).toBe("Sep 2026 – Oct 2026");
   });
 
-  it("labels the unpaid Auto Boutique build as pro bono", () => {
-    const bullet = freelance.bullets.find((b) => b.includes("Auto Boutique"));
-    expect(bullet).toMatch(/pro bono/i);
+  // The site was built during the internship, so it is finished work: "built
+  // and deployed", never "maintain", and no longer labelled pro bono.
+  it("describes the Auto Boutique build as finished internship work", () => {
+    const bullet = internship.bullets.find((b) => b.includes("Auto Boutique"));
+    expect(bullet).toMatch(/built and deployed/);
+    expect(bullet).not.toMatch(/pro bono|maintain/i);
   });
 });
 
