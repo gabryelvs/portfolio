@@ -25,7 +25,7 @@ export function Experience() {
             <div className="when mono">Sep 2026 – Oct 2026</div>
             <div>
               <h3>
-                Software Engineering Intern <span className="org">· AP Homes Ltd</span>
+                Software Engineering Intern <span className="org">· AP Homes Ltd, London</span>
               </h3>
               <p>
                 Designed, built and deployed the production site for{" "}
