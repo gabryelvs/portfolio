@@ -119,11 +119,11 @@ describe("Consultancy Sprint", () => {
 });
 
 describe("AP Homes internship", () => {
-  const internship = cv.experience.find((e) => e.org === "AP Homes Ltd")!;
+  const internship = cv.experience.find((e) => e.role === "Software Engineering Intern")!;
 
   it("shows the finished AP Homes internship", () => {
     expect(internship.role).toBe("Software Engineering Intern");
-    expect(internship.org).toBe("AP Homes Ltd");
+    expect(internship.org).toBe("AP Homes Ltd, London");
     expect(internship.period).toBe("Sep 2026 – Oct 2026");
   });
 
