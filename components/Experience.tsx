@@ -7,6 +7,21 @@ export function Experience() {
         <SectionHeading index="02" id="exp-title" title="Experience" sub="Work and education." />
         <div className="rows">
           <div className="row reveal">
+            <div className="when mono">Oct 2026 – Nov 2026</div>
+            <div>
+              <h3>
+                Greenwich Internship – Consultancy Sprint{" "}
+                <span className="org">· University of Greenwich</span>
+              </h3>
+              <p>
+                Working in a six-person team on a live brief from an external organisation assigned
+                by the University: researching the client&apos;s challenge, analysing findings and
+                developing evidence-based recommendations for a consultancy-style report, with
+                feedback from the client.
+              </p>
+            </div>
+          </div>
+          <div className="row reveal">
             <div className="when mono">Sep 2026 – Oct 2026</div>
             <div>
               <h3>
