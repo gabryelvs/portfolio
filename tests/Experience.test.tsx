@@ -6,7 +6,7 @@ describe("Experience", () => {
   it("shows the finished AP Homes internship with the Auto Boutique build", () => {
     const { container } = render(<Experience />);
     expect(
-      screen.getByRole("heading", { level: 3, name: /Software Engineering Intern · AP Homes Ltd/ }),
+      screen.getByRole("heading", { level: 3, name: /Software Engineering Intern · AP Homes Ltd, London/ }),
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Auto Boutique London" })).toHaveAttribute(
       "href",
