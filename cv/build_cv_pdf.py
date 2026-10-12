@@ -57,7 +57,7 @@ S = {
     "links": ParagraphStyle("links", fontName="Helvetica", fontSize=9, textColor=ACCENT,
                             alignment=1, spaceAfter=6),
     "h": ParagraphStyle("h", fontName="Helvetica-Bold", fontSize=11, textColor=NAVY,
-                        spaceBefore=10, spaceAfter=4),
+                        spaceBefore=8, spaceAfter=4),
     "body": ParagraphStyle("body", fontName="Helvetica", fontSize=9.5, leading=13,
                            alignment=TA_JUSTIFY, spaceAfter=3),
     "ptitle": ParagraphStyle("ptitle", fontName="Helvetica-Bold", fontSize=10, textColor=NAVY,
@@ -156,7 +156,7 @@ story.append(Paragraph(
 
 doc = SimpleDocTemplate(
     str(OUT), pagesize=A4,
-    topMargin=14 * mm, bottomMargin=14 * mm, leftMargin=16 * mm, rightMargin=16 * mm,
+    topMargin=12 * mm, bottomMargin=12 * mm, leftMargin=16 * mm, rightMargin=16 * mm,
     title="Gabryel Verissimo - CV", author="Gabryel Verissimo",
 )
 doc.build(story)

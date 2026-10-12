@@ -98,10 +98,30 @@ describe("no student framing", () => {
   });
 });
 
-describe("AP Homes internship", () => {
-  const internship = cv.experience[0];
+describe("Consultancy Sprint", () => {
+  const sprint = cv.experience[0];
 
-  it("leads the CV experience with the finished AP Homes internship", () => {
+  it("leads the CV experience with the Greenwich Consultancy Sprint", () => {
+    expect(sprint.role).toBe("Greenwich Internship – Consultancy Sprint");
+    expect(sprint.org).toBe("University of Greenwich");
+    expect(sprint.period).toBe("Oct 2026 – Nov 2026");
+  });
+
+  // Gabryel approved this wording on 2026-10-06. It stays in the present tense
+  // while the sprint runs (12 Oct – 15 Nov) and leaves out the module and the
+  // pass/fail assessment.
+  it("uses the approved present-tense description", () => {
+    expect(sprint.bullets).toEqual([
+      "Working in a six-person team on a live brief from an external organisation assigned by the University: researching the client's challenge, analysing findings and developing evidence-based recommendations for a consultancy-style report, with feedback from the client.",
+    ]);
+    expect(sprint.bullets.join(" ")).not.toMatch(/module|pass\/fail|credits?/i);
+  });
+});
+
+describe("AP Homes internship", () => {
+  const internship = cv.experience.find((e) => e.org === "AP Homes Ltd")!;
+
+  it("shows the finished AP Homes internship", () => {
     expect(internship.role).toBe("Software Engineering Intern");
     expect(internship.org).toBe("AP Homes Ltd");
     expect(internship.period).toBe("Sep 2026 – Oct 2026");
