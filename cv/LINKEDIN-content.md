@@ -138,6 +138,14 @@ Live: https://demo.gabryelverissimo.dev
 Volunteering stays in Experience, marked "(Volunteer)", as on the CV. Leave employment
 type blank where the CV doesn't state one.
 
+**Greenwich Internship – Consultancy Sprint** · University of Greenwich · London, England, United Kingdom · Internship · Oct 2026 – Present (runs 12 Oct – 15 Nov 2026)
+```
+Working in a six-person team on a live brief from an external organisation assigned by the University: researching the client's challenge, analysing findings and developing evidence-based recommendations for a consultancy-style report, with feedback from the client.
+```
+*Added on 12 Oct 2026 as a current role, because LinkedIn won't take a future end date. After
+15 Nov, untick "I am currently working in this role", set the end to Nov 2026, and ask Gabryel
+before switching the text to the past tense. Don't name the client or mention the module.*
+
 **Software Engineering Intern** · AP Homes Ltd · London, England, United Kingdom · Internship · Sep 2026 – Oct 2026
 ```
 Auto Boutique London: designed, built and deployed the production website for a Central London car-storage business, replacing its WordPress site with a static Astro build and a PHP enquiry endpoint that sends mail through Resend.
